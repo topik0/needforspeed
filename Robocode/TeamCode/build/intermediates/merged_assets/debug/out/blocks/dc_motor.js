@@ -1,4 +1,21 @@
 /**
+ * @license
+ * Copyright 2016 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
  * @fileoverview FTC robot blocks related to DC motors.
  * @author lizlooney@google.com (Liz Looney)
  */
@@ -1388,4 +1405,156 @@ Blockly.FtcJava['dcMotor_setPositionPIDFCoefficients'] = function(block) {
   // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
   Blockly.FtcJava.generateImport_('DcMotorEx');
   return '((DcMotorEx) ' + identifier + ').setPositionPIDFCoefficients(' + p + ');\n';
+};
+
+Blockly.Blocks['dcMotor_getCurrent'] = {
+  init: function() {
+    this.setOutput(true, 'Number');
+    this.appendDummyInput()
+        .appendField('call')
+        .appendField(createDcMotorExDropdown(), 'IDENTIFIER')
+        .appendField('.')
+        .appendField(createNonEditableField('getCurrent'));
+    this.appendValueInput('CURRENT_UNIT').setCheck('CurrentUnit')
+        .appendField('currentUnit')
+        .setAlign(Blockly.ALIGN_RIGHT);
+    this.setColour(functionColor);
+    this.setTooltip('Returns the current consumed by this motor. ' +
+        'Not all DcMotors support this feature.');
+    this.getFtcJavaOutputType = function() {
+      return 'double';
+    };
+  }
+};
+
+Blockly.JavaScript['dcMotor_getCurrent'] = function(block) {
+  var identifier = block.getFieldValue('IDENTIFIER');
+  var currentUnit = Blockly.JavaScript.valueToCode(
+      block, 'CURRENT_UNIT', Blockly.JavaScript.ORDER_NONE);
+  var code = identifier + '.getCurrent(' + currentUnit + ')';
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.FtcJava['dcMotor_getCurrent'] = function(block) {
+  var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
+  var currentUnit = Blockly.FtcJava.valueToCode(
+      block, 'CURRENT_UNIT', Blockly.FtcJava.ORDER_NONE);
+  // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
+  Blockly.FtcJava.generateImport_('DcMotorEx');
+  var code = '((DcMotorEx) ' + identifier + ').getCurrent(' + currentUnit + ')';
+  return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Blocks['dcMotor_getCurrentAlert'] = {
+  init: function() {
+    this.setOutput(true, 'Number');
+    this.appendDummyInput()
+        .appendField('call')
+        .appendField(createDcMotorExDropdown(), 'IDENTIFIER')
+        .appendField('.')
+        .appendField(createNonEditableField('getCurrentAlert'));
+    this.appendValueInput('CURRENT_UNIT').setCheck('CurrentUnit')
+        .appendField('currentUnit')
+        .setAlign(Blockly.ALIGN_RIGHT);
+    this.setColour(functionColor);
+    this.setTooltip('Returns the current alert for this motor. ' +
+        'Not all DcMotors support this feature.');
+    this.getFtcJavaOutputType = function() {
+      return 'double';
+    };
+  }
+};
+
+Blockly.JavaScript['dcMotor_getCurrentAlert'] = function(block) {
+  var identifier = block.getFieldValue('IDENTIFIER');
+  var currentUnit = Blockly.JavaScript.valueToCode(
+      block, 'CURRENT_UNIT', Blockly.JavaScript.ORDER_NONE);
+  var code = identifier + '.getCurrentAlert(' + currentUnit + ')';
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.FtcJava['dcMotor_getCurrentAlert'] = function(block) {
+  var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
+  var currentUnit = Blockly.FtcJava.valueToCode(
+      block, 'CURRENT_UNIT', Blockly.FtcJava.ORDER_NONE);
+  // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
+  Blockly.FtcJava.generateImport_('DcMotorEx');
+  var code = '((DcMotorEx) ' + identifier + ').getCurrentAlert(' + currentUnit + ')';
+  return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
+};
+
+Blockly.Blocks['dcMotor_setCurrentAlert'] = {
+  init: function() {
+    this.appendDummyInput()
+        .appendField('call')
+        .appendField(createDcMotorExDropdown(), 'IDENTIFIER')
+        .appendField('.')
+        .appendField(createNonEditableField('setCurrentAlert'));
+    this.appendValueInput('CURRENT').setCheck('Number')
+        .appendField('current')
+        .setAlign(Blockly.ALIGN_RIGHT);
+    this.appendValueInput('CURRENT_UNIT').setCheck('CurrentUnit')
+        .appendField('currentUnit')
+        .setAlign(Blockly.ALIGN_RIGHT);
+    this.setPreviousStatement(true);
+    this.setNextStatement(true);
+    this.setColour(functionColor);
+    this.setTooltip('Sets the current alert for this motor. ' +
+        'Not all DcMotors support this feature.');
+    this.getFtcJavaInputType = function(inputName) {
+      switch (inputName) {
+        case 'CURRENT':
+          return 'double';
+      }
+      return '';
+    };
+  }
+};
+
+Blockly.JavaScript['dcMotor_setCurrentAlert'] = function(block) {
+  var identifier = block.getFieldValue('IDENTIFIER');
+  var current = Blockly.JavaScript.valueToCode(
+      block, 'CURRENT', Blockly.JavaScript.ORDER_COMMA);
+  var currentUnit = Blockly.JavaScript.valueToCode(
+      block, 'CURRENT_UNIT', Blockly.JavaScript.ORDER_COMMA);
+  return identifier + '.setCurrentAlert(' + current + ', ' + currentUnit + ');\n';
+};
+
+Blockly.FtcJava['dcMotor_setCurrentAlert'] = function(block) {
+  var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
+  var current = Blockly.FtcJava.valueToCode(
+      block, 'CURRENT', Blockly.FtcJava.ORDER_COMMA);
+  var currentUnit = Blockly.FtcJava.valueToCode(
+      block, 'CURRENT_UNIT', Blockly.FtcJava.ORDER_COMMA);
+  // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
+  Blockly.FtcJava.generateImport_('DcMotorEx');
+  return '((DcMotorEx) ' + identifier + ').setCurrentAlert(' + current + ', ' + currentUnit + ');\n';
+};
+
+Blockly.Blocks['dcMotor_isOverCurrent'] = {
+  init: function() {
+    this.setOutput(true, 'Boolean');
+    this.appendDummyInput()
+        .appendField('call')
+        .appendField(createDcMotorExDropdown(), 'IDENTIFIER')
+        .appendField('.')
+        .appendField(createNonEditableField('isOverCurrent'));
+    this.setColour(functionColor);
+    this.setTooltip('Returns true if the current consumption of this motor exceeds the alert threshold. ' +
+        'Not all DcMotors support this feature.');
+  }
+};
+
+Blockly.JavaScript['dcMotor_isOverCurrent'] = function(block) {
+  var identifier = block.getFieldValue('IDENTIFIER');
+  var code = identifier + '.isOverCurrent()';
+  return [code, Blockly.JavaScript.ORDER_FUNCTION_CALL];
+};
+
+Blockly.FtcJava['dcMotor_isOverCurrent'] = function(block) {
+  var identifier = Blockly.FtcJava.importDeclareAssign_(block, 'IDENTIFIER', 'DcMotor');
+  // This java code will throw ClassCastException if the DcMotor is not a DcMotorEx.
+  Blockly.FtcJava.generateImport_('DcMotorEx');
+  var code = '((DcMotorEx) ' + identifier + ').isOverCurrent()';
+  return [code, Blockly.FtcJava.ORDER_FUNCTION_CALL];
 };

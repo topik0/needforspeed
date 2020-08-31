@@ -1,4 +1,21 @@
 /**
+ * @license
+ * Copyright 2019 Google LLC
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *    https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/**
  * @fileoverview functions used in both FtcBlocks.html and FtcOfflineBlocks.html
  * @author lizlooney@google.com (Liz Looney)
  */
@@ -321,6 +338,9 @@ function initializeBlockly() {
     // Check blocks.
     var blockIds = [];
     switch (event.type) {
+      case Blockly.Events.FINISHED_LOADING:
+        blocksFinishedLoading = true;
+        break;
       case Blockly.Events.BLOCK_CREATE:
         Array.prototype.push.apply(blockIds, event.ids);
         break;
@@ -356,7 +376,9 @@ function initializeBlockly() {
         }
       }
     }
-    showJava();
+    if (blocksFinishedLoading) {
+      showJava();
+    }
   });
 }
 
@@ -504,13 +526,14 @@ function checkBlock(block, missingHardware) {
           var visibleIdentifierName;
           if (block.data) {
             if (block.data.startsWith('{')) {
-              var visibleIdentifierNames = JSON.parse(block.data);
+              var visibleIdentifierNames = parseBlockDataJSON(block);
               visibleIdentifierName = visibleIdentifierNames[identifierFieldName];
             } else {
+              // Some older versions save as plain text instead of JSON.
               visibleIdentifierName = block.data;
             }
           } else {
-            // If the blocks file is older, we don't know what the visible name actually is.
+            // If the blocks file is even older, we don't know what the visible name actually is.
             // The best we can do is to remove the hardware identifier suffix if there is one.
             visibleIdentifierName = removeHardwareIdentifierSuffix(identifierFieldValue);
           }
@@ -571,6 +594,15 @@ function checkBlock(block, missingHardware) {
           'for SKYSTONE (2019-2020).\n\n' +
           'Please replace this block with the corresponding one from the Optimized for SKYSTONE ' +
           'toolbox category.');
+    } else if (block.type == 'misc_callJava_return' ||
+        block.type == 'misc_callJava_noReturn') {
+      if (!methodLookupStrings.includes(block.methodLookupString_)) {
+        warningBits |= WarningBits.MISSING_METHOD;
+        warningText = addWarning(warningText,
+            'This block refers to a Java method that has been changed or removed. It will not ' +
+            'work correctly.\n\n' +
+            'Please replace or remove this block, or restore the Java method it refers to.');
+      }
     }
 
     // If warningText is null, the following will clear a previous warning.
@@ -612,10 +644,18 @@ function removeHardwareIdentifierSuffix(identifierFieldValue) {
   return identifierFieldValue;
 }
 
-function saveBlockWarningHidden(block) {
-  var data = (block.data && block.data.startsWith('{'))
-      ? JSON.parse(block.data) : null;
+function parseBlockDataJSON(block) {
+  if (block.data && block.data.startsWith('{')) {
+    try {
+      return JSON.parse(block.data);
+    } catch (err) {
+    }
+  }
+  return null;
+}
 
+function saveBlockWarningHidden(block) {
+  var data = parseBlockDataJSON(block);
   if (block.warning) {
     if (!block.warning.isVisible()) {
       if (!data) {
@@ -633,8 +673,8 @@ function saveBlockWarningHidden(block) {
 }
 
 function readBlockWarningHidden(block) {
-  if (block.data && block.data.startsWith('{')) {
-    var data = JSON.parse(block.data);
+  var data = parseBlockDataJSON(block);
+  if (data) {
     if (data.block_warning_hidden) {
       return true;
     }
@@ -644,8 +684,7 @@ function readBlockWarningHidden(block) {
 }
 
 function saveVisibleIdentifiers(block) {
-  var data = (block.data && block.data.startsWith('{'))
-      ? JSON.parse(block.data) : null;
+  var data = parseBlockDataJSON(block);
 
   for (var iFieldName = 0; iFieldName < identifierFieldNames.length; iFieldName++) {
     var identifierFieldName = identifierFieldNames[iFieldName];
@@ -658,7 +697,10 @@ function saveVisibleIdentifiers(block) {
         if (!data) {
           data = Object.create(null);
         }
-        data[identifierFieldName] = field.getText();
+        // field.getText() returns the text with spaces changed to non-breakable spaces \u00A0.
+        // Here we change them back to normal spaces. Without this, the character becomes &nbsp; in
+        // the blk file when saved with Safari.
+        data[identifierFieldName] = field.getText().replace(/\u00A0/g, ' ');
       }
     }
   }

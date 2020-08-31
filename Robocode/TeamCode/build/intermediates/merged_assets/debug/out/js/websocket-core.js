@@ -59,10 +59,15 @@ var WEBSOCKET_CORE = function () {
     const SYSTEM_NAMESPACE = 'system';
     const SUBSCRIBE_TO_NAMESPACE_MESSAGE_TYPE = 'subscribeToNamespace';
     const UNSUBSCRIBE_FROM_NAMESPACE_MESSAGE_TYPE = 'unsubscribeFromNamespace';
+    const REQUEST_CURRENT_TIME_MESSAGE_TYPE = "requestCurrentTime";
+    const NOTIFY_CURRENT_TIME_MESSAGE_TYPE = "notifyCurrentTime";
 
     function WebSocketMessage(namespace, type, payload) {
         this.namespace = namespace;
         this.type = type;
+        if (payload && typeof payload !== 'string') {
+            throw new Error('If a payload is provided, it must be a string')
+        }
         this.payload = payload ? payload : "";
     }
 
@@ -332,13 +337,7 @@ var WEBSOCKET_CORE = function () {
             console.log(message);
         }
 
-        var rawMessage = {
-            namespace: message.namespace,
-            type: message.type,
-            encodedPayload: btoa(message.payload)
-        }
-
-        globalState.webSocket.send(JSON.stringify(rawMessage));
+        globalState.webSocket.send(JSON.stringify(message));
         return true;
     }
 
@@ -363,15 +362,16 @@ var WEBSOCKET_CORE = function () {
         globalState.webSocket.onmessage = function (messageEvent) {
             var json = messageEvent.data;
             var rawMessage = JSON.parse(json);
-            var payload = rawMessage.encodedPayload ? atob(rawMessage.encodedPayload) : ""
-            var message = new WebSocketMessage(rawMessage.namespace, rawMessage.type, payload);
+            var message = new WebSocketMessage(rawMessage.namespace, rawMessage.type, rawMessage.payload);
 
             if (globalState.logMessages) {
                 console.log("Received message:");
                 console.log(message);
             }
 
-            if (globalState.namespaceMap.has(message.namespace)) {
+            if (message.namespace === SYSTEM_NAMESPACE) {
+                handleSystemMessage(message);
+            } else if (globalState.namespaceMap.has(message.namespace)) {
                 let namespaceObject = globalState.namespaceMap.get(message.namespace);
                 namespaceObject.handlers.forEach( function (handler) {
                     handler(message);
@@ -390,6 +390,17 @@ var WEBSOCKET_CORE = function () {
         globalState.webSocket.onerror = function (errorEvent) {
             console.error("Websocket error:", errorEvent);
         };
+    }
+
+    function handleSystemMessage(message) {
+        if (message.type === REQUEST_CURRENT_TIME_MESSAGE_TYPE) {
+            var payload = {
+                timeMs: Date.now(),
+                timezone: Intl.DateTimeFormat().resolvedOptions().timeZone
+            };
+            var timeNotificationMessage = new WebSocketMessage(SYSTEM_NAMESPACE, NOTIFY_CURRENT_TIME_MESSAGE_TYPE, JSON.stringify(payload));
+            internalSendMessage(timeNotificationMessage);
+        }
     }
 
     console.log("Log all incoming and outgoing WebSocket messages by running WEBSOCKET_CORE.enableLogging('messages') from the console");

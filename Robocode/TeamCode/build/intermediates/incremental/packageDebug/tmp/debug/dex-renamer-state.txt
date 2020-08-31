@@ -1,4 +1,10 @@
-#Sun Feb 09 11:38:45 CST 2020
-base.0=/media/daniel/56C646B23D2EE0AF/Documents/FTC/Skywalker/TeamCode/build/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+#Mon Aug 31 16:32:13 CDT 2020
+path.2=classes_0.dex
+path.1=classes.dex
 path.0=classes.dex
+renamed.2=classes3.dex
+renamed.1=classes2.dex
 renamed.0=classes.dex
+base.2=C\:\\Users\\dmomo\\Documents\\lfhsrobocode\\Robocode\\TeamCode\\build\\intermediates\\dex\\debug\\mergeLibDexDebug\\classes_0.dex
+base.1=C\:\\Users\\dmomo\\Documents\\lfhsrobocode\\Robocode\\TeamCode\\build\\intermediates\\dex\\debug\\mergeProjectDexDebug\\classes.dex
+base.0=C\:\\Users\\dmomo\\Documents\\lfhsrobocode\\Robocode\\TeamCode\\build\\intermediates\\dex\\debug\\mergeExtDexDebug\\classes.dex

@@ -7,12 +7,12 @@
 <!-- The package name here determines the package for your R class and your BuildConfig class -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.qualcomm.ftcrobotcontroller"
-    android:versionCode="35"
-    android:versionName="5.3" >
+    android:versionCode="37"
+    android:versionName="5.5" >
 
     <uses-sdk
-        android:minSdkVersion="19"
-        android:targetSdkVersion="26" />
+        android:minSdkVersion="23"
+        android:targetSdkVersion="28" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission
@@ -52,7 +52,15 @@
         android:name="android.permission.WAKE_LOCK"
         android:required="true" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission
+        android:name="android.permission.ACCESS_COARSE_LOCATION"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.READ_PHONE_STATE"
+        android:required="true" />
     <uses-permission
         android:name="com.revrobotics.permission.UPDATE_CONTROL_HUB"
         android:required="true" />
@@ -73,14 +81,14 @@
     -->
     <uses-feature android:name="android.hardware.camera" />
 
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
     <application
         android:name="org.firstinspires.ftc.robotcore.internal.system.RobotApplication"
         android:allowBackup="true"
-        android:appComponentFactory="android.support.v4.app.CoreComponentFactory"
+        android:appComponentFactory="androidx.core.app.CoreComponentFactory"
         android:debuggable="true"
+        android:extractNativeLibs="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -122,7 +130,20 @@
         </activity> <!-- The robot controller service in which most of the robot functionality is managed -->
         <service
             android:name="com.qualcomm.ftccommon.FtcRobotControllerService"
-            android:enabled="true" /> <!-- Service that keeps desktop folders up to date with respect to actual phone file system contents -->
+            android:enabled="true" />
+        <!--
+    Needed to support sending logs from log viewer on Nougat and later.
+    Note: DON'T need to shift meta-data to 'androidx' from 'android.support.FILE_PROVIDER_PATHS'
+        -->
+        <provider
+            android:name="androidx.core.content.FileProvider"
+            android:authorities="com.qualcomm.ftcrobotcontroller.provider"
+            android:exported="false"
+            android:grantUriPermissions="true" >
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_provider_paths" />
+        </provider> <!-- Service that keeps desktop folders up to date with respect to actual phone file system contents -->
         <service
             android:name="org.firstinspires.ftc.robotcore.internal.files.MediaTransferProtocolMonitorService"
             android:enabled="true" />
