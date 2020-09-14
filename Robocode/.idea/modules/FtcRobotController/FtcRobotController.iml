@@ -92,8 +92,10 @@
     <orderEntry type="library" name="Gradle: androidx.lifecycle:lifecycle-common:2.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.arch.core:core-common:2.1.0@jar" level="project" />
     <orderEntry type="library" name="Gradle: androidx.annotation:annotation:1.1.0@jar" level="project" />
+    <orderEntry type="library" name="Gradle: org.nanohttpd:nanohttpd-websocket:2.3.1@jar" level="project" />
     <orderEntry type="library" name="Gradle: org.firstinspires.ftc:Inspection:5.5@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.firstinspires.ftc:Blocks:5.5@aar" level="project" />
+    <orderEntry type="library" name="Gradle: com.acmerobotics.dashboard:dashboard:0.3.9@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.firstinspires.ftc:RobotCore:5.5@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.firstinspires.ftc:RobotServer:5.5@aar" level="project" />
     <orderEntry type="library" name="Gradle: org.firstinspires.ftc:OnBotJava:5.5@aar" level="project" />

@@ -1,8 +1,9 @@
 package org.firstinspires.ftc.teamcode.Team9113;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
+import org.firstinspires.ftc.teamcode.Team9113.Control.Superpad;
 
 @TeleOp(name = "Voodoo", group = "Linear Opmode")
 public class Voodoo extends LinearOpMode {
@@ -11,30 +12,31 @@ public class Voodoo extends LinearOpMode {
   @Override
   public void runOpMode() {
     Robot robot = new Robot(hardwareMap);
+    Superpad superpad = new Superpad(gamepad1, gamepad2);
     // Set things to starting positions
     if (opModeIsActive()) robot.startPositions();
     // Initialize variables
     final int timeThreshold = 350;
     waitForStart();
     while (opModeIsActive()) {
-      robot.drivetrain.setLeftPower(gamepad1.left_stick_y);
-      robot.drivetrain.setRightPower(gamepad1.right_stick_y);
-      if (gamepad1.dpad_left) {
+      robot.drivetrain.setLeftPower(superpad.leftJoystickY(0));
+      robot.drivetrain.setRightPower(superpad.rightJoystickY(0));
+      if (superpad.dpadLeft(0)) {
         robot.drivetrain.moveLeft();
-      } else if (gamepad1.dpad_right) {
+      } else if (superpad.dpadLeft(0)) {
         robot.drivetrain.moveRight();
-      } else if (gamepad1.dpad_up) {
+      } else if (superpad.dpadLeft(0)) {
         robot.drivetrain.driveForward();
-      } else if (gamepad1.dpad_down) {
+      } else if (superpad.dpadLeft(0)) {
         robot.drivetrain.driveBackward();
       }
-      if (gamepad2.right_bumper && System.currentTimeMillis() - milliTime[8] > timeThreshold) {
+      if (superpad.rightBumper(0) && System.currentTimeMillis() - milliTime[0] > timeThreshold) {
         robot.drivetrain.toggleSnailDrive();
-        stopwatch(9);
+        stopwatch(0);
       }
-      if (gamepad1.left_bumper && System.currentTimeMillis() - milliTime[2] > timeThreshold) {
+      if (superpad.leftBumper(0) && System.currentTimeMillis() - milliTime[1] > timeThreshold) {
         robot.drivetrain.toggleHyperdrive();
-        stopwatch(3);
+        stopwatch(1);
       }
       telemetry.addData("", "Hyperdrive: " + robot.drivetrain.isHyperdriveEnabled());
       telemetry.addData("", "Snaildrive: ", robot.drivetrain.isSnailDriveEnabled());
@@ -43,14 +45,6 @@ public class Voodoo extends LinearOpMode {
   }
 
   private void stopwatch(int type) {
-    if (type == 1) milliTime[0] = System.currentTimeMillis();
-    if (type == 2) milliTime[1] = System.currentTimeMillis();
-    if (type == 3) milliTime[2] = System.currentTimeMillis();
-    if (type == 4) milliTime[3] = System.currentTimeMillis();
-    if (type == 5) milliTime[4] = System.currentTimeMillis();
-    if (type == 6) milliTime[5] = System.currentTimeMillis();
-    if (type == 7) milliTime[6] = System.currentTimeMillis();
-    if (type == 8) milliTime[7] = System.currentTimeMillis();
-    if (type == 9) milliTime[8] = System.currentTimeMillis();
+    milliTime[type] = System.currentTimeMillis();
   }
 }

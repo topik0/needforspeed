@@ -10,5 +10,5 @@ public final class BuildConfig {
   public static final int VERSION_CODE = 37;
   public static final String VERSION_NAME = "5.5";
   // Fields from default config.
-  public static final String BUILD_TIME = "2020-08-31T16:32:12.967-0500";
+  public static final String BUILD_TIME = "2020-09-08T17:12:23.172-0500";
 }

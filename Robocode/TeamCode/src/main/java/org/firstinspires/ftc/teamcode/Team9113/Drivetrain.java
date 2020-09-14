@@ -19,15 +19,11 @@ public class Drivetrain {
   protected HardwareMap hwMap;
 
   public Drivetrain(HardwareMap hwMap) {
-    /**
-     * for(int i = 0; i < 4; i++) { String[] drivetrainNames = {"upperLeft", "upperRight",
-     * "lowerLeft", "lowerRight"}; drivetrain[i] = hardwareMap.dcMotor.get(drivetrainNames[i]); }*
-     */
     this.hwMap = hwMap;
-    drivetrain[0] = hwMap.dcMotor.get("upperLeft");
-    drivetrain[1] = hwMap.dcMotor.get("upperRight");
-    drivetrain[2] = hwMap.dcMotor.get("lowerLeft");
-    drivetrain[3] = hwMap.dcMotor.get("lowerRight");
+    for (int i = 0; i < 4; i++) {
+      String[] drivetrainNames = {"upperLeft", "upperRight", "lowerLeft", "lowerRight"};
+      drivetrain[i] = this.hwMap.dcMotor.get(drivetrainNames[i]);
+    }
     drivetrain[2].setDirection(DcMotor.Direction.REVERSE);
     drivetrain[3].setDirection(DcMotor.Direction.REVERSE);
   }
@@ -102,11 +98,15 @@ public class Drivetrain {
   }
 
   public void brakeMotors() {
-    for (int i = 0; i < 4; i++) drivetrain[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    for (int i = 0; i < 4; i++) {
+      drivetrain[i].setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
   }
 
   public void setPower(double power) {
-    for (int i = 0; i < 4; i++) drivetrain[i].setPower(power);
+    for (int i = 0; i < 4; i++) {
+      drivetrain[i].setPower(power);
+    }
   }
 
   public void setLeftPower(double power) {
