@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "C:\\Users\\dmomo\\Documents\\lfhsrobocode\\Robocode\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ro\\values-ro.xml",
+            "outputFile": "C:\\Users\\dmomo\\Documents\\NewRobocode\\Robocode\\TeamCode\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values-ro\\values-ro.xml",
             "map": [
                 {
                     "source": "C:\\Users\\dmomo\\.gradle\\caches\\transforms-2\\files-2.1\\bf96d2b5a86ecd602a621e7e96856420\\appcompat-1.2.0\\res\\values-ro\\values-ro.xml",
@@ -14,7 +14,7 @@
                     }
                 },
                 {
-                    "source": "C:\\Users\\dmomo\\.gradle\\caches\\transforms-2\\files-2.1\\429fb715fcc7711d4ab133e350b6f531\\core-1.3.0\\res\\values-ro\\values-ro.xml",
+                    "source": "C:\\Users\\dmomo\\.gradle\\caches\\transforms-2\\files-2.1\\90f739f4716a3cf03b847a5f7e55e3bd\\core-1.5.0-alpha04\\res\\values-ro\\values-ro.xml",
                     "from": {
                         "startLines": "2",
                         "startColumns": "4",

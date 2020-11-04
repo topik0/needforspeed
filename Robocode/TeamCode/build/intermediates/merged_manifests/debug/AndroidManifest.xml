@@ -7,12 +7,12 @@
 <!-- The package name here determines the package for your R class and your BuildConfig class -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.qualcomm.ftcrobotcontroller"
-    android:versionCode="37"
-    android:versionName="5.5" >
+    android:versionCode="38"
+    android:versionName="6.0" >
 
     <uses-sdk
-        android:minSdkVersion="23"
-        android:targetSdkVersion="28" />
+        android:minSdkVersion="24"
+        android:targetSdkVersion="29" />
 
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission

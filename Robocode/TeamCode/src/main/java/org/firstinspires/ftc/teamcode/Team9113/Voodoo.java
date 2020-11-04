@@ -2,49 +2,41 @@ package org.firstinspires.ftc.teamcode.Team9113;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.teamcode.Team9113.Control.Superpad;
+import com.qualcomm.robotcore.hardware.Gamepad;
 
 @TeleOp(name = "Voodoo", group = "Linear Opmode")
 public class Voodoo extends LinearOpMode {
-  private double[] milliTime = new double[9];
+    private double[] milliTime = new double[9];
+    private Gamepad[] gamepad = new Gamepad[2];
 
-  @Override
-  public void runOpMode() {
-    Robot robot = new Robot(hardwareMap);
-    Superpad superpad = new Superpad(gamepad1, gamepad2);
-    // Set things to starting positions
-    if (opModeIsActive()) robot.startPositions();
-    // Initialize variables
-    final int timeThreshold = 350;
-    waitForStart();
-    while (opModeIsActive()) {
-      robot.drivetrain.setLeftPower(superpad.leftJoystickY(0));
-      robot.drivetrain.setRightPower(superpad.rightJoystickY(0));
-      if (superpad.dpadLeft(0)) {
-        robot.drivetrain.moveLeft();
-      } else if (superpad.dpadLeft(0)) {
-        robot.drivetrain.moveRight();
-      } else if (superpad.dpadLeft(0)) {
-        robot.drivetrain.driveForward();
-      } else if (superpad.dpadLeft(0)) {
-        robot.drivetrain.driveBackward();
-      }
-      if (superpad.rightBumper(0) && System.currentTimeMillis() - milliTime[0] > timeThreshold) {
-        robot.drivetrain.toggleSnailDrive();
-        stopwatch(0);
-      }
-      if (superpad.leftBumper(0) && System.currentTimeMillis() - milliTime[1] > timeThreshold) {
-        robot.drivetrain.toggleHyperdrive();
-        stopwatch(1);
-      }
-      telemetry.addData("", "Hyperdrive: " + robot.drivetrain.isHyperdriveEnabled());
-      telemetry.addData("", "Snaildrive: ", robot.drivetrain.isSnailDriveEnabled());
-      telemetry.update();
+    @Override
+    public void runOpMode() {
+        Robot robot = new Robot(hardwareMap);
+        gamepad[0] = gamepad1;
+        gamepad[1] = gamepad2;
+        // Set things to starting positions
+        if (opModeIsActive()) robot.startPositions();
+        // Initialize variables
+        final int timeThreshold = 350;
+        waitForStart();
+        while (opModeIsActive()) {
+            if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > timeThreshold) {
+                robot.shootDisc();
+                stopwatch(0);
+            }
+            if (gamepad[0].left_bumper && System.currentTimeMillis() - milliTime[1] > timeThreshold) {
+                robot.setFlywheelPower(1);
+                stopwatch(1);
+            }
+            if (gamepad[0].x && System.currentTimeMillis() - milliTime[2] > timeThreshold) {
+                robot.setFlywheelPower(0);
+                stopwatch(2);
+            }
+            telemetry.update();
+        }
     }
-  }
 
-  private void stopwatch(int type) {
-    milliTime[type] = System.currentTimeMillis();
-  }
+    private void stopwatch(int type) {
+        milliTime[type] = System.currentTimeMillis();
+    }
 }

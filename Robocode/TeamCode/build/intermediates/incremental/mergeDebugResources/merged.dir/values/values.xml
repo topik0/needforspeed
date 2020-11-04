@@ -435,6 +435,7 @@
     <item name="tag_accessibility_heading" type="id"/>
     <item name="tag_accessibility_pane_title" type="id"/>
     <item name="tag_screen_reader_focusable" type="id"/>
+    <item name="tag_state_description" type="id"/>
     <item name="tag_transition_group" type="id"/>
     <item name="tag_unhandled_key_event_manager" type="id"/>
     <item name="tag_unhandled_key_listeners" type="id"/>
@@ -863,6 +864,7 @@
     <string name="ota_result_type_ota_update_finished">Update installed successfully.</string>
     <string name="ota_result_type_verification_succeeded">Update verification succeeded. Rebooting device and installing update.&lt;br>&lt;br>
         The Control Hub will stop broadcasting its WiFi access point for about a minute, so you may need to manually re-connect in order to see if the update succeeded.</string>
+    <string name="ota_result_type_verification_succeeded_localhost">Update verification succeeded. Rebooting device and installing update.</string>
     <string name="packageName">@string/packageNameRobotController</string>
     <string name="packageNameDriverStation" translatable="false">com.qualcomm.ftcdriverstation</string>
     <string name="packageNameRobotController" translatable="false">com.qualcomm.ftcrobotcontroller</string>
@@ -1031,6 +1033,7 @@
     <string name="rev_spark_mini_description">a REV SPARKmini Motor Controller</string>
     <string name="rev_spark_mini_name">REV SPARKmini Controller</string>
     <string name="rev_touch_sensor_description">a REV touch sensor</string>
+    <string name="rev_ultraplanetary_hd_hex_name">REV Robotics UltraPlanetary HD Hex Motor</string>
     <string name="robotControllerAppUpdateReadme">When running on a REV Control Hub (and only on a Control Hub, not merely a robot controller phone), any Android applications (APK files) found in this folder will be automatically installed when the system boots. Once successfully installed, each APK is deleted so as to not be reinstalled on subsequent boots.</string>
     <string name="robotOffTip">Make sure that your robot is turned on</string>
     <string name="robotStateEmergencyStop">EMERGENCY STOP</string>
@@ -3586,14 +3589,6 @@
         <!-- Whether to automatically stack the buttons when there is not
              enough space to lay them out side-by-side. -->
         <attr format="boolean" name="allowStacking"/>
-    </declare-styleable>
-    <declare-styleable name="CameraBridgeViewBase">
-       <attr format="boolean" name="show_fps"/>
-       <attr format="integer" name="camera_id">
-          <enum name="any" value="-1"/>
-          <enum name="back" value="99"/>
-          <enum name="front" value="98"/>
-       </attr>
     </declare-styleable>
     <declare-styleable name="ColorListPreference">
         <attr format="reference" name="colors"/>

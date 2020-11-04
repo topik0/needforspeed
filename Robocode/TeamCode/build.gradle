@@ -20,5 +20,6 @@ repositories {
 
 dependencies {
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
-    implementation 'org.openftc:easyopencv:1.4.1'
+    implementation 'com.arcrobotics:ftclib:1.1.3'
+    implementation 'com.acmerobotics.dashboard:dashboard:0.3.10'
 }
