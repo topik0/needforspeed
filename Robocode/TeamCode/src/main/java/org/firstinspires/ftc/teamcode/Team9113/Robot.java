@@ -13,17 +13,18 @@ public class Robot extends LinearOpMode {
     public Drivetrain drivetrain;
     public Servo flap, intakeStopper, flicker, claw;
     public DcMotor flywheelFront, flyWheelBack;
+    public RobotPreferences pref;
 
     public Robot(HardwareMap hwMap) {
         this.hwMap = hwMap;
         drivetrain = new Drivetrain(hwMap);
+        // pref = new RobotPreferences();
         flap = this.hwMap.servo.get("flap");
         intakeStopper = this.hwMap.servo.get("intakeStopper");
         flicker = this.hwMap.servo.get("flicker");
         claw = this.hwMap.servo.get("claw");
         flywheelFront = this.hwMap.dcMotor.get("flywheelFront");
         flyWheelBack = this.hwMap.dcMotor.get("flywheelBack");
-        initHardware();
     }
 
     /*
@@ -38,6 +39,14 @@ public class Robot extends LinearOpMode {
     public void setFlywheelPower(double power) {
         flywheelFront.setPower(power);
         flyWheelBack.setPower(power);
+    }
+
+    public void startFlywheels(){
+        setFlywheelPower(1);
+    }
+
+    public void stopFlywheels(){
+        setFlywheelPower(0);
     }
 
     public void shootDisc() {
