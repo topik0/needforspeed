@@ -5,7 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Drivetrain {
     /**
-     * upperLeft [0] upperRight [1] lowerLeft [2] lowerRight [3]
+     * upperLeft [0] upperRight [1]
+     * lowerLeft [2] lowerRight [3]
      */
     private final double setHyperdriveThrottle = 1.0;
 
@@ -26,7 +27,7 @@ public class Drivetrain {
             String[] drivetrainNames = {"upperLeft", "upperRight", "lowerLeft", "lowerRight"};
             drivetrain[i] = this.hwMap.dcMotor.get(drivetrainNames[i]);
         }
-        drivetrain[2].setDirection(DcMotor.Direction.REVERSE);
+        drivetrain[1].setDirection(DcMotor.Direction.REVERSE);
         drivetrain[3].setDirection(DcMotor.Direction.REVERSE);
     }
 

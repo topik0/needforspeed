@@ -28,6 +28,14 @@ public class Voodoo extends LinearOpMode {
         if (opModeIsActive()) robot.startPositions();
         // Initialize variables
         final int timeThreshold = 350;
+
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.mode = BNO055IMU.SensorMode.IMU;
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+        parameters.loggingEnabled = false;
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        imu.initialize(parameters);
         waitForStart();
         while (opModeIsActive()) {
             ly = -gamepad1.left_stick_y;
@@ -48,18 +56,46 @@ public class Voodoo extends LinearOpMode {
 
             // Send calculated power to wheels
             robot.drivetrain.setFieldCentricPower(y, x, rx);
-            if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 100) {
+            if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 75) {
                 robot.shootDisc();
                 stopwatch(0);
             }
+            if(gamepad[0].y && System.currentTimeMillis() - milliTime[8] > 100){
+                for(int i = 0; i < 3; i++)
+                    robot.shootDisc();
+                stopwatch(8);
+            }
             if (gamepad[0].left_bumper && System.currentTimeMillis() - milliTime[1] > timeThreshold) {
-                robot.startFlywheels();
+                robot.toggleFlywheels();
                 stopwatch(1);
             }
-            if (gamepad[0].x && System.currentTimeMillis() - milliTime[2] > timeThreshold) {
-                robot.stopFlywheels();
+            if (gamepad[0].dpad_right && System.currentTimeMillis() - milliTime[2] > 100) {
+                robot.flapAdjustUp();
                 stopwatch(2);
             }
+            if (gamepad[0].dpad_left && System.currentTimeMillis() - milliTime[3] > 100) {
+                robot.flapAdjustDown();
+                stopwatch(3);
+            }
+            if (gamepad[0].dpad_up && System.currentTimeMillis() - milliTime[4] > timeThreshold) {
+                robot.flapUpperPosition();
+                stopwatch(4);
+            }
+            if (gamepad[0].dpad_up && System.currentTimeMillis() - milliTime[5] > timeThreshold) {
+                robot.flapLowerPosition();
+                stopwatch(5);
+            }
+            if (gamepad[0].a && System.currentTimeMillis() - milliTime[6] > 100) {
+                robot.toggleIntake();
+            }
+            if (gamepad[0].b && System.currentTimeMillis() - milliTime[7] > timeThreshold) {
+                robot.toggleClaw();
+            }
+            if (gamepad[0].x) {
+                robot.reverseIntake();
+            }
+            else if(robot.intakeRunning)
+                robot.startIntake();
             telemetry.update();
         }
     }
