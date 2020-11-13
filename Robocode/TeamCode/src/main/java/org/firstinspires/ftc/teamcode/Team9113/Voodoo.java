@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Team9113;
 
+import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -14,7 +15,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 public class Voodoo extends LinearOpMode {
     private double[] milliTime = new double[9];
     private Gamepad[] gamepad = new Gamepad[2];
-    private double ly, lx, rx, x, y, heading, speed, previousHeading;
+    private double previousHeading;
     private double offSetAngle = 0;
     BNO055IMU imu;
     Orientation angles;
@@ -25,7 +26,7 @@ public class Voodoo extends LinearOpMode {
         gamepad[0] = gamepad1;
         gamepad[1] = gamepad2;
         // Set things to starting positions
-        if (opModeIsActive()) robot.startPositions();
+        robot.startPositions();
         // Initialize variables
         final int timeThreshold = 350;
 
@@ -36,44 +37,36 @@ public class Voodoo extends LinearOpMode {
         parameters.loggingEnabled = false;
         imu = hardwareMap.get(BNO055IMU.class, "imu");
         imu.initialize(parameters);
+        MecanumDrive mecanum = new MecanumDrive(robot.drivetrain.drivetrain[0], robot.drivetrain.drivetrain[1], robot.drivetrain.drivetrain[2], robot.drivetrain.drivetrain[3]);
         waitForStart();
         while (opModeIsActive()) {
-            ly = -gamepad1.left_stick_y;
-            lx = gamepad1.left_stick_x;
-            rx = gamepad1.right_stick_x;
-
-            //imu
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-            heading = angles.firstAngle - offSetAngle  /* + previousHeading */;
-            speed = Math.hypot(ly, lx);
-            if (gamepad1.start) {
-                offSetAngle = angles.firstAngle /* + previousHeading */;
-            }
-
-            // imu translations
-            y = speed * Math.sin(Math.atan2(ly, lx) - heading);
-            x = speed * Math.cos(Math.atan2(ly, lx) - heading);
-
-            // Send calculated power to wheels
-            robot.drivetrain.setFieldCentricPower(y, x, rx);
-            if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 75) {
+            double ly = -gamepad1.left_stick_y;
+            double lx = gamepad1.left_stick_x;
+            double rx = -gamepad1.right_stick_x;
+            double heading = angles.firstAngle - offSetAngle;
+            double speed = Math.hypot(ly, lx);
+            double y = speed * Math.sin(Math.atan2(ly, lx) - heading);
+            double x = speed * Math.cos(Math.atan2(ly, lx) - heading);
+            // mecanum.driveFieldCentric(gamepad[0].left_stick_x, gamepad[0].left_stick_y, gamepad[0].right_stick_x, heading, true);
+            // mecanum.driveFieldCentric(gamepad[0].left_stick_x, gamepad[0].left_stick_y, gamepad[0].right_stick_x, heading, false);
+            mecanum.driveFieldCentric(x, y, rx, heading, false);
+            if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 85) {
                 robot.shootDisc();
                 stopwatch(0);
-            }
-            if(gamepad[0].y && System.currentTimeMillis() - milliTime[8] > 100){
-                for(int i = 0; i < 3; i++)
-                    robot.shootDisc();
-                stopwatch(8);
             }
             if (gamepad[0].left_bumper && System.currentTimeMillis() - milliTime[1] > timeThreshold) {
                 robot.toggleFlywheels();
                 stopwatch(1);
             }
-            if (gamepad[0].dpad_right && System.currentTimeMillis() - milliTime[2] > 100) {
+            if (gamepad1.start) {
+                offSetAngle = angles.firstAngle;
+            }
+            if (gamepad[0].dpad_right && System.currentTimeMillis() - milliTime[2] > 25) {
                 robot.flapAdjustUp();
                 stopwatch(2);
             }
-            if (gamepad[0].dpad_left && System.currentTimeMillis() - milliTime[3] > 100) {
+            if (gamepad[0].dpad_left && System.currentTimeMillis() - milliTime[3] > 25) {
                 robot.flapAdjustDown();
                 stopwatch(3);
             }
@@ -81,20 +74,25 @@ public class Voodoo extends LinearOpMode {
                 robot.flapUpperPosition();
                 stopwatch(4);
             }
-            if (gamepad[0].dpad_up && System.currentTimeMillis() - milliTime[5] > timeThreshold) {
+            if (gamepad[0].dpad_down && System.currentTimeMillis() - milliTime[5] > timeThreshold) {
                 robot.flapLowerPosition();
                 stopwatch(5);
             }
-            if (gamepad[0].a && System.currentTimeMillis() - milliTime[6] > 100) {
+            if (gamepad[0].a && System.currentTimeMillis() - milliTime[6] > 500) {
                 robot.toggleIntake();
+                stopwatch(6);
             }
             if (gamepad[0].b && System.currentTimeMillis() - milliTime[7] > timeThreshold) {
                 robot.toggleClaw();
+                stopwatch(7);
+            }
+            if (gamepad[0].y && System.currentTimeMillis() - milliTime[8] > time) {
+                robot.toggleWobble();
+                stopwatch(8);
             }
             if (gamepad[0].x) {
                 robot.reverseIntake();
-            }
-            else if(robot.intakeRunning)
+            } else if (robot.intakeRunning)
                 robot.startIntake();
             telemetry.update();
         }

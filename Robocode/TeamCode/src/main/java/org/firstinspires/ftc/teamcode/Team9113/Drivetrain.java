@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Team9113;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -18,42 +19,42 @@ public class Drivetrain {
     private double currentThrottle = setBirdThrottle;
     private double currentStrafeThrottle = setStrafeBirdThrottle;
 
-    public DcMotor[] drivetrain = new DcMotor[4];
+    public Motor[] drivetrain = new Motor[4];
     protected HardwareMap hwMap;
 
     public Drivetrain(HardwareMap hwMap) {
         this.hwMap = hwMap;
         for (int i = 0; i < 4; i++) {
             String[] drivetrainNames = {"upperLeft", "upperRight", "lowerLeft", "lowerRight"};
-            drivetrain[i] = this.hwMap.dcMotor.get(drivetrainNames[i]);
+            drivetrain[i] = new Motor(this.hwMap, drivetrainNames[i], Motor.GoBILDA.RPM_312);
+            drivetrain[i].setRunMode(Motor.RunMode.RawPower);
         }
-        drivetrain[1].setDirection(DcMotor.Direction.REVERSE);
-        drivetrain[3].setDirection(DcMotor.Direction.REVERSE);
+        drivetrain[3].setInverted(true);
     }
 
     public void moveLeft() {
-        drivetrain[0].setPower(-currentStrafeThrottle);
-        drivetrain[1].setPower(currentStrafeThrottle);
-        drivetrain[2].setPower(currentStrafeThrottle);
-        drivetrain[3].setPower(-currentStrafeThrottle);
+        drivetrain[0].set(-currentStrafeThrottle);
+        drivetrain[1].set(currentStrafeThrottle);
+        drivetrain[2].set(currentStrafeThrottle);
+        drivetrain[3].set(-currentStrafeThrottle);
     }
 
     public void moveRight() {
-        drivetrain[0].setPower(-currentStrafeThrottle);
-        drivetrain[1].setPower(currentStrafeThrottle);
-        drivetrain[2].setPower(currentStrafeThrottle);
-        drivetrain[3].setPower(-currentStrafeThrottle);
+        drivetrain[0].set(-currentStrafeThrottle);
+        drivetrain[1].set(currentStrafeThrottle);
+        drivetrain[2].set(currentStrafeThrottle);
+        drivetrain[3].set(-currentStrafeThrottle);
     }
 
     public void driveForward() {
         for (int i = 0; i < 4; i++) {
-            drivetrain[i].setPower(-currentThrottle);
+            drivetrain[i].set(-currentThrottle);
         }
     }
 
     public void driveBackward() {
         for (int i = 0; i < 4; i++) {
-            drivetrain[i].setPower(currentThrottle);
+            drivetrain[i].set(currentThrottle);
         }
     }
 
@@ -100,33 +101,33 @@ public class Drivetrain {
                 && currentStrafeThrottle == setStrafeHyperdriveThrottle;
     }
 
-    public void brakeMotors() {
-        for (DcMotor motor : drivetrain)
-            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    public void brakeDrivetrain() {
+        for (Motor motor : drivetrain)
+            motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
     public void setFieldCentricPower(double y, double x, double rx) {
-        drivetrain[2].setPower(y - x + rx);
-        drivetrain[0].setPower(y + x + rx);
-        drivetrain[1].setPower(y - x - rx);
-        drivetrain[3].setPower(y + x - rx);
+        drivetrain[2].set(y - x + rx);
+        drivetrain[0].set(y + x + rx);
+        drivetrain[1].set(y - x - rx);
+        drivetrain[3].set(y + x - rx);
     }
 
     public void setPower(double power) {
         for (int i = 0; i < 4; i++) {
-            drivetrain[i].setPower(power);
+            drivetrain[i].set(power);
         }
     }
 
     public void setLeftPower(double power) {
         for (int i = 0; i <= 2; i += 2) {
-            drivetrain[i].setPower(power);
+            drivetrain[i].set(power);
         }
     }
 
     public void setRightPower(double power) {
         for (int i = 1; i <= 3; i += 2) {
-            drivetrain[i].setPower(power);
+            drivetrain[i].set(power);
         }
     }
 
