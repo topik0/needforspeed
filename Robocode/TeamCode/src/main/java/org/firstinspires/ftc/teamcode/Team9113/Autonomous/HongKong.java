@@ -58,27 +58,30 @@ public class HongKong extends LinearOpMode {
 
         camera.openCameraDeviceAsync(() -> camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT));
 
-        Pose2d startPose = new Pose2d(-63, -48, Math.toRadians(180));
+        Pose2d startPose = new Pose2d(-63, 48, Math.toRadians(180));
         drive.setPoseEstimate(startPose);
-        Trajectory fourWheelTraj = drive.trajectoryBuilder(startPose)
-                .splineToLinearHeading(new Pose2d(-48, -54, Math.toRadians(180)), Math.toRadians(180))
+        Trajectory fourWheelTraj = drive.trajectoryBuilder(startPose, true)
+                .splineToLinearHeading(new Pose2d(-24, 54, Math.toRadians(180)), Math.toRadians(180))
+                .build();
+        Trajectory fourWheelTraj2 = drive.trajectoryBuilder(new Pose2d(-24, 54), true)
+                .splineToLinearHeading(new Pose2d(0, 24, Math.toRadians(170)), Math.toRadians(180))
                 .build();
         waitForStart();
 
-        while (opModeIsActive()) {
-            String height = pipeline.getHeight().toString();
-            if (height.equals("ZERO")) {
-                telemetry.addData("There are no rings", "");
-                drive.followTrajectory(fourWheelTraj);
-            }
-            if (height.equals("ONE")) {
-                telemetry.addData("There is one ring", "");
-            }
-            if (height.equals("FOUR")) {
-                telemetry.addData("There are four rings", "");
-                drive.followTrajectory(fourWheelTraj);
-            }
-            telemetry.update();
+        String height = pipeline.getHeight().toString();
+        if (height.equals("ZERO")) {
+            telemetry.addData("There are no rings", "");
+            drive.followTrajectory(fourWheelTraj);
+            drive.followTrajectory(fourWheelTraj2);
         }
+        if (height.equals("ONE")) {
+            telemetry.addData("There is one ring", "");
+        }
+        if (height.equals("FOUR")) {
+            telemetry.addData("There are four rings", "");
+            drive.followTrajectory(fourWheelTraj);
+            drive.followTrajectory(fourWheelTraj2);
+        }
+        telemetry.update();
     }
 }
