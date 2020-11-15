@@ -3,11 +3,14 @@
     <words>
       <w>drivetrain</w>
       <w>gamepad</w>
+      <w>hong</w>
       <w>hyperdrive</w>
       <w>mecanum</w>
       <w>opmode</w>
       <w>robotpref</w>
       <w>snaildrive</w>
+      <w>traj</w>
+      <w>webcam</w>
     </words>
   </dictionary>
 </component>

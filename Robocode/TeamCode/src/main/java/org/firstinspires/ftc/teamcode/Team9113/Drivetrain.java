@@ -29,7 +29,6 @@ public class Drivetrain {
             drivetrain[i] = new Motor(this.hwMap, drivetrainNames[i], Motor.GoBILDA.RPM_312);
             drivetrain[i].setRunMode(Motor.RunMode.RawPower);
         }
-        drivetrain[3].setInverted(true);
     }
 
     public void moveLeft() {

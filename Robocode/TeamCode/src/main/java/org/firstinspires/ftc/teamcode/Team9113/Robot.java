@@ -16,7 +16,7 @@ public class Robot extends LinearOpMode {
     public boolean flywheelsRunning, intakeRunning, intakeReversed = false;
     public boolean clawClosed = true, wobbleUp = true;
     double flapPosition;
-    double flapHighGoal = .39, flapPowerShot = .44;
+    double flapHighGoal = .4, flapPowerShot = .44;
     // public RobotPreferences pref;
 
     public Robot(HardwareMap hwMap) {
@@ -49,14 +49,14 @@ public class Robot extends LinearOpMode {
     }
 
     public void wobbleUp() {
-        wobble.setPower(-1);
-        sleep(200);
+        wobble.setPower(-0.7);
+        sleep(550);
         wobble.setPower(0);
         wobbleUp = true;
     }
 
     public void wobbleDown() {
-        wobble.setPower(1);
+        wobble.setPower(0.6);
         sleep(200);
         wobble.setPower(0);
         wobbleUp = false;
@@ -132,7 +132,7 @@ public class Robot extends LinearOpMode {
     }
 
     public void closeClaw() {
-        claw.setPosition(0.7);
+        claw.setPosition(0.725);
         sleep(350);
         clawClosed = true;
     }

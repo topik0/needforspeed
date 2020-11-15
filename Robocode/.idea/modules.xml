@@ -2,9 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/FtcRobotController.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/FtcRobotController.iml" group="Robocode/FtcRobotController" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Robocode.iml" filepath="$PROJECT_DIR$/.idea/modules/Robocode.iml" group="Robocode" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/TeamCode.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/TeamCode.iml" group="Robocode/TeamCode" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/Robocode.iml" filepath="$PROJECT_DIR$/.idea/modules/Robocode.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/FtcRobotController/Robocode.FtcRobotController.iml" filepath="$PROJECT_DIR$/.idea/modules/FtcRobotController/Robocode.FtcRobotController.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/TeamCode/Robocode.TeamCode.iml" filepath="$PROJECT_DIR$/.idea/modules/TeamCode/Robocode.TeamCode.iml" />
     </modules>
   </component>
 </project>

@@ -50,7 +50,7 @@ public class Voodoo extends LinearOpMode {
             double x = speed * Math.cos(Math.atan2(ly, lx) - heading);
             // mecanum.driveFieldCentric(gamepad[0].left_stick_x, gamepad[0].left_stick_y, gamepad[0].right_stick_x, heading, true);
             // mecanum.driveFieldCentric(gamepad[0].left_stick_x, gamepad[0].left_stick_y, gamepad[0].right_stick_x, heading, false);
-            mecanum.driveFieldCentric(x, y, rx, heading, false);
+            mecanum.driveFieldCentric(x, y, rx, heading + 90, false);
             if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 85) {
                 robot.shootDisc();
                 stopwatch(0);
