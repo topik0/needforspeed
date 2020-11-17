@@ -17,6 +17,7 @@ public class Robot extends LinearOpMode {
     public boolean clawClosed = true, wobbleUp = true;
     double flapPosition;
     double flapHighGoal = .4, flapPowerShot = .44;
+    double clawClosePosition = .725;
     // public RobotPreferences pref;
 
     public Robot(HardwareMap hwMap) {
@@ -24,6 +25,11 @@ public class Robot extends LinearOpMode {
         drivetrain = new Drivetrain(hwMap);
         // pref = new RobotPreferences();
         initHardware();
+        flapPosition = flap.getPosition();
+    }
+
+    public Robot(HardwareMap hwMap, boolean passive) {
+        this.hwMap = hwMap;
         flapPosition = flap.getPosition();
     }
 
@@ -45,7 +51,13 @@ public class Robot extends LinearOpMode {
     public void startPositions() {
         flap.setPosition(flapHighGoal);
         flicker.setPosition(0.3);
-        claw.setPosition(0.7);
+        claw.setPosition(clawClosePosition);
+    }
+
+    public void startPositions(boolean isAuto) {
+        flap.setPosition(.3);
+        flicker.setPosition(0.3);
+        claw.setPosition(clawClosePosition);
     }
 
     public void wobbleUp() {
@@ -57,12 +69,12 @@ public class Robot extends LinearOpMode {
 
     public void wobbleDown() {
         wobble.setPower(0.6);
-        sleep(200);
+        sleep(300);
         wobble.setPower(0);
         wobbleUp = false;
     }
 
-    public void toggleWobble(){
+    public void toggleWobble() {
         if (wobbleUp)
             wobbleDown();
         else wobbleUp();
@@ -132,7 +144,7 @@ public class Robot extends LinearOpMode {
     }
 
     public void closeClaw() {
-        claw.setPosition(0.725);
+        claw.setPosition(clawClosePosition);
         sleep(350);
         clawClosed = true;
     }
