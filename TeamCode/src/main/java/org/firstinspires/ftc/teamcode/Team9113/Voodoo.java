@@ -16,7 +16,7 @@ public class Voodoo extends LinearOpMode {
     private double[] milliTime = new double[9];
     private Gamepad[] gamepad = new Gamepad[2];
     private double previousHeading;
-    private double offSetAngle = 0;
+    private double offSetAngle = 180;
     BNO055IMU imu;
     Orientation angles;
 
@@ -43,7 +43,7 @@ public class Voodoo extends LinearOpMode {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = -gamepad1.left_stick_y;
             double lx = gamepad1.left_stick_x;
-            double rx = -gamepad1.right_stick_x;
+            double rx = -gamepad1.right_stick_x * .75;
             double heading = angles.firstAngle - offSetAngle;
             double speed = Math.hypot(ly, lx);
             double y = speed * Math.sin(Math.atan2(ly, lx) - heading);
@@ -59,7 +59,7 @@ public class Voodoo extends LinearOpMode {
                 robot.toggleFlywheels();
                 stopwatch(1);
             }
-            if (gamepad1.start) {
+            if (gamepad1.back) {
                 offSetAngle = angles.firstAngle;
             }
             if (gamepad[0].dpad_right && System.currentTimeMillis() - milliTime[2] > 25) {
