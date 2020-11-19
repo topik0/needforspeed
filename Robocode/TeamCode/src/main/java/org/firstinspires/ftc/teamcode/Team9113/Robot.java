@@ -69,9 +69,15 @@ public class Robot extends LinearOpMode {
 
     public void wobbleDown() {
         wobble.setPower(0.6);
-        sleep(300);
+        sleep(230);
         wobble.setPower(0);
         wobbleUp = false;
+    }
+
+    public void intakeDown(){
+        intake.setPower(.2);
+        sleep(250);
+        stopIntake();
     }
 
     public void toggleWobble() {

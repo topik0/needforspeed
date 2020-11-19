@@ -62,70 +62,98 @@ public class HongKong extends LinearOpMode {
 
         camera.openCameraDeviceAsync(() -> camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT));
 
-        Pose2d startPose = new Pose2d(-63, 46, Math.toRadians(0));
+        Pose2d startPose = new Pose2d(-63, 45, Math.toRadians(180));
         drive.setPoseEstimate(startPose);
-        Trajectory[][] traj = new Trajectory[3][4];
-        traj[2][0] = drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(0, 56), Math.toRadians(0))
+        Trajectory[][] traj = new Trajectory[3][5];
+        traj[0][0] = drive.trajectoryBuilder(startPose, true)
+                .splineTo(new Vector2d(-9, 58), Math.toRadians(15))
                 .build();
-//        traj[2][1] = drive.trajectoryBuilder(new Pose2d(0, 56), true)
-//                .lineToLinearHeading(new Pose2d(0, 30, Math.toRadians(165)))
-//                .build();
-        traj[2][1] = drive.trajectoryBuilder(new Pose2d(0, 56))
-                .strafeLeft(30)
+        traj[0][1] = drive.trajectoryBuilder(new Pose2d(-9, 58), true)
+                .splineTo(new Vector2d(0, 36), Math.toRadians(-12.5))
                 .build();
-        traj[2][2] = drive.trajectoryBuilder(new Pose2d(0, 30))
-                .splineTo(new Vector2d(42, 48), Math.toRadians(60))
+        traj[0][2] = drive.trajectoryBuilder(new Pose2d(0, 36), true)
+                .splineTo(new Vector2d(-37, 15.5), Math.toRadians(180))
                 .build();
-        traj[0][2] = drive.trajectoryBuilder(new Pose2d(0, 30))
-                .splineTo(new Vector2d(0, 35), Math.toRadians(0))
+        traj[0][3] = drive.trajectoryBuilder(new Pose2d(-37, 15.5),true)
+                .splineTo(new Vector2d(0, 12), 0)
+                .splineTo(new Vector2d(10, 44), Math.toRadians(90))
                 .build();
-        // Goto one block wobble area
-        traj[1][2] = drive.trajectoryBuilder(new Pose2d(0, 30))
-                .splineTo(new Vector2d(25, 25), Math.toRadians(60))
+        traj[0][4] = drive.trajectoryBuilder(new Pose2d(10, 44))
+                .splineTo(new Vector2d(12, 24), Math.toRadians(180))
                 .build();
-        traj[1][3] = drive.trajectoryBuilder(new Pose2d(25, 25))
-                .back(15)
+        traj[1][0] = drive.trajectoryBuilder(startPose, true)
+                .splineTo(new Vector2d(-24, 56), 0)
+                .splineTo(new Vector2d(0, 36), Math.toRadians(-12.5))
                 .build();
-        traj[2][3] = drive.trajectoryBuilder(new Pose2d(42, 48))
-                .back(30)
+        traj[1][1] = drive.trajectoryBuilder(new Pose2d(0, 36), true)
+                .splineTo(new Vector2d(22, 40), Math.toRadians(20))
                 .build();
-
-
+        traj[1][2] = drive.trajectoryBuilder(new Pose2d(22, 40), true)
+                .splineTo(new Vector2d(12, 12), Math.toRadians(180))
+                .splineTo(new Vector2d(-37, 12), Math.toRadians(157.5))
+                .build();
+        traj[1][3] = drive.trajectoryBuilder(new Pose2d(-37, 12), true)
+                .splineTo(new Vector2d(0, 18), 0)
+                .splineTo(new Vector2d(22, 30), Math.toRadians(45))
+                .build();
+        traj[1][4] = drive.trajectoryBuilder(new Pose2d(22, 30))
+                .splineTo(new Vector2d(12.0, 24.0), Math.toRadians(180))
+                .build();
+        traj[2][0] = drive.trajectoryBuilder(startPose, true)
+                .splineTo(new Vector2d(-24, 56), 0)
+                .splineTo(new Vector2d(0, 36), Math.toRadians(-12.5))
+                .build();
+        traj[2][1] = drive.trajectoryBuilder(new Pose2d(0, 36), true)
+                .splineTo(new Vector2d(22, 26), Math.toRadians(12))
+                .splineTo(new Vector2d(48, 52), Math.toRadians(45))
+                .build();
+        traj[2][2] = drive.trajectoryBuilder(new Pose2d(48, 52), true)
+                .splineTo(new Vector2d(12, 12), Math.toRadians(180))
+                .splineTo(new Vector2d(-40, 12.5), Math.toRadians(157.5))
+                .build();
+        traj[2][3] = drive.trajectoryBuilder(new Pose2d(-40, 12.5), true)
+                .splineTo(new Vector2d(-24, 12), 0)
+                .splineTo(new Vector2d(40, 54), Math.toRadians(45))
+                .build();
+        traj[2][4] = drive.trajectoryBuilder(new Pose2d(40, 54), true)
+                .addTemporalMarker(.5, robot::wobbleUp)
+                .addTemporalMarker(.75, robot::closeClaw)
+                .splineTo(new Vector2d(12, 24), 0)
+                .build();
+        double startTime = System.currentTimeMillis();
+        while (camera.getFps() < 0) {
+            telemetry.addData("Status", "Not Ready");
+        }
         String height = pipeline.getHeight().toString();
+        double initTime = System.currentTimeMillis() - startTime;
+        double safezoneThreshold = 2000;
+        double safezoneTimer = System.currentTimeMillis();
+        while (System.currentTimeMillis() <= safezoneTimer + safezoneThreshold) {
+            height = pipeline.getHeight().toString();
+            telemetry.addData("Status", "Not Ready");
+            telemetry.addData("Camera Initialization Time: ", initTime);
+            telemetry.update();
+        }
         while (!isStarted()) {
             height = pipeline.getHeight().toString();
+            telemetry.addData("Status", "Ready");
+            telemetry.addData("Ring count: ", height);
+            telemetry.addData("Camera Initialization Time: ", initTime);
+            telemetry.update();
         }
 
         switch (height) {
             case "ZERO":
                 telemetry.addData("There are no rings", "");
-                drive.followTrajectory(traj[2][0]);
-                drive.followTrajectory(traj[2][1]);
-                robot.flapUpperPosition();
-                sleep(100);
-                robot.startFlywheels();
-                sleep(1500);
-                robot.shootDisc();
-                sleep(100);
-                robot.shootDisc();
-                sleep(100);
-                robot.shootDisc();
-                sleep(100);
-                robot.stopFlywheels();
-                sleep(100);
-                drive.followTrajectory(traj[0][2]);
+                drive.followTrajectory(traj[0][0]);
                 robot.wobbleDown();
-                sleep(300);
+                robot.intakeDown();
+                sleep(600);
                 robot.openClaw();
                 sleep(200);
                 robot.wobbleUp();
                 sleep(200);
-                break;
-            case "ONE":
-                telemetry.addData("There is one ring", "");
-                drive.followTrajectory(traj[2][0]);
-                drive.followTrajectory(traj[2][1]);
+                drive.followTrajectory(traj[0][1]);
                 robot.flapUpperPosition();
                 sleep(100);
                 robot.startFlywheels();
@@ -136,41 +164,90 @@ public class HongKong extends LinearOpMode {
                 sleep(100);
                 robot.shootDisc();
                 sleep(100);
+                robot.shootDisc();
                 robot.stopFlywheels();
+                robot.wobbleDown();
+                drive.followTrajectory(traj[0][2]);
+                robot.closeClaw();
+                sleep(200);
+                robot.wobbleUp();
+                sleep(200);
+                drive.followTrajectory(traj[0][3]);
+                robot.wobbleDown();
+                sleep(500);
+                robot.openClaw();
+                sleep(150);
+                robot.wobbleUp();
+                sleep(200);
+                robot.closeClaw();
+                drive.followTrajectory(traj[0][4]);
+                break;
+            case "ONE":
+                telemetry.addData("There is one ring", "");
+                drive.followTrajectory(traj[1][0]);
+                robot.flapUpperPosition();
+                sleep(100);
+                robot.startFlywheels();
+                sleep(1000);
+                robot.shootDisc();
+                sleep(120);
+                robot.shootDisc();
+                sleep(120);
+                robot.shootDisc();
+                sleep(160);
+                robot.shootDisc();
+                robot.stopFlywheels();
+                drive.followTrajectory(traj[1][1]);
+                robot.wobbleDown();
+                sleep(500);
+                robot.openClaw();
                 sleep(100);
                 drive.followTrajectory(traj[1][2]);
-                robot.wobbleDown();
-                sleep(300);
-                robot.openClaw();
-                sleep(500);
+                robot.closeClaw();
+                sleep(200);
                 robot.wobbleUp();
                 sleep(200);
                 drive.followTrajectory(traj[1][3]);
+                robot.wobbleDown();
+                sleep(350);
+                robot.openClaw();
+                sleep(100);
+                robot.wobbleUp();
+                sleep(200);
+                robot.closeClaw();
+                drive.followTrajectory(traj[1][4]);
                 break;
             case "FOUR":
                 telemetry.addData("There are four rings", "");
                 drive.followTrajectory(traj[2][0]);
-                drive.followTrajectory(traj[2][1]);
                 robot.flapUpperPosition();
                 sleep(100);
                 robot.startFlywheels();
                 sleep(1000);
                 robot.shootDisc();
-                sleep(100);
+                sleep(120);
                 robot.shootDisc();
-                sleep(100);
+                sleep(120);
                 robot.shootDisc();
-                sleep(100);
+                sleep(120);
+                robot.shootDisc();
                 robot.stopFlywheels();
-                sleep(100);
-                drive.followTrajectory(traj[2][2]);
+                drive.followTrajectory(traj[2][1]);
                 robot.wobbleDown();
                 sleep(300);
                 robot.openClaw();
-                sleep(500);
+                sleep(100);
+                drive.followTrajectory(traj[2][2]);
+                robot.closeClaw();
+                sleep(200);
                 robot.wobbleUp();
                 sleep(200);
                 drive.followTrajectory(traj[2][3]);
+                robot.wobbleDown();
+                sleep(350);
+                robot.openClaw();
+                sleep(100);
+                drive.followTrajectory(traj[2][4]);
                 break;
         }
         telemetry.update();
