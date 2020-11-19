@@ -16,7 +16,7 @@ public class Voodoo extends LinearOpMode {
     private double[] milliTime = new double[9];
     private Gamepad[] gamepad = new Gamepad[2];
     private double previousHeading;
-    private double offSetAngle = 180;
+    private double offSetAngle = 0;
     BNO055IMU imu;
     Orientation angles;
 
@@ -48,7 +48,7 @@ public class Voodoo extends LinearOpMode {
             double speed = Math.hypot(ly, lx);
             double y = speed * Math.sin(Math.atan2(ly, lx) - heading);
             double x = speed * Math.cos(Math.atan2(ly, lx) - heading);
-            mecanum.driveFieldCentric(x, y, rx, heading + 90, false);
+            mecanum.driveFieldCentric(x, y, rx, heading + 180, false);
             if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 85) {
                 robot.shootDisc();
                 stopwatch(0);
