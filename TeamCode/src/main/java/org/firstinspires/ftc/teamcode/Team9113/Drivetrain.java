@@ -9,15 +9,10 @@ public class Drivetrain {
      * upperLeft [0] upperRight [1]
      * lowerLeft [2] lowerRight [3]
      */
-    private final double setHyperdriveThrottle = 1.0;
 
-    private final double setStrafeHyperdriveThrottle = 1.0;
-    private final double setBirdThrottle = .7;
-    private final double setStrafeBirdThrottle = .7;
-    private final double setSnailStrafeThrottle = .37;
-    private final double setSnailThrottle = .37;
-    private double currentThrottle = setBirdThrottle;
-    private double currentStrafeThrottle = setStrafeBirdThrottle;
+    public double normalDrive = 1;
+    public double snailDrive = .5;
+    public double currentThrottle = normalDrive;
 
     public Motor[] drivetrain = new Motor[4];
     protected HardwareMap hwMap;
@@ -32,17 +27,17 @@ public class Drivetrain {
     }
 
     public void moveLeft() {
-        drivetrain[0].set(-currentStrafeThrottle);
-        drivetrain[1].set(currentStrafeThrottle);
-        drivetrain[2].set(currentStrafeThrottle);
-        drivetrain[3].set(-currentStrafeThrottle);
+        drivetrain[0].set(-currentThrottle);
+        drivetrain[1].set(currentThrottle);
+        drivetrain[2].set(currentThrottle);
+        drivetrain[3].set(-currentThrottle);
     }
 
     public void moveRight() {
-        drivetrain[0].set(-currentStrafeThrottle);
-        drivetrain[1].set(currentStrafeThrottle);
-        drivetrain[2].set(currentStrafeThrottle);
-        drivetrain[3].set(-currentStrafeThrottle);
+        drivetrain[0].set(-currentThrottle);
+        drivetrain[1].set(currentThrottle);
+        drivetrain[2].set(currentThrottle);
+        drivetrain[3].set(-currentThrottle);
     }
 
     public void driveForward() {
@@ -57,22 +52,20 @@ public class Drivetrain {
         }
     }
 
-    public void toggleHyperdrive() {
-        if (!isHyperdriveEnabled()) {
-            enableHyperdrive();
+    public void toggleNormalDrive() {
+        if (!isNormalDriveEnabled()) {
+            enableNormalDrive();
             return;
         }
-        disableHyperdrive();
+        disableNormalDrive();
     }
 
-    public void enableHyperdrive() {
-        currentThrottle = setHyperdriveThrottle;
-        currentStrafeThrottle = setStrafeHyperdriveThrottle;
+    public void enableNormalDrive() {
+        currentThrottle = normalDrive;
     }
 
-    public void disableHyperdrive() {
-        currentThrottle = setSnailThrottle;
-        currentStrafeThrottle = setSnailStrafeThrottle;
+    public void disableNormalDrive() {
+        currentThrottle = snailDrive;
     }
 
     public void toggleSnailDrive() {
@@ -82,22 +75,19 @@ public class Drivetrain {
     }
 
     public void enableSnailDrive() {
-        currentThrottle = setSnailThrottle;
-        currentStrafeThrottle = setSnailStrafeThrottle;
+        currentThrottle = snailDrive;
     }
 
     public void disableSnailDrive() {
-        currentThrottle = setBirdThrottle;
-        currentStrafeThrottle = setStrafeBirdThrottle;
+        currentThrottle = normalDrive;
     }
 
     public boolean isSnailDriveEnabled() {
-        return currentThrottle == setSnailThrottle && currentStrafeThrottle == setSnailStrafeThrottle;
+        return currentThrottle == snailDrive;
     }
 
-    public boolean isHyperdriveEnabled() {
-        return currentThrottle == setHyperdriveThrottle
-                && currentStrafeThrottle == setStrafeHyperdriveThrottle;
+    public boolean isNormalDriveEnabled() {
+        return currentThrottle == normalDrive;
     }
 
     public void brakeDrivetrain() {
@@ -132,9 +122,5 @@ public class Drivetrain {
 
     public double getThrottle() {
         return currentThrottle;
-    }
-
-    public double getStrafeThrottle() {
-        return currentStrafeThrottle;
     }
 }
