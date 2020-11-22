@@ -10,9 +10,9 @@ public class Drivetrain {
      */
 
     public double normalDrive = 1;
-    public double snailDrive = .5;
+    public double snailDrive = .65;
     public double turnThrottle = .75;
-    public double snailTurnThrottle = .5;
+    public double snailTurnThrottle = .4;
     public double currentThrottle = normalDrive;
     public double currentTurnThrottle = turnThrottle;
 

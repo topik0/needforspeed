@@ -72,16 +72,21 @@ public class Voodoo extends LinearOpMode {
             }
             if (gamepad[0].dpad_left && System.currentTimeMillis() - milliTime[3] > 25) {
                 robot.flapAdjustDown();
+<<<<<<< HEAD
                 if (robot.flywheelsRunning)
                     robot.toggleFlywheelsMode();
+=======
+>>>>>>> 0cb937465ffb546e1038d32a00575715030022a5
                 stopwatch(3);
             }
             if (gamepad[0].dpad_up && System.currentTimeMillis() - milliTime[4] > timeThreshold) {
                 robot.flapUpperPosition();
+                robot.flywheelsSlow = false;
                 stopwatch(4);
             }
             if (gamepad[0].dpad_down && System.currentTimeMillis() - milliTime[5] > timeThreshold) {
                 robot.flapLowerPosition();
+                robot.flywheelsSlow = true;
                 stopwatch(5);
             }
             if (gamepad[0].a && System.currentTimeMillis() - milliTime[6] > 500) {
@@ -91,6 +96,10 @@ public class Voodoo extends LinearOpMode {
             if (gamepad[0].b && System.currentTimeMillis() - milliTime[7] > timeThreshold) {
                 robot.toggleClaw();
                 stopwatch(7);
+            }
+            if (gamepad[0].start) {
+                robot.flap.setPosition(.3);
+                sleep(100);
             }
             if (gamepad[0].y && System.currentTimeMillis() - milliTime[8] > time) {
                 robot.toggleWobble();

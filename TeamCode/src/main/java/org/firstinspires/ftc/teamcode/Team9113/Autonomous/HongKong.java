@@ -69,7 +69,7 @@ public class HongKong extends LinearOpMode {
                 .splineTo(new Vector2d(-9, 58), Math.toRadians(15))
                 .build();
         traj[0][1] = drive.trajectoryBuilder(new Pose2d(-9, 58), true)
-                .splineTo(new Vector2d(0, 36), Math.toRadians(-12.5))
+                .splineTo(new Vector2d(0, 36), Math.toRadians(-9.5))
                 .build();
         traj[0][2] = drive.trajectoryBuilder(new Pose2d(0, 36), true)
                 .splineTo(new Vector2d(-37, 15.5), Math.toRadians(180))
@@ -83,25 +83,25 @@ public class HongKong extends LinearOpMode {
                 .build();
         traj[1][0] = drive.trajectoryBuilder(startPose, true)
                 .splineTo(new Vector2d(-24, 56), 0)
-                .splineTo(new Vector2d(0, 36), Math.toRadians(-12.5))
+                .splineTo(new Vector2d(0, 36), Math.toRadians(-9.5))
                 .build();
         traj[1][1] = drive.trajectoryBuilder(new Pose2d(0, 36), true)
-                .splineTo(new Vector2d(22, 40), Math.toRadians(20))
+                .splineTo(new Vector2d(20, 38), Math.toRadians(20))
                 .build();
-        traj[1][2] = drive.trajectoryBuilder(new Pose2d(22, 40), true)
-                .splineTo(new Vector2d(12, 12), Math.toRadians(180))
-                .splineTo(new Vector2d(-37, 12), Math.toRadians(157.5))
+        traj[1][2] = drive.trajectoryBuilder(new Pose2d(20, 38), true)
+                .splineTo(new Vector2d(12, 10), Math.toRadians(180))
+                .splineTo(new Vector2d(-39, 10), Math.toRadians(157.5))
                 .build();
-        traj[1][3] = drive.trajectoryBuilder(new Pose2d(-37, 12), true)
+        traj[1][3] = drive.trajectoryBuilder(new Pose2d(-37, 10), true)
                 .splineTo(new Vector2d(0, 18), 0)
-                .splineTo(new Vector2d(22, 30), Math.toRadians(45))
+                .splineTo(new Vector2d(16, 25), Math.toRadians(45))
                 .build();
-        traj[1][4] = drive.trajectoryBuilder(new Pose2d(22, 30))
+        traj[1][4] = drive.trajectoryBuilder(new Pose2d(16, 25))
                 .splineTo(new Vector2d(12.0, 24.0), Math.toRadians(180))
                 .build();
         traj[2][0] = drive.trajectoryBuilder(startPose, true)
                 .splineTo(new Vector2d(-24, 56), 0)
-                .splineTo(new Vector2d(0, 36), Math.toRadians(-12.5))
+                .splineTo(new Vector2d(0, 36), Math.toRadians(-9.5))
                 .build();
         traj[2][1] = drive.trajectoryBuilder(new Pose2d(0, 36), true)
                 .splineTo(new Vector2d(22, 26), Math.toRadians(12))
@@ -116,7 +116,6 @@ public class HongKong extends LinearOpMode {
                 .splineTo(new Vector2d(40, 54), Math.toRadians(45))
                 .build();
         traj[2][4] = drive.trajectoryBuilder(new Pose2d(40, 54), true)
-                .addTemporalMarker(.5, robot::wobbleUp)
                 .addTemporalMarker(.75, robot::closeClaw)
                 .splineTo(new Vector2d(12, 24), 0)
                 .build();
@@ -169,7 +168,7 @@ public class HongKong extends LinearOpMode {
                 robot.wobbleDown();
                 drive.followTrajectory(traj[0][2]);
                 robot.closeClaw();
-                sleep(200);
+                sleep(400);
                 robot.wobbleUp();
                 sleep(200);
                 drive.followTrajectory(traj[0][3]);
@@ -204,7 +203,7 @@ public class HongKong extends LinearOpMode {
                 sleep(100);
                 drive.followTrajectory(traj[1][2]);
                 robot.closeClaw();
-                sleep(200);
+                sleep(400);
                 robot.wobbleUp();
                 sleep(200);
                 drive.followTrajectory(traj[1][3]);
@@ -239,7 +238,7 @@ public class HongKong extends LinearOpMode {
                 sleep(100);
                 drive.followTrajectory(traj[2][2]);
                 robot.closeClaw();
-                sleep(200);
+                sleep(400);
                 robot.wobbleUp();
                 sleep(200);
                 drive.followTrajectory(traj[2][3]);
@@ -247,6 +246,8 @@ public class HongKong extends LinearOpMode {
                 sleep(350);
                 robot.openClaw();
                 sleep(100);
+                robot.wobbleUp();
+                sleep(200);
                 drive.followTrajectory(traj[2][4]);
                 break;
         }
