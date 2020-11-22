@@ -15,7 +15,7 @@ public class Robot extends LinearOpMode {
     public Servo flap, intakeStopper, flicker, claw;
     public DcMotor intake, wobble;
     public DcMotorEx flywheelFront, flyWheelBack;
-    public boolean flywheelsRunning, intakeRunning, intakeReversed = false;
+    public boolean flywheelsRunning, intakeRunning, intakeReversed, flywheelsSlow = false;
     public boolean clawClosed = true, wobbleUp = true;
     double flapPosition;
     double flapHighGoal = .4, flapPowerShot = .44;
@@ -78,7 +78,7 @@ public class Robot extends LinearOpMode {
         wobbleUp = false;
     }
 
-    public void intakeDown(){
+    public void intakeDown() {
         intake.setPower(.2);
         sleep(250);
         stopIntake();
@@ -102,6 +102,11 @@ public class Robot extends LinearOpMode {
 
     public void startFlywheels() {
         setFlywheelVelocity(2350);
+        flywheelsRunning = true;
+    }
+
+    public void startFlyWheelsSlow() {
+        setFlywheelVelocity(1900);
         flywheelsRunning = true;
     }
 
@@ -184,6 +189,13 @@ public class Robot extends LinearOpMode {
         if (flywheelsRunning)
             stopFlywheels();
         else startFlywheels();
+    }
+
+    public void toggleFlywheelsMode() {
+        if (flywheelsSlow)
+            startFlyWheelsSlow();
+        else
+            startFlywheels();
     }
 
     public void reverseIntake() {

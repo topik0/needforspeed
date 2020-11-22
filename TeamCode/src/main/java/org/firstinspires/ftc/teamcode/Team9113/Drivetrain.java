@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Team9113;
 
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Drivetrain {
@@ -12,7 +11,10 @@ public class Drivetrain {
 
     public double normalDrive = 1;
     public double snailDrive = .5;
+    public double turnThrottle = .75;
+    public double snailTurnThrottle = .5;
     public double currentThrottle = normalDrive;
+    public double currentTurnThrottle = turnThrottle;
 
     public Motor[] drivetrain = new Motor[4];
     protected HardwareMap hwMap;
@@ -53,33 +55,37 @@ public class Drivetrain {
     }
 
     public void toggleNormalDrive() {
-        if (!isNormalDriveEnabled()) {
+        if (!isNormalDriveEnabled())
             enableNormalDrive();
-            return;
-        }
-        disableNormalDrive();
+        else
+            disableNormalDrive();
     }
 
     public void enableNormalDrive() {
         currentThrottle = normalDrive;
+        currentTurnThrottle = turnThrottle;
     }
 
     public void disableNormalDrive() {
         currentThrottle = snailDrive;
+        currentTurnThrottle = snailTurnThrottle;
     }
 
     public void toggleSnailDrive() {
-        if (!isSnailDriveEnabled()) {
+        if (!isSnailDriveEnabled())
             enableSnailDrive();
-        }
+        else
+            disableSnailDrive();
     }
 
     public void enableSnailDrive() {
         currentThrottle = snailDrive;
+        currentTurnThrottle = snailTurnThrottle;
     }
 
     public void disableSnailDrive() {
         currentThrottle = normalDrive;
+        currentTurnThrottle = turnThrottle;
     }
 
     public boolean isSnailDriveEnabled() {

@@ -42,14 +42,14 @@ public class Voodoo extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-            double ly = -gamepad1.left_stick_y;
-            double lx = gamepad1.left_stick_x;
-            double rx = -gamepad1.right_stick_x * turningSpeed;
+            double ly = -gamepad1.left_stick_y * robot.drivetrain.currentThrottle;
+            double lx = gamepad1.left_stick_x * robot.drivetrain.currentThrottle;
+            double rx = -gamepad1.right_stick_x * robot.drivetrain.turnThrottle;
             double heading = angles.firstAngle - offSetAngle;
             double speed = Math.hypot(ly, lx);
             double y = speed * Math.sin(Math.atan2(ly, lx) - heading);
             double x = speed * Math.cos(Math.atan2(ly, lx) - heading);
-            mecanum.driveFieldCentric(x, y, rx, heading + 180, false);
+            mecanum.driveFieldCentric(x, y, rx, heading + 270, false);
             if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 85) {
                 robot.shootDisc();
                 stopwatch(0);
@@ -57,7 +57,7 @@ public class Voodoo extends LinearOpMode {
             if (gamepad[0].left_bumper && System.currentTimeMillis() - milliTime[1] > timeThreshold) {
                 robot.toggleFlywheels();
                 robot.drivetrain.toggleNormalDrive();
-                if(turningSpeed >= .75)
+                if (turningSpeed >= .75)
                     turningSpeed = .5;
                 else
                     turningSpeed = .75;
@@ -72,6 +72,8 @@ public class Voodoo extends LinearOpMode {
             }
             if (gamepad[0].dpad_left && System.currentTimeMillis() - milliTime[3] > 25) {
                 robot.flapAdjustDown();
+                if(robot.flywheelsRunning)
+                    robot.toggleFlywheelsMode();
                 stopwatch(3);
             }
             if (gamepad[0].dpad_up && System.currentTimeMillis() - milliTime[4] > timeThreshold) {
