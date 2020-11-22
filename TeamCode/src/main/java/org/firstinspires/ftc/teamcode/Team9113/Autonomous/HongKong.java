@@ -92,7 +92,7 @@ public class HongKong extends LinearOpMode {
                 .splineTo(new Vector2d(12, 10), Math.toRadians(180))
                 .splineTo(new Vector2d(-39, 10), Math.toRadians(157.5))
                 .build();
-        traj[1][3] = drive.trajectoryBuilder(new Pose2d(-37, 10), true)
+        traj[1][3] = drive.trajectoryBuilder(new Pose2d(-39, 10), true)
                 .splineTo(new Vector2d(0, 18), 0)
                 .splineTo(new Vector2d(16, 25), Math.toRadians(45))
                 .build();

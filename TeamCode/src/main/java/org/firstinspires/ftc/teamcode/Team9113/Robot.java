@@ -187,16 +187,16 @@ public class Robot extends LinearOpMode {
     }
 
     public void toggleFlywheels() {
-        if (flywheelsSlow) {
-            if (flywheelsRunning)
-                stopFlywheels();
-            else startFlyWheelsSlow();
-        }
-        else {
-            if (flywheelsRunning)
-                stopFlywheels();
-            else startFlywheels();
-        }
+        if (flywheelsRunning)
+            stopFlywheels();
+        else startFlywheels();
+    }
+
+    public void toggleFlywheelsMode() {
+        if (flywheelsSlow)
+            startFlyWheelsSlow();
+        else
+            startFlywheels();
     }
 
     public void reverseIntake() {
