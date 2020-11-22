@@ -182,7 +182,8 @@ public class Robot extends LinearOpMode {
     public void toggleIntake() {
         if (intakeRunning)
             stopIntake();
-        else startIntake();
+        else
+            startIntake();
     }
 
     public void toggleFlywheels() {

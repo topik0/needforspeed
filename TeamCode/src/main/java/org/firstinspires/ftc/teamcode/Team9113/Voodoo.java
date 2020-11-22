@@ -72,7 +72,7 @@ public class Voodoo extends LinearOpMode {
             }
             if (gamepad[0].dpad_left && System.currentTimeMillis() - milliTime[3] > 25) {
                 robot.flapAdjustDown();
-                if(robot.flywheelsRunning)
+                if (robot.flywheelsRunning)
                     robot.toggleFlywheelsMode();
                 stopwatch(3);
             }
