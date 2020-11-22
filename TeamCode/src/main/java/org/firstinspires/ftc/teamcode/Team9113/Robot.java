@@ -14,12 +14,12 @@ public class Robot extends LinearOpMode {
     public Drivetrain drivetrain;
     public Servo flap, intakeStopper, flicker, claw;
     public DcMotor intake, wobble;
-    public DcMotorEx flywheelFront, flyWheelBack;
+    public DcMotorEx flywheelFront, flywheelBack;
     public boolean flywheelsRunning, intakeRunning, intakeReversed, flywheelsSlow = false;
     public boolean clawClosed = true, wobbleUp = true;
     double flapPosition;
-    double flapHighGoal = .4, flapPowerShot = .44;
-    double clawClosePosition = .725;
+    double flapHighGoal = .410, flapPowerShot = .7;
+    double clawClosePosition = .705;
     // public RobotPreferences pref;
 
     public Robot(HardwareMap hwMap) {
@@ -44,12 +44,12 @@ public class Robot extends LinearOpMode {
         flicker = hwMap.servo.get("flicker");
         claw = hwMap.servo.get("claw");
         flywheelFront = hwMap.get(DcMotorEx.class, "flywheelFront");
-        flyWheelBack = hwMap.get(DcMotorEx.class, "flywheelBack");
+        flywheelBack = hwMap.get(DcMotorEx.class, "flywheelBack");
         intake = hwMap.dcMotor.get("intake");
         wobble = hwMap.dcMotor.get("wobble");
         intake.setDirection(DcMotor.Direction.REVERSE);
         flywheelFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flyWheelBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flywheelBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void startPositions() {
@@ -65,8 +65,8 @@ public class Robot extends LinearOpMode {
     }
 
     public void wobbleUp() {
-        wobble.setPower(-0.7);
-        sleep(550);
+        wobble.setPower(-1);
+        sleep(300);
         wobble.setPower(0);
         wobbleUp = true;
     }
@@ -92,12 +92,12 @@ public class Robot extends LinearOpMode {
 
     public void setFlywheelPower(double power) {
         flywheelFront.setPower(power);
-        flyWheelBack.setPower(power);
+        flywheelBack.setPower(power);
     }
 
     public void setFlywheelVelocity(double velocity) {
         flywheelFront.setVelocity(velocity);
-        flyWheelBack.setVelocity(velocity);
+        flywheelBack.setVelocity(velocity);
     }
 
     public void startFlywheels() {
@@ -106,7 +106,7 @@ public class Robot extends LinearOpMode {
     }
 
     public void startFlyWheelsSlow() {
-        setFlywheelVelocity(1900);
+        setFlywheelVelocity(1500);
         flywheelsRunning = true;
     }
 
@@ -186,16 +186,16 @@ public class Robot extends LinearOpMode {
     }
 
     public void toggleFlywheels() {
-        if (flywheelsRunning)
-            stopFlywheels();
-        else startFlywheels();
-    }
-
-    public void toggleFlywheelsMode() {
-        if (flywheelsSlow)
-            startFlyWheelsSlow();
-        else
-            startFlywheels();
+        if (flywheelsSlow) {
+            if (flywheelsRunning)
+                stopFlywheels();
+            else startFlyWheelsSlow();
+        }
+        else {
+            if (flywheelsRunning)
+                stopFlywheels();
+            else startFlywheels();
+        }
     }
 
     public void reverseIntake() {
