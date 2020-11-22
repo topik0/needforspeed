@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.Team9113;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
@@ -12,7 +13,8 @@ public class Robot extends LinearOpMode {
     protected HardwareMap hwMap;
     public Drivetrain drivetrain;
     public Servo flap, intakeStopper, flicker, claw;
-    public DcMotor flywheelFront, flyWheelBack, intake, wobble;
+    public DcMotor intake, wobble;
+    public DcMotorEx flywheelFront, flyWheelBack;
     public boolean flywheelsRunning, intakeRunning, intakeReversed = false;
     public boolean clawClosed = true, wobbleUp = true;
     double flapPosition;
@@ -37,15 +39,17 @@ public class Robot extends LinearOpMode {
     Initializes the robot and the components
      */
     public void initHardware() {
-        flap = this.hwMap.servo.get("flap");
-        intakeStopper = this.hwMap.servo.get("intakeStopper");
-        flicker = this.hwMap.servo.get("flicker");
-        claw = this.hwMap.servo.get("claw");
-        flywheelFront = this.hwMap.dcMotor.get("flywheelFront");
-        flyWheelBack = this.hwMap.dcMotor.get("flywheelBack");
-        intake = this.hwMap.dcMotor.get("intake");
-        wobble = this.hwMap.dcMotor.get("wobble");
+        flap = hwMap.servo.get("flap");
+        intakeStopper = hwMap.servo.get("intakeStopper");
+        flicker = hwMap.servo.get("flicker");
+        claw = hwMap.servo.get("claw");
+        flywheelFront = hwMap.get(DcMotorEx.class, "flywheelFront");
+        flyWheelBack = hwMap.get(DcMotorEx.class, "flywheelBack");
+        intake = hwMap.dcMotor.get("intake");
+        wobble = hwMap.dcMotor.get("wobble");
         intake.setDirection(DcMotor.Direction.REVERSE);
+        flywheelFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        flyWheelBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void startPositions() {
@@ -91,13 +95,18 @@ public class Robot extends LinearOpMode {
         flyWheelBack.setPower(power);
     }
 
+    public void setFlywheelVelocity(double velocity) {
+        flywheelFront.setVelocity(velocity);
+        flyWheelBack.setVelocity(velocity);
+    }
+
     public void startFlywheels() {
-        setFlywheelPower(1);
+        setFlywheelVelocity(2350);
         flywheelsRunning = true;
     }
 
     public void stopFlywheels() {
-        setFlywheelPower(0);
+        setFlywheelVelocity(0);
         flywheelsRunning = false;
     }
 
