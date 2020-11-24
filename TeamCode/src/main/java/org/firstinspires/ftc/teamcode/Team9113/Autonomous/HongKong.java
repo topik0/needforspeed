@@ -170,7 +170,7 @@ public class HongKong extends LinearOpMode {
                 robot.closeClaw();
                 sleep(400);
                 robot.wobbleUp();
-                sleep(200);
+                sleep(500);
                 drive.followTrajectory(traj[0][3]);
                 robot.wobbleDown();
                 sleep(500);
@@ -205,7 +205,7 @@ public class HongKong extends LinearOpMode {
                 robot.closeClaw();
                 sleep(400);
                 robot.wobbleUp();
-                sleep(200);
+                sleep(500);
                 drive.followTrajectory(traj[1][3]);
                 robot.wobbleDown();
                 sleep(350);
@@ -240,7 +240,7 @@ public class HongKong extends LinearOpMode {
                 robot.closeClaw();
                 sleep(400);
                 robot.wobbleUp();
-                sleep(200);
+                sleep(500);
                 drive.followTrajectory(traj[2][3]);
                 robot.wobbleDown();
                 sleep(350);

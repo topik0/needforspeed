@@ -68,12 +68,12 @@ public class Voodoo extends LinearOpMode {
             }
             if (gamepad[0].dpad_right && System.currentTimeMillis() - milliTime[2] > 25) {
                 robot.flapAdjustUp();
+                robot.setFlywheelsModeNormal();
                 stopwatch(2);
             }
             if (gamepad[0].dpad_left && System.currentTimeMillis() - milliTime[3] > 25) {
                 robot.flapAdjustDown();
-                if (robot.flywheelsRunning)
-                    robot.toggleFlywheelsMode();
+                robot.setFlywheelsModeSlow();
                 stopwatch(3);
             }
             if (gamepad[0].dpad_up && System.currentTimeMillis() - milliTime[4] > timeThreshold) {
@@ -98,7 +98,7 @@ public class Voodoo extends LinearOpMode {
                 robot.flap.setPosition(.3);
                 sleep(100);
             }
-            if (gamepad[0].y && System.currentTimeMillis() - milliTime[8] > time) {
+            if (gamepad[0].y && System.currentTimeMillis() - milliTime[8] > 50) {
                 robot.toggleWobble();
                 stopwatch(8);
             }
