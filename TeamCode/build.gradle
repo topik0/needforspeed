@@ -21,6 +21,6 @@ repositories {
 dependencies {
     annotationProcessor files('lib/OpModeAnnotationProcessor.jar')
     implementation 'com.arcrobotics.ftclib:vision:1.1.0'
-    implementation 'com.arcrobotics:ftclib:1.1.4'
+    implementation 'com.arcrobotics:ftclib:1.1.6'
     implementation 'com.acmerobotics.dashboard:dashboard:0.3.10'
 }
