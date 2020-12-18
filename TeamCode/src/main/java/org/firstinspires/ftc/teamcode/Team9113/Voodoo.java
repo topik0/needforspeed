@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.Team9113;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -30,6 +33,7 @@ public class Voodoo extends LinearOpMode {
         robot.startPositions();
         // Initialize variables
         final int timeThreshold = 350;
+        FtcDashboard dashboard = FtcDashboard.getInstance();
 
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
@@ -50,17 +54,17 @@ public class Voodoo extends LinearOpMode {
             double y = speed * Math.sin(Math.atan2(ly, lx) - heading);
             double x = speed * Math.cos(Math.atan2(ly, lx) - heading);
             mecanum.driveFieldCentric(x, y, rx, heading + 270, false);
-            if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 85) {
+            if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 150) {
                 robot.shootDisc();
                 stopwatch(0);
             }
             if (gamepad[0].left_bumper && System.currentTimeMillis() - milliTime[1] > timeThreshold) {
                 robot.toggleFlywheels();
-                robot.drivetrain.toggleNormalDrive();
-                if (turningSpeed >= .75)
-                    turningSpeed = .5;
-                else
-                    turningSpeed = .75;
+//                robot.drivetrain.toggleNormalDrive();
+//                if (turningSpeed >= .75)
+//                    turningSpeed = .5;
+//                else
+//                    turningSpeed = .75;
                 stopwatch(1);
             }
             if (gamepad1.back) {
@@ -96,9 +100,9 @@ public class Voodoo extends LinearOpMode {
             }
             if (gamepad[0].start) {
                 robot.flap.setPosition(.3);
-                sleep(100);
+                robot.delay(100);
             }
-            if (gamepad[0].y && System.currentTimeMillis() - milliTime[8] > 50) {
+            if (gamepad[0].y && System.currentTimeMillis() - milliTime[8] > timeThreshold) {
                 robot.toggleWobble();
                 stopwatch(8);
             }
@@ -106,7 +110,11 @@ public class Voodoo extends LinearOpMode {
                 robot.reverseIntake();
             } else if (robot.intakeRunning)
                 robot.startIntake();
+            telemetry.addData("TPS", robot.flywheelFront.getCorrectedVelocity());
             telemetry.update();
+            TelemetryPacket packet = new TelemetryPacket();
+            packet.put("Flywheel Velo ", ((DcMotorEx) robot.flywheelFront.motor).getVelocity());
+            dashboard.sendTelemetryPacket(packet);
         }
     }
 

@@ -1,10 +1,16 @@
 package org.firstinspires.ftc.teamcode.Team9113;
 
+import com.arcrobotics.ftclib.controller.PController;
+import com.arcrobotics.ftclib.controller.PDController;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.Team9113.util.Encoder;
 
 public class Robot extends LinearOpMode {
     /*
@@ -12,14 +18,16 @@ public class Robot extends LinearOpMode {
      */
     protected HardwareMap hwMap;
     public Drivetrain drivetrain;
-    public Servo flap, intakeStopper, flicker, claw;
-    public DcMotor intake, wobble;
-    public DcMotorEx flywheelFront, flywheelBack;
+    public Servo flap, flicker, claw, wobble;
+    public DcMotor leftIntake, rightIntake;
+    public Motor flywheelFront, flywheelBack;
     public boolean flywheelsRunning, intakeRunning, intakeReversed, flywheelsSlow = false;
     public boolean clawClosed = true, wobbleUp = true;
     double flapPosition;
-    double flapHighGoal = .410, flapPowerShot = .7;
-    double clawClosePosition = 695;
+    double flapHighGoal = .3975, flapPowerShot = .41;
+    double clawClosePosition = .72;
+    private double kI;
+    PDController pcont;
     // public RobotPreferences pref;
 
     public Robot(HardwareMap hwMap) {
@@ -40,16 +48,18 @@ public class Robot extends LinearOpMode {
      */
     public void initHardware() {
         flap = hwMap.servo.get("flap");
-        intakeStopper = hwMap.servo.get("intakeStopper");
         flicker = hwMap.servo.get("flicker");
         claw = hwMap.servo.get("claw");
-        flywheelFront = hwMap.get(DcMotorEx.class, "flywheelFront");
-        flywheelBack = hwMap.get(DcMotorEx.class, "flywheelBack");
-        intake = hwMap.dcMotor.get("intake");
-        wobble = hwMap.dcMotor.get("wobble");
-        intake.setDirection(DcMotor.Direction.REVERSE);
-        flywheelFront.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        flywheelBack.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        wobble = hwMap.servo.get("wobble");
+        flywheelFront = new Motor(hwMap, "flywheelFront", Motor.GoBILDA.BARE);
+        flywheelBack = new Motor(hwMap, "flywheelBack", Motor.GoBILDA.BARE);
+        leftIntake = hwMap.dcMotor.get("leftIntake");
+        rightIntake = hwMap.dcMotor.get("rightIntake");
+        leftIntake.setDirection(DcMotor.Direction.REVERSE);
+        rightIntake.setDirection(DcMotor.Direction.REVERSE);
+        flywheelFront.setVeloCoefficients(1.4, 0, 0.05);
+        // pcont = new PController(1);
+        pcont = new PDController(1.4, .05);
     }
 
     public void startPositions() {
@@ -62,25 +72,23 @@ public class Robot extends LinearOpMode {
         flap.setPosition(.3);
         flicker.setPosition(0.3);
         claw.setPosition(clawClosePosition);
+        wobbleUp();
     }
 
     public void wobbleUp() {
-        wobble.setPower(-.75);
-        sleep(500);
-        wobble.setPower(0);
+        wobble.setPosition(1);
         wobbleUp = true;
     }
 
     public void wobbleDown() {
-        wobble.setPower(0.6);
-        sleep(230);
-        wobble.setPower(0);
+        wobble.setPosition(0);
         wobbleUp = false;
     }
 
     public void intakeDown() {
-        intake.setPower(.2);
-        sleep(250);
+        leftIntake.setPower(.2);
+        // rightIntake.setPower(.2);
+        delay(250);
         stopIntake();
     }
 
@@ -91,27 +99,37 @@ public class Robot extends LinearOpMode {
     }
 
     public void setFlywheelPower(double power) {
-        flywheelFront.setPower(power);
-        flywheelBack.setPower(power);
-    }
-
-    public void setFlywheelVelocity(double velocity) {
-        flywheelFront.setVelocity(velocity);
-        flywheelBack.setVelocity(velocity);
+//        flywheelFront.setVeloCoefficients(1, 0, 0);
+//        double[] coeffs = flywheelFront.getVeloCoefficients();
+//        double kP = coeffs[0];
+//        double kI = coeffs[1];
+//        double kD = coeffs[2];
+//
+//        // set and get the feedforward coefficients
+//        flywheelFront.setFeedforwardCoefficients(0, 0);
+//        double[] ffCoeffs = flywheelFront.getFeedforwardCoefficients();
+//        double kS = ffCoeffs[0];
+//        double kV = ffCoeffs[1];
+        //flywheelFront.set(power);
+        //flywheelBack.set(power);
+        pcont.setSetPoint(power);
+        double motorpower = pcont.calculate();
+        flywheelFront.set(motorpower);
+        flywheelBack.set(motorpower);
     }
 
     public void startFlywheels() {
-        setFlywheelVelocity(2350);
+        setFlywheelPower(.57142857142);
         flywheelsRunning = true;
     }
 
     public void startFlyWheelsSlow() {
-        setFlywheelVelocity(1500);
+        setFlywheelPower(.5);
         flywheelsRunning = true;
     }
 
     public void stopFlywheels() {
-        setFlywheelVelocity(0);
+        setFlywheelPower(0);
         flywheelsRunning = false;
     }
 
@@ -129,43 +147,43 @@ public class Robot extends LinearOpMode {
 
     public void shootDisc() {
         flicker.setPosition(.55);
-        sleep(60);
+        delay(70);
         flicker.setPosition(.3);
     }
 
     public void flapAdjustUp() {
         flapPosition = flap.getPosition();
         flap.setPosition(flapPosition - .005);
-        sleep(50);
+        delay(50);
     }
 
     public void flapAdjustDown() {
         flapPosition = flap.getPosition();
         flap.setPosition(flapPosition + .005);
-        sleep(50);
+        delay(50);
     }
 
     public void flapUpperPosition() {
         flap.setPosition(flapHighGoal);
-        sleep(100);
+        delay(100);
         flapPosition = flap.getPosition();
     }
 
     public void flapLowerPosition() {
         flap.setPosition(flapPowerShot);
-        sleep(100);
+        delay(100);
         flapPosition = flap.getPosition();
     }
 
     public void openClaw() {
         claw.setPosition(1);
         clawClosed = false;
-        sleep(350);
+        delay(350);
     }
 
     public void closeClaw() {
         claw.setPosition(clawClosePosition);
-        sleep(350);
+        delay(350);
         clawClosed = true;
     }
 
@@ -176,7 +194,8 @@ public class Robot extends LinearOpMode {
     }
 
     public void setIntakePower(double power) {
-        intake.setPower(power);
+        leftIntake.setPower(power);
+        rightIntake.setPower(power);
     }
 
     public void toggleIntake() {
@@ -189,8 +208,8 @@ public class Robot extends LinearOpMode {
     public void toggleFlywheels() {
         if (flywheelsRunning)
             stopFlywheels();
-        else if (flywheelsSlow)
-            startFlyWheelsSlow();
+            //else if (flywheelsSlow)
+            //    startFlyWheelsSlow();
         else
             startFlywheels();
     }
@@ -202,17 +221,30 @@ public class Robot extends LinearOpMode {
             startFlywheels();
     }
 
-    public void setFlywheelsModeSlow(){
+    public void setFlywheelsModeSlow() {
         flywheelsSlow = true;
     }
 
-    public void setFlywheelsModeNormal(){
+    public void setFlywheelsModeNormal() {
         flywheelsSlow = false;
     }
 
     public void reverseIntake() {
         setIntakePower(-1);
         intakeReversed = true;
+    }
+
+    public void delay(int milliseconds){
+        if(milliseconds < 0)
+            throw new IllegalArgumentException("Cannot have a delay less than zero");
+        if(milliseconds == 0)
+            return;
+        int timer = (int) System.currentTimeMillis();
+        while(System.currentTimeMillis() - timer <= milliseconds);
+    }
+
+    public void turnAsync(double angle){
+        drivetrain.mecanumDrive.turnAsync(angle);
     }
 
     @Override

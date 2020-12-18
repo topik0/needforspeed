@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.Team9113;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
+
 public class Drivetrain {
     /**
      * upperLeft [0] upperRight [1]
@@ -18,14 +20,16 @@ public class Drivetrain {
 
     public Motor[] drivetrain = new Motor[4];
     protected HardwareMap hwMap;
+    public SampleMecanumDrive mecanumDrive;
 
     public Drivetrain(HardwareMap hwMap) {
         this.hwMap = hwMap;
         for (int i = 0; i < 4; i++) {
             String[] drivetrainNames = {"upperLeft", "upperRight", "lowerLeft", "lowerRight"};
-            drivetrain[i] = new Motor(this.hwMap, drivetrainNames[i], Motor.GoBILDA.RPM_312);
+            drivetrain[i] = new Motor(this.hwMap, drivetrainNames[i], Motor.GoBILDA.RPM_435);
             drivetrain[i].setRunMode(Motor.RunMode.RawPower);
         }
+        mecanumDrive = new SampleMecanumDrive(hwMap);
     }
 
     public void moveLeft() {
