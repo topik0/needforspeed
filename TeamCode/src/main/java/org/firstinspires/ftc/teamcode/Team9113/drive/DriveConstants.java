@@ -23,8 +23,8 @@ public class DriveConstants {
     /*
      * These are motor constants that should be listed online for your motors.
      */
-    public static final double TICKS_PER_REV = 537.6;
-    public static final double MAX_RPM = 312;
+    public static final double TICKS_PER_REV = 383.6;
+    public static final double MAX_RPM = 435;
 
     /*
      * Set RUN_USING_ENCODER to true to enable built-in hub velocity control using drive encoders.
@@ -35,7 +35,7 @@ public class DriveConstants {
      * from DriveVelocityPIDTuner.
      */
     public static final boolean RUN_USING_ENCODER = true;
-    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(1, 0, 9, 14);
+    public static PIDFCoefficients MOTOR_VELO_PID = new PIDFCoefficients(12, 0, 9, 15);
 
     /*
      * These are physical constants that can be determined from your robot (including the track
@@ -88,8 +88,8 @@ public class DriveConstants {
 
      */
     public static DriveConstraints BASE_CONSTRAINTS = new DriveConstraints(
-            40.38874556, 20, 0.0,
-            Math.toRadians(150), Math.toRadians(150), 0.0
+            70, 70, 0.0,
+            Math.toRadians(300), Math.toRadians(300), 0.0
     );
 
 
