@@ -62,7 +62,7 @@ public class NFSAuto extends LinearOpMode {
 
         camera.openCameraDeviceAsync(() -> camera.startStreaming(CAMERA_WIDTH, CAMERA_HEIGHT, OpenCvCameraRotation.UPRIGHT));
 
-        Pose2d startPose = new Pose2d(-63, 44, Math.toRadians(180));
+        Pose2d startPose = new Pose2d(-63, -44, Math.toRadians(180));
         drive.setPoseEstimate(startPose);
         Trajectory[][] traj = new Trajectory[3][10];
         //

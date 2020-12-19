@@ -30,6 +30,8 @@ public class Drivetrain {
             drivetrain[i].setRunMode(Motor.RunMode.RawPower);
         }
         mecanumDrive = new SampleMecanumDrive(hwMap);
+        drivetrain[1].setInverted(true);
+        drivetrain[3].setInverted(true);
     }
 
     public void moveLeft() {

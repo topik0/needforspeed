@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Team9113;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.hardware.bosch.BNO055IMU;
@@ -48,12 +49,18 @@ public class Voodoo extends LinearOpMode {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = -gamepad1.left_stick_y * robot.drivetrain.currentThrottle;
             double lx = gamepad1.left_stick_x * robot.drivetrain.currentThrottle;
-            double rx = -gamepad1.right_stick_x * robot.drivetrain.turnThrottle;
+            double rx = Math.sqrt(Math.abs(gamepad1.right_stick_x)) * gamepad1.right_stick_x /* * robot.drivetrain.turnThrottle */;
             double heading = angles.firstAngle - offSetAngle;
             double speed = Math.hypot(ly, lx);
             double y = speed * Math.sin(Math.atan2(ly, lx) - heading);
             double x = speed * Math.cos(Math.atan2(ly, lx) - heading);
-            mecanum.driveFieldCentric(x, y, rx, heading + 270, false);
+            mecanum.driveFieldCentric(x, y, rx, heading + 90, false);
+            if(gamepad1.right_stick_x ==0 && gamepad1.left_stick_x==0 && gamepad1.left_stick_y==0) {
+                robot.drivetrain.drivetrain[0].setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+                robot.drivetrain.drivetrain[1].setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+                robot.drivetrain.drivetrain[2].setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+                robot.drivetrain.drivetrain[3].setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            }
             if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 150) {
                 robot.shootDisc();
                 stopwatch(0);

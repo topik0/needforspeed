@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.Team9113;
 
+import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.roadrunner.control.PIDFController;
 import com.arcrobotics.ftclib.controller.PController;
 import com.arcrobotics.ftclib.controller.PDController;
-import com.arcrobotics.ftclib.controller.PIDFController;
+import com.arcrobotics.ftclib.controller.PIDController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
@@ -11,7 +13,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.Team9113.util.Encoder;
-
+@Config
 public class Robot extends LinearOpMode {
     /*
     Robot constructor
@@ -25,9 +27,11 @@ public class Robot extends LinearOpMode {
     public boolean clawClosed = true, wobbleUp = true;
     double flapPosition;
     double flapHighGoal = .3975, flapPowerShot = .41;
-    double clawClosePosition = .72;
+    double clawClosePosition = .74;
     private double kI;
-    PDController pcont;
+    public static double kp;
+    public static double kd;
+    PIDController pcont;
     // public RobotPreferences pref;
 
     public Robot(HardwareMap hwMap) {
@@ -57,9 +61,9 @@ public class Robot extends LinearOpMode {
         rightIntake = hwMap.dcMotor.get("rightIntake");
         leftIntake.setDirection(DcMotor.Direction.REVERSE);
         rightIntake.setDirection(DcMotor.Direction.REVERSE);
-        flywheelFront.setVeloCoefficients(1.4, 0, 0.05);
+        //flywheelFront.setVeloCoefficients(1.27272727273, 0, 0.01);
         // pcont = new PController(1);
-        pcont = new PDController(1.4, .05);
+        pcont = new PIDController(5, 0, 0 );
     }
 
     public void startPositions() {
@@ -76,12 +80,12 @@ public class Robot extends LinearOpMode {
     }
 
     public void wobbleUp() {
-        wobble.setPosition(1);
+        wobble.setPosition(.69);
         wobbleUp = true;
     }
 
     public void wobbleDown() {
-        wobble.setPosition(0);
+        wobble.setPosition(.07);
         wobbleUp = false;
     }
 
@@ -119,7 +123,7 @@ public class Robot extends LinearOpMode {
     }
 
     public void startFlywheels() {
-        setFlywheelPower(.57142857142);
+        setFlywheelPower(1);
         flywheelsRunning = true;
     }
 
@@ -147,7 +151,7 @@ public class Robot extends LinearOpMode {
 
     public void shootDisc() {
         flicker.setPosition(.55);
-        delay(70);
+        sleep(70);
         flicker.setPosition(.3);
     }
 
