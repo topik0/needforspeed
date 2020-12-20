@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Team9113.Robot;
 import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 
 /*
@@ -19,7 +20,8 @@ public class StrafeTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
+        Robot robot = new Robot(hardwareMap); //added
+        robot.initHardware(); //added
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .strafeRight(DISTANCE)
                 .build();

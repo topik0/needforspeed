@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Team9113.Robot;
 import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 
 /*
@@ -14,12 +15,14 @@ import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 @Config
 @Autonomous(group = "drive")
 public class StraightTest extends LinearOpMode {
+
     public static double DISTANCE = 60; // in
 
     @Override
     public void runOpMode() throws InterruptedException {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
+        Robot robot = new Robot(hardwareMap); //added
+        robot.initHardware(); //added
         Trajectory trajectory = drive.trajectoryBuilder(new Pose2d())
                 .forward(DISTANCE)
                 .build();

@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.Team9113.Autonomous;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -156,7 +155,7 @@ public class HongKong extends LinearOpMode {
                 drive.followTrajectory(traj[0][1]);
                 robot.flapUpperPosition();
                 sleep(100);
-                robot.startFlywheels();
+                robot.flywheelFast();
                 sleep(1000);
                 robot.shootDisc();
                 sleep(100);
@@ -187,7 +186,7 @@ public class HongKong extends LinearOpMode {
                 drive.followTrajectory(traj[1][0]);
                 robot.flapUpperPosition();
                 sleep(100);
-                robot.startFlywheels();
+                robot.flywheelFast();
                 sleep(1000);
                 robot.shootDisc();
                 sleep(120);
@@ -222,7 +221,7 @@ public class HongKong extends LinearOpMode {
                 drive.followTrajectory(traj[2][0]);
                 robot.flapUpperPosition();
                 sleep(100);
-                robot.startFlywheels();
+                robot.flywheelFast();
                 sleep(1000);
                 robot.shootDisc();
                 sleep(120);

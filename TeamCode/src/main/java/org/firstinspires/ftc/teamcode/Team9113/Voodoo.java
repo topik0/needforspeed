@@ -46,6 +46,13 @@ public class Voodoo extends LinearOpMode {
         MecanumDrive mecanum = new MecanumDrive(robot.drivetrain.drivetrain[0], robot.drivetrain.drivetrain[1], robot.drivetrain.drivetrain[2], robot.drivetrain.drivetrain[3]);
         waitForStart();
         while (opModeIsActive()) {
+            if(robot.flywheelsRunning) {
+                robot.flywheelFront.set(robot.velo / 2800);
+                robot.flywheelBack.set(-robot.flywheelFront.get());
+            }
+            if(!robot.flywheelsRunning) {
+                robot.stopFlywheels();
+            }
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = -gamepad1.left_stick_y * robot.drivetrain.currentThrottle;
             double lx = gamepad1.left_stick_x * robot.drivetrain.currentThrottle;
@@ -66,6 +73,7 @@ public class Voodoo extends LinearOpMode {
                 stopwatch(0);
             }
             if (gamepad[0].left_bumper && System.currentTimeMillis() - milliTime[1] > timeThreshold) {
+
                 robot.toggleFlywheels();
 //                robot.drivetrain.toggleNormalDrive();
 //                if (turningSpeed >= .75)
@@ -79,22 +87,24 @@ public class Voodoo extends LinearOpMode {
             }
             if (gamepad[0].dpad_right && System.currentTimeMillis() - milliTime[2] > 25) {
                 robot.flapAdjustUp();
-                robot.setFlywheelsModeNormal();
+                //robot.setFlywheelsModeNormal();
                 stopwatch(2);
             }
             if (gamepad[0].dpad_left && System.currentTimeMillis() - milliTime[3] > 25) {
                 robot.flapAdjustDown();
-                robot.setFlywheelsModeSlow();
+                //robot.setFlywheelsModeSlow();
                 stopwatch(3);
             }
             if (gamepad[0].dpad_up && System.currentTimeMillis() - milliTime[4] > timeThreshold) {
                 robot.flapUpperPosition();
-                robot.flywheelsSlow = false;
+                robot.flywheelFast();
+                //robot.flywheelsSlow = false;
                 stopwatch(4);
             }
             if (gamepad[0].dpad_down && System.currentTimeMillis() - milliTime[5] > timeThreshold) {
                 robot.flapLowerPosition();
-                robot.flywheelsSlow = true;
+                robot.flywheelSlow();
+                //robot.flywheelsSlow = true;
                 stopwatch(5);
             }
             if (gamepad[0].a && System.currentTimeMillis() - milliTime[6] > 500) {
@@ -120,7 +130,7 @@ public class Voodoo extends LinearOpMode {
             telemetry.addData("TPS", robot.flywheelFront.getCorrectedVelocity());
             telemetry.update();
             TelemetryPacket packet = new TelemetryPacket();
-            packet.put("Flywheel Velo ", ((DcMotorEx) robot.flywheelFront.motor).getVelocity());
+            packet.put("Flywheel Velo ", robot.flywheelFront.getCorrectedVelocity());
             dashboard.sendTelemetryPacket(packet);
         }
     }

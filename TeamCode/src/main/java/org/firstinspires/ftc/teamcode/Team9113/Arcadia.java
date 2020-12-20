@@ -1,11 +1,12 @@
 package org.firstinspires.ftc.teamcode.Team9113;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
-
+@Disabled
 @TeleOp(name = "Arcadia", group = "Linear Opmode")
 public class Arcadia extends LinearOpMode {
     double milliTime, milliTimeTwo;

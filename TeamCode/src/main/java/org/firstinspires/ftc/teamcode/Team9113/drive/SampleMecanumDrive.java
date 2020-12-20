@@ -21,6 +21,7 @@ import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.acmerobotics.roadrunner.trajectory.constraints.DriveConstraints;
 import com.acmerobotics.roadrunner.trajectory.constraints.MecanumConstraints;
 import com.acmerobotics.roadrunner.util.NanoClock;
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -30,6 +31,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.Team9113.Robot;
 import org.firstinspires.ftc.teamcode.Team9113.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.Team9113.util.LynxModuleUtil;
 
@@ -52,16 +54,16 @@ import static org.firstinspires.ftc.teamcode.Team9113.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(.2, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(.65, 0, 0);
-
-    public static double LATERAL_MULTIPLIER = 1.16911852;
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(2.1, 0, 0);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(4, 0, 0);
+    public static double speed = 0;
+    public static double LATERAL_MULTIPLIER = 1.75;
 
     public static double VX_WEIGHT = 1;
     public static double VY_WEIGHT = 1;
     public static double OMEGA_WEIGHT = 1;
 
-    public static int POSE_HISTORY_LIMIT = 100;
+    public static int POSE_HISTORY_LIMIT = -1;
 
     public enum Mode {
         IDLE,
@@ -82,7 +84,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     private TrajectoryFollower follower;
 
     private LinkedList<Pose2d> poseHistory;
-
+   public static Motor flywheelBack, flywheelFront;
+   // public DcMotor leftIntake, rightIntake;
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     // private BNO055IMU imu;
@@ -127,13 +130,28 @@ public class SampleMecanumDrive extends MecanumDrive {
         // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
         // upward (normal to the floor) using a command like the following:
         // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
-
-        leftFront = hardwareMap.get(DcMotorEx.class, "upperLeft");
-        leftRear = hardwareMap.get(DcMotorEx.class, "lowerLeft");
-        rightRear = hardwareMap.get(DcMotorEx.class, "lowerRight");
-        rightFront = hardwareMap.get(DcMotorEx.class, "upperRight");
-        leftFront.setDirection(DcMotor.Direction.REVERSE);
+        flywheelFront = new Motor(hardwareMap, "flywheelFront", Motor.GoBILDA.BARE);
+        flywheelFront.setRunMode(Motor.RunMode.VelocityControl);
+        flywheelFront.setVeloCoefficients(12, 0, 0);
+        flywheelBack = new Motor(hardwareMap, "flywheelBack", Motor.GoBILDA.BARE);
+        flywheelBack.setInverted(true);
+        rightRear = hardwareMap.get(DcMotorEx.class, "upperLeft");
+        rightFront = hardwareMap.get(DcMotorEx.class, "lowerLeft");
+         leftFront = hardwareMap.get(DcMotorEx.class, "lowerRight");
+        leftRear  = hardwareMap.get(DcMotorEx.class, "upperRight");
+       leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftRear.setDirection(DcMotor.Direction.REVERSE);
+       /* flywheelFront = new Motor(hardwareMap, "flywheelFront", Motor.GoBILDA.BARE);
+        flywheelFront.setRunMode(Motor.RunMode.VelocityControl);
+        flywheelFront.setVeloCoefficients(12, 0, 0);
+        flywheelBack = new Motor(hardwareMap, "flywheelBack", Motor.GoBILDA.BARE);
+        flywheelBack.setInverted(true);
+        leftIntake = hardwareMap.dcMotor.get("leftIntake");
+        rightIntake = hardwareMap.dcMotor.get("rightIntake");
+        leftIntake.setDirection(DcMotor.Direction.REVERSE);
+        rightIntake.setDirection(DcMotor.Direction.REVERSE); */
+
+
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
@@ -214,6 +232,9 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void update() {
+        flywheelFront.set(speed / 2800);
+        flywheelBack.set(-flywheelFront.get());
+
         updatePoseEstimate();
 
         Pose2d currentPose = getPoseEstimate();

@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.Team9113;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
+@Disabled
 @TeleOp(name = "LoneSoldier", group = "Linear Opmode")
 public class LoneSoldier extends LinearOpMode {
     private double[] milliTime = new double[6];

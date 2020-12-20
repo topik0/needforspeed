@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.firstinspires.ftc.teamcode.Team9113.Robot;
 import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 
 /*
@@ -15,6 +16,8 @@ import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 public class SplineTest extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
+        Robot robot = new Robot(hardwareMap, true); //added
+        robot.initHardware(); //added
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         waitForStart();
