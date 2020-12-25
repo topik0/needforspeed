@@ -5,8 +5,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class Flywheels {
     public Motor flywheelFront, flywheelBack;
-    private boolean flywheelsRunning = false;
-    private double flywheelsTargetVelocity = 1600;
+    private boolean running = false, atMaxVelocity = false;
+    private double targetVelocity = 0;
+    private final double maxVelocity = 2400;
+    private double power = 0;
     public static double kP = 12, kI = 0, kD = 0;
     private HardwareMap hwMap;
 
@@ -18,29 +20,42 @@ public class Flywheels {
         flywheelBack = new Motor(hwMap, "flywheelBack", Motor.GoBILDA.BARE);
     }
 
+    public void run() {
+        setPower(targetVelocity);
+        running = targetVelocity >= .01;
+        atMaxVelocity = doubleEquals(targetVelocity, maxVelocity);
+    }
+
+    public void halt() {
+        targetVelocity = 0;
+        atMaxVelocity = doubleEquals(targetVelocity, maxVelocity);
+        setPower(0);
+    }
+
     public void start() {
-        flywheelFront.set(flywheelsTargetVelocity / 2800);
-        flywheelBack.set(flywheelFront.get());
-        flywheelsRunning = true;
+        setPower(maxVelocity / 2800);
+        running = true;
     }
 
     public void setPower(double power) {
+        this.power = power;
         flywheelFront.set(power);
         flywheelBack.set(flywheelFront.get());
+        running = power >= .01;
     }
 
     public void stop() {
         flywheelFront.set(0);
         flywheelBack.set(0);
-        flywheelsRunning = false;
+        running = false;
     }
 
-    public boolean flywheelsRunning() {
-        return flywheelsRunning;
+    public boolean running() {
+        return running;
     }
 
     public double getTargetVelocity() {
-        return flywheelsTargetVelocity;
+        return targetVelocity;
     }
 
     public double getActualVelocity() {
@@ -48,13 +63,35 @@ public class Flywheels {
     }
 
     public void setTargetVelocity(double velocity) {
-        flywheelFront.set(velocity);
-        flywheelBack.set(flywheelFront.get());
+        targetVelocity = velocity;
+    }
+
+    public void doMaxVelocity() {
+        targetVelocity = maxVelocity;
+    }
+
+    public double getPower() {
+        return power;
     }
 
     public void toggle() {
-        if (flywheelsRunning)
+        if (running)
             stop();
         else start();
+    }
+
+    public boolean atMaxVelocity() {
+        return atMaxVelocity;
+    }
+
+    public void togglePID() {
+        if (atMaxVelocity())
+            halt();
+        else doMaxVelocity();
+    }
+
+    private static boolean doubleEquals(double a, double b) {
+        if (a == b) return true;
+        return Math.abs(a - b) < 0.0000001;
     }
 }
