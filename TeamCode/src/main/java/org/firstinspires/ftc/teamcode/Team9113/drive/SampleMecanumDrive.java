@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.Team9113.Robot.Flywheels;
 import org.firstinspires.ftc.teamcode.Team9113.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.Team9113.util.LynxModuleUtil;
 
@@ -75,6 +76,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         FOLLOW_TRAJECTORY
     }
 
+    public Flywheels flywheels;
+
     private FtcDashboard dashboard;
     private NanoClock clock;
 
@@ -91,7 +94,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     private LinkedList<Pose2d> poseHistory;
     //public static Motor flywheelBack, flywheelFront;
 
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront, flywheelBack, flywheelFront;
+    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
     //private BNO055IMU imu;
 
@@ -104,6 +107,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
+
+        flywheels = new Flywheels(hardwareMap);
 
         clock = NanoClock.system();
 
@@ -144,8 +149,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         //flywheelFront.setRunMode(Motor.RunMode.VelocityControl);
         //flywheelFront.setVeloCoefficients(Flywheels.kP, Flywheels.kI, Flywheels.kD);
         //flywheelBack = new Motor(hardwareMap, "flywheelBack", Motor.GoBILDA.BARE);
-        flywheelFront = hardwareMap.get(DcMotorEx.class, "flywheelFront");
-        flywheelBack = hardwareMap.get(DcMotorEx.class, "flywheelBack");
+//        flywheelFront = hardwareMap.get(DcMotorEx.class, "flywheelFront");
+//        flywheelBack = hardwareMap.get(DcMotorEx.class, "flywheelBack");
         rightRear = hardwareMap.get(DcMotorEx.class, "upperLeft");
         rightFront = hardwareMap.get(DcMotorEx.class, "lowerLeft");
         leftFront = hardwareMap.get(DcMotorEx.class, "lowerRight");
@@ -234,6 +239,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void update() {
+        flywheels.run();
         updatePoseEstimate();
 
         Pose2d currentPose = getPoseEstimate();
@@ -316,6 +322,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         fieldOverlay.setStroke("#3F51B5");
         DashboardUtil.drawRobot(fieldOverlay, currentPose);
+
+        flywheels.run();
 
         dashboard.sendTelemetryPacket(packet);
     }
