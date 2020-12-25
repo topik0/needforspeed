@@ -46,6 +46,7 @@ public class Voodoo extends LinearOpMode {
         MecanumDrive mecanum = new MecanumDrive(robot.drivetrain.drivetrain[0], robot.drivetrain.drivetrain[1], robot.drivetrain.drivetrain[2], robot.drivetrain.drivetrain[3]);
         waitForStart();
         while (opModeIsActive()) {
+            robot.flywheels.run();
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = -gamepad1.left_stick_y * robot.drivetrain.currentThrottle;
             double lx = gamepad1.left_stick_x * robot.drivetrain.currentThrottle;
@@ -58,12 +59,12 @@ public class Voodoo extends LinearOpMode {
             if ((gamepad1.right_stick_x <= .01 && gamepad1.left_stick_x <= .01) && (gamepad1.left_stick_y <= 0.01 && gamepad1.left_stick_x <= .01)) {
                 robot.drivetrain.brake();
             }
-            if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 150) {
+            if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 75) {
                 robot.shootDisc();
                 stopwatch(0);
             }
             if (gamepad[0].left_bumper && System.currentTimeMillis() - milliTime[1] > timeThreshold) {
-                robot.flywheels.toggle();
+                robot.flywheels.togglePID();
                 stopwatch(1);
             }
             if (gamepad1.back) {
@@ -79,12 +80,10 @@ public class Voodoo extends LinearOpMode {
             }
             if (gamepad[0].dpad_up && System.currentTimeMillis() - milliTime[4] > timeThreshold) {
                 robot.flapUpperPosition();
-                robot.flywheels.stop();
                 stopwatch(4);
             }
             if (gamepad[0].dpad_down && System.currentTimeMillis() - milliTime[5] > timeThreshold) {
                 robot.flapLowerPosition();
-                robot.flywheels.start();
                 stopwatch(5);
             }
             if (gamepad[0].a && System.currentTimeMillis() - milliTime[6] > 500) {
