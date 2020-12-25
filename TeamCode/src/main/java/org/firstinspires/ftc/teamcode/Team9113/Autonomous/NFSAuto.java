@@ -72,7 +72,7 @@ public class NFSAuto extends LinearOpMode {
         traj[0][1] = drive.trajectoryBuilder(traj[0][0].end(), false)
                 .splineTo(new Vector2d(-6, -12), Math.toRadians(-11))
                 .addTemporalMarker(.2, () -> {
-                    //SampleMecanumDrive.flyWheelVelocity = 1550;
+                    drive.flywheels.doMaxVelocity();
                 })
                 .build();
         traj[0][2] = drive.trajectoryBuilder(traj[0][1].end(), false)
@@ -99,7 +99,7 @@ public class NFSAuto extends LinearOpMode {
                 .splineTo(new Vector2d(24, -31), Math.toRadians(0))
                 .addTemporalMarker(2, robot::wobbleDown)
                 .addDisplacementMarker(() -> {
-                    //SampleMecanumDrive.flyWheelVelocity = 1550;
+                    drive.flywheels.doMaxVelocity();
                 })
                 .build();
         traj[1][1] = drive.trajectoryBuilder(traj[1][0].end(), true)
@@ -115,14 +115,13 @@ public class NFSAuto extends LinearOpMode {
         traj[1][3] = drive.trajectoryBuilder(traj[1][2].end(), false)
                 .splineTo(new Vector2d(-4.5, -36), Math.toRadians(-5))
                 .addTemporalMarker(.1, () -> {
-                    //SampleMecanumDrive.flyWheelVelocity = 1550;
+                    drive.flywheels.doMaxVelocity();
                     robot.flapUpperPosition();
                 })
                 .addTemporalMarker(1, robot::stopIntake)
                 .build();
         traj[1][4] = drive.trajectoryBuilder(traj[1][3].end(), true)
                 .splineTo(new Vector2d(-19, -36), Math.toRadians(0))
-                // .addDisplacementMarker(robot::startFlywheels)
                 .build();
         traj[1][5] = drive.trajectoryBuilder(traj[1][4].end(), false)
                 .splineTo(new Vector2d(0, -36), Math.toRadians(0))
@@ -142,7 +141,7 @@ public class NFSAuto extends LinearOpMode {
                 .splineTo(new Vector2d(-4.5, -36), Math.toRadians(180))
                 .addTemporalMarker(.5, () -> {
                     robot.flapUpperPosition();
-                    //SampleMecanumDrive.flyWheelVelocity = 1550;
+                    drive.flywheels.doMaxVelocity();
                 })
                 .build();
         traj[2][2] = drive.trajectoryBuilder(traj[2][1].end(), true)
@@ -155,7 +154,7 @@ public class NFSAuto extends LinearOpMode {
         traj[2][4] = drive.trajectoryBuilder(traj[2][3].end())
                 .lineTo(new Vector2d(-34, -36))
                 .addDisplacementMarker(() -> {
-                    //SampleMecanumDrive.flyWheelVelocity = 1550;
+                    drive.flywheels.doMaxVelocity();
                 })
                 .build();
         traj[2][5] = drive.trajectoryBuilder(traj[2][4].end(), false)
@@ -206,7 +205,7 @@ public class NFSAuto extends LinearOpMode {
                 robot.sleep(300);
                 robot.shootDisc();
                 robot.sleep(300);
-                //SampleMecanumDrive.flyWheelVelocity = 0;
+                drive.flywheels.halt();
                 drive.followTrajectory(traj[0][2]);
                 robot.closeClaw();
                 robot.sleep(300);
@@ -237,22 +236,20 @@ public class NFSAuto extends LinearOpMode {
                 robot.sleep(200);
                 robot.shootDisc();
                 robot.sleep(200);
-                //SampleMecanumDrive.flyWheelVelocity = 0;
+                drive.flywheels.halt();
                 drive.followTrajectory(traj[1][2]);
                 drive.followTrajectory(traj[1][3]);
                 robot.shootDisc();
                 robot.sleep(200);
-                //SampleMecanumDrive.flyWheelVelocity = 0;
+                drive.flywheels.halt();
                 break;
             case "FOUR":
                 telemetry.addData("There are four rings", "");
-                //for(int i = 0; i < 9; i++)
                 drive.followTrajectory(traj[2][0]);
                 robot.openClaw();
                 robot.sleep(200);
                 robot.wobbleUp();
                 robot.sleep(100);
-
                 drive.followTrajectory(traj[2][1]);
                 robot.shootDisc();
                 robot.sleep(300);
@@ -260,14 +257,10 @@ public class NFSAuto extends LinearOpMode {
                 robot.sleep(300);
                 robot.shootDisc();
                 robot.sleep(300);
-                //SampleMecanumDrive.flywheelFront.set(0);
-
+                drive.flywheels.halt();
                 drive.followTrajectory(traj[2][2]); //knock
-
                 drive.followTrajectory(traj[2][3]); //backup
-
                 drive.followTrajectory(traj[2][4]); //intake
-
                 drive.followTrajectory(traj[2][5]); //shoot
                 robot.shootDisc();
                 robot.sleep(300);
@@ -275,14 +268,12 @@ public class NFSAuto extends LinearOpMode {
                 robot.sleep(300);
                 robot.shootDisc();
                 robot.sleep(300);
-                //SampleMecanumDrive.flywheelFront.set(0);
-
+                drive.flywheels.halt();
                 drive.followTrajectory(traj[2][6]); //intake
-
                 drive.followTrajectory(traj[2][7]); //shoot 1
                 robot.shootDisc();
                 robot.sleep(300);
-                //SampleMecanumDrive.flywheelFront.set(0);
+                drive.flywheels.halt();
                 break;
         }
         telemetry.update();
