@@ -3,17 +3,16 @@ package org.firstinspires.ftc.teamcode.Team9113;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.arcrobotics.ftclib.drivebase.MecanumDrive;
-import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.Team9113.Robot.Robot;
 
 @TeleOp(name = "Voodoo", group = "Linear Opmode")
 public class Voodoo extends LinearOpMode {
@@ -24,6 +23,7 @@ public class Voodoo extends LinearOpMode {
     private double turningSpeed = .75;
     BNO055IMU imu;
     Orientation angles;
+
 
     @Override
     public void runOpMode() {
@@ -46,65 +46,45 @@ public class Voodoo extends LinearOpMode {
         MecanumDrive mecanum = new MecanumDrive(robot.drivetrain.drivetrain[0], robot.drivetrain.drivetrain[1], robot.drivetrain.drivetrain[2], robot.drivetrain.drivetrain[3]);
         waitForStart();
         while (opModeIsActive()) {
-            if(robot.flywheelsRunning) {
-                robot.flywheelFront.set(robot.velo / 2800);
-                robot.flywheelBack.set(-robot.flywheelFront.get());
-            }
-            if(!robot.flywheelsRunning) {
-                robot.stopFlywheels();
-            }
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = -gamepad1.left_stick_y * robot.drivetrain.currentThrottle;
             double lx = gamepad1.left_stick_x * robot.drivetrain.currentThrottle;
-            double rx = Math.sqrt(Math.abs(gamepad1.right_stick_x)) * gamepad1.right_stick_x /* * robot.drivetrain.turnThrottle */;
+            double rx = Math.sqrt(Math.abs(gamepad1.right_stick_x)) * gamepad1.right_stick_x * robot.drivetrain.turnThrottle;
             double heading = angles.firstAngle - offSetAngle;
             double speed = Math.hypot(ly, lx);
             double y = speed * Math.sin(Math.atan2(ly, lx) - heading);
             double x = speed * Math.cos(Math.atan2(ly, lx) - heading);
             mecanum.driveFieldCentric(x, y, rx, heading + 90, false);
-            if(gamepad1.right_stick_x ==0 && gamepad1.left_stick_x==0 && gamepad1.left_stick_y==0) {
-                robot.drivetrain.drivetrain[0].setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-                robot.drivetrain.drivetrain[1].setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-                robot.drivetrain.drivetrain[2].setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-                robot.drivetrain.drivetrain[3].setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+            if ((gamepad1.right_stick_x <= .01 && gamepad1.left_stick_x <= .01) && (gamepad1.left_stick_y <= 0.01 && gamepad1.left_stick_x <= .01)) {
+                robot.drivetrain.brake();
             }
             if (gamepad[0].right_bumper && System.currentTimeMillis() - milliTime[0] > 150) {
                 robot.shootDisc();
                 stopwatch(0);
             }
             if (gamepad[0].left_bumper && System.currentTimeMillis() - milliTime[1] > timeThreshold) {
-
-                robot.toggleFlywheels();
-//                robot.drivetrain.toggleNormalDrive();
-//                if (turningSpeed >= .75)
-//                    turningSpeed = .5;
-//                else
-//                    turningSpeed = .75;
+                robot.flywheels.toggle();
                 stopwatch(1);
             }
             if (gamepad1.back) {
                 offSetAngle = angles.firstAngle;
             }
             if (gamepad[0].dpad_right && System.currentTimeMillis() - milliTime[2] > 25) {
-                robot.flapAdjustUp();
-                //robot.setFlywheelsModeNormal();
+                robot.drivetrain.mecanumDrive.turn(Math.toRadians(6));
                 stopwatch(2);
             }
             if (gamepad[0].dpad_left && System.currentTimeMillis() - milliTime[3] > 25) {
-                robot.flapAdjustDown();
-                //robot.setFlywheelsModeSlow();
+                robot.drivetrain.mecanumDrive.turn(Math.toRadians(-6));
                 stopwatch(3);
             }
             if (gamepad[0].dpad_up && System.currentTimeMillis() - milliTime[4] > timeThreshold) {
                 robot.flapUpperPosition();
-                robot.flywheelFast();
-                //robot.flywheelsSlow = false;
+                robot.flywheels.stop();
                 stopwatch(4);
             }
             if (gamepad[0].dpad_down && System.currentTimeMillis() - milliTime[5] > timeThreshold) {
                 robot.flapLowerPosition();
-                robot.flywheelSlow();
-                //robot.flywheelsSlow = true;
+                robot.flywheels.start();
                 stopwatch(5);
             }
             if (gamepad[0].a && System.currentTimeMillis() - milliTime[6] > 500) {
@@ -117,7 +97,7 @@ public class Voodoo extends LinearOpMode {
             }
             if (gamepad[0].start) {
                 robot.flap.setPosition(.3);
-                robot.delay(100);
+                sleep(100);
             }
             if (gamepad[0].y && System.currentTimeMillis() - milliTime[8] > timeThreshold) {
                 robot.toggleWobble();
@@ -127,10 +107,10 @@ public class Voodoo extends LinearOpMode {
                 robot.reverseIntake();
             } else if (robot.intakeRunning)
                 robot.startIntake();
-            telemetry.addData("TPS", robot.flywheelFront.getCorrectedVelocity());
+            telemetry.addData("Flywheel TPS", robot.flywheels.flywheelFront.getCorrectedVelocity());
             telemetry.update();
             TelemetryPacket packet = new TelemetryPacket();
-            packet.put("Flywheel Velo ", robot.flywheelFront.getCorrectedVelocity());
+            packet.put("Flywheel Velocity", robot.flywheels.flywheelFront.getCorrectedVelocity());
             dashboard.sendTelemetryPacket(packet);
         }
     }
