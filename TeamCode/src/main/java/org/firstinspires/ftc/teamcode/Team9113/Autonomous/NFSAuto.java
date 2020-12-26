@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Team9113.Autonomous;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.trajectory.Trajectory;
@@ -15,6 +16,7 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
+@Config
 @Autonomous(name = "NFSAuto", group = "Linear Opmode")
 public class NFSAuto extends LinearOpMode {
     private static final int CAMERA_WIDTH = 320; // width  of wanted camera resolution

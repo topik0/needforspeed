@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.Team9113.Robot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+@Config
 public class Robot extends LinearOpMode {
     /*
     Robot constructor
@@ -17,14 +19,9 @@ public class Robot extends LinearOpMode {
     public boolean intakeRunning, intakeReversed;
     public boolean clawClosed = true, wobbleUp = true;
     double flapPosition;
-    double flapHighGoal = .403, flapPowerShot = .43;
-    double clawClosePosition = .74;
+    public static double flapHighGoal = .403, flapPowerShot = .43, shootDelay = 50;
+    public static double clawClosePosition = .74;
     public double velo = 0;
-    //private double kI;
-    //public static double kp;
-    // public static double kd;
-    //PIDController pcont;
-    // public RobotPreferences pref;
 
     public Robot(HardwareMap hwMap) {
         this.hwMap = hwMap;
@@ -109,7 +106,7 @@ public class Robot extends LinearOpMode {
 
     public void shootDisc() {
         flicker.setPosition(.55);
-        sleep(70);
+        sleep((long) shootDelay);
         flicker.setPosition(.3);
     }
 
