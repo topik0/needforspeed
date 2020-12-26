@@ -1,15 +1,17 @@
 package org.firstinspires.ftc.teamcode.Team9113.Robot;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+@Config
 public class Flywheels {
     public Motor flywheelFront, flywheelBack;
     private boolean running = false, atMaxVelocity = false;
-    private double targetVelocity = 0;
-    private final double maxVelocity = 2400;
-    private double power = 0;
-    public static double kP = 12, kI = 0, kD = 0;
+    public static double targetVelocity = 0;
+    public static double maxVelocity = 1900;
+    public static double power = 0;
+    public static double kP = 16, kI = 0, kD = 0;
     private HardwareMap hwMap;
 
     public Flywheels(HardwareMap hwMap) {
@@ -21,7 +23,7 @@ public class Flywheels {
     }
 
     public void run() {
-        setPower(targetVelocity);
+        setPower(targetVelocity / 2800);
         running = targetVelocity >= .01;
         atMaxVelocity = doubleEquals(targetVelocity, maxVelocity);
     }
@@ -30,6 +32,7 @@ public class Flywheels {
         targetVelocity = 0;
         atMaxVelocity = doubleEquals(targetVelocity, maxVelocity);
         setPower(0);
+        running = false;
     }
 
     public void start() {
@@ -38,7 +41,7 @@ public class Flywheels {
     }
 
     public void setPower(double power) {
-        this.power = power;
+        Flywheels.power = power;
         flywheelFront.set(power);
         flywheelBack.set(flywheelFront.get());
         running = power >= .01;
