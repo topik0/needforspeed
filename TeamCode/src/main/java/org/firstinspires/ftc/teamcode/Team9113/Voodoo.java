@@ -13,6 +13,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.Team9113.Robot.Drivetrain;
 import org.firstinspires.ftc.teamcode.Team9113.Robot.Robot;
 
 @Config
@@ -51,12 +52,16 @@ public class Voodoo extends LinearOpMode {
             angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = -gamepad1.left_stick_y * robot.drivetrain.currentThrottle;
             double lx = gamepad1.left_stick_x * robot.drivetrain.currentThrottle;
-            double rx = Math.sqrt(Math.abs(gamepad1.right_stick_x)) * gamepad1.right_stick_x * robot.drivetrain.turnThrottle;
-            double heading = angles.firstAngle - offSetAngle;
+            double rx = -1 * Math.sqrt(Math.abs(gamepad1.right_stick_x)) * gamepad1.right_stick_x * robot.drivetrain.turnThrottle;
+            double heading = angles.firstAngle - offSetAngle + 90;
             double speed = Math.hypot(ly, lx);
             double y = speed * Math.sin(Math.atan2(ly, lx) - heading);
             double x = speed * Math.cos(Math.atan2(ly, lx) - heading);
-            mecanum.driveFieldCentric(x, y, rx, heading + 90, false);
+            robot.drivetrain.drivetrain[2].set(-1 * (y-x+rx));
+            robot.drivetrain.drivetrain[0].set(-1 * (y+x+rx));
+            robot.drivetrain.drivetrain[1].set(-1 * (y-x-rx));
+            robot.drivetrain.drivetrain[3].set(-1 * (y+x-rx));
+            /*mecanum.driveFieldCentric(x, y, rx, heading + 270, false); */
             if ((gamepad1.right_stick_x <= .01 && gamepad1.left_stick_x <= .01) && (gamepad1.left_stick_y <= 0.01 && gamepad1.left_stick_x <= .01)) {
                 robot.drivetrain.brake();
             }

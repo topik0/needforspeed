@@ -11,7 +11,7 @@ public class Flywheels {
     public static double targetVelocity = 0;
     public static double maxVelocity = 1900;
     public static double power = 0;
-    public static double kP = 16, kI = 0, kD = 0;
+    public static double kP = 12, kI = 12, kD = 0.3;
     private HardwareMap hwMap;
 
     public Flywheels(HardwareMap hwMap) {

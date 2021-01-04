@@ -25,13 +25,16 @@ public class Drivetrain {
     public Drivetrain(HardwareMap hwMap) {
         this.hwMap = hwMap;
         for (int i = 0; i < 4; i++) {
-            String[] drivetrainNames = {"upperLeft", "upperRight", "lowerLeft", "lowerRight"};
+            String[] drivetrainNames = {"lowerRight", "lowerLeft", "upperRight", "upperLeft"};
             drivetrain[i] = new Motor(this.hwMap, drivetrainNames[i], Motor.GoBILDA.RPM_435);
             drivetrain[i].setRunMode(Motor.RunMode.RawPower);
         }
         mecanumDrive = new SampleMecanumDrive(hwMap);
+       /* drivetrain[1].setInverted(true);
+        drivetrain[3].setInverted(true);
         drivetrain[0].setInverted(true);
-        drivetrain[2].setInverted(true);
+        drivetrain[2].setInverted(true); */
+
     }
 
     public void toggleNormalDrive() {

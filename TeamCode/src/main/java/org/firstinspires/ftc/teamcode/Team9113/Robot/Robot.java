@@ -14,13 +14,13 @@ public class Robot extends LinearOpMode {
     protected HardwareMap hwMap;
     public Drivetrain drivetrain;
     public Flywheels flywheels;
-    public Servo flap, flicker, claw, wobble;
+    public Servo flap, flicker, claw, wobble, intakeStopper;
     public DcMotor leftIntake, rightIntake;
     public boolean intakeRunning, intakeReversed;
     public boolean clawClosed = true, wobbleUp = true;
     double flapPosition;
-    public static double flapHighGoal = .403, flapPowerShot = .43, shootDelay = 50;
-    public static double clawClosePosition = .74;
+    public static double flapHighGoal = .2785, flapPowerShot = .3, shootDelay = 80;
+    public static double clawClosePosition = .42;
     public double velo = 0;
 
     public Robot(HardwareMap hwMap) {
@@ -46,10 +46,9 @@ public class Robot extends LinearOpMode {
         flicker = hwMap.servo.get("flicker");
         claw = hwMap.servo.get("claw");
         wobble = hwMap.servo.get("wobble");
+        intakeStopper = hwMap.servo.get("intakeStopper");
         leftIntake = hwMap.dcMotor.get("leftIntake");
         rightIntake = hwMap.dcMotor.get("rightIntake");
-        leftIntake.setDirection(DcMotor.Direction.REVERSE);
-        rightIntake.setDirection(DcMotor.Direction.REVERSE);
         //flywheelFront.setVeloCoefficients(1.27272727273, 0, 0.01);
         // pcont = new PController(1);
         //pcont = new PIDController(5, 0, 0 );
@@ -58,14 +57,16 @@ public class Robot extends LinearOpMode {
     public void startPositions() {
         flap.setPosition(flapHighGoal);
         wobbleUp();
-        flicker.setPosition(0.3);
+        flicker.setPosition(.55);
         claw.setPosition(clawClosePosition);
+        intakeStopper.setPosition(.85);
     }
 
     public void startPositions(boolean isAuto) {
-        flap.setPosition(.3);
-        flicker.setPosition(0.3);
+        flap.setPosition(.1);
+        flicker.setPosition(0.55);
         claw.setPosition(clawClosePosition);
+        intakeStopper.setPosition(.85);
         wobbleUp();
     }
 
@@ -80,10 +81,7 @@ public class Robot extends LinearOpMode {
     }
 
     public void intakeDown() {
-        leftIntake.setPower(.2);
-        // rightIntake.setPower(.2);
-        delay(250);
-        stopIntake();
+        intakeStopper.setPosition(1.0);
     }
 
     public void toggleWobble() {
@@ -105,9 +103,9 @@ public class Robot extends LinearOpMode {
     }
 
     public void shootDisc() {
-        flicker.setPosition(.55);
+        flicker.setPosition(0.65);
         sleep((long) shootDelay);
-        flicker.setPosition(.3);
+        flicker.setPosition(.55);
     }
 
     public void flapAdjustUp() {
@@ -135,7 +133,7 @@ public class Robot extends LinearOpMode {
     }
 
     public void openClaw() {
-        claw.setPosition(1);
+        claw.setPosition(.74);
         clawClosed = false;
         delay(350);
     }
