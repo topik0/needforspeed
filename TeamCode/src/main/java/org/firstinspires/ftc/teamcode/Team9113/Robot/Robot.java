@@ -19,9 +19,9 @@ public class Robot extends LinearOpMode {
     public boolean intakeRunning, intakeReversed;
     public boolean clawClosed = true, wobbleUp = true;
     double flapPosition;
-    public static double flapHighGoal = .2785, flapPowerShot = .3, shootDelay = 80;
+    public static double flapHighGoal = .2785, flapPowerShot = .3;
+    public static int shootDelay = 80;
     public static double clawClosePosition = .42;
-    public double velo = 0;
 
     public Robot(HardwareMap hwMap) {
         this.hwMap = hwMap;
@@ -104,7 +104,7 @@ public class Robot extends LinearOpMode {
 
     public void shootDisc() {
         flicker.setPosition(0.65);
-        sleep((long) shootDelay);
+        delay(shootDelay);
         flicker.setPosition(.55);
     }
 
@@ -172,8 +172,10 @@ public class Robot extends LinearOpMode {
             throw new IllegalArgumentException("Cannot have a delay less than zero");
         if (milliseconds == 0)
             return;
-        int timer = (int) System.currentTimeMillis();
-        while (System.currentTimeMillis() - timer <= milliseconds) ;
+        try {
+            wait(milliseconds);
+        }
+        catch(InterruptedException ignored){ }
     }
 
     /**
@@ -183,7 +185,6 @@ public class Robot extends LinearOpMode {
      **/
 
     @Override
-    public void runOpMode() throws InterruptedException {
-
+    public void runOpMode() {
     }
 }
