@@ -6,6 +6,10 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.apache.commons.lang3.time.StopWatch;
+
+import java.util.concurrent.TimeUnit;
+
 @Config
 public class Robot extends LinearOpMode {
     /*
@@ -111,36 +115,30 @@ public class Robot extends LinearOpMode {
     public void flapAdjustUp() {
         flapPosition = flap.getPosition();
         flap.setPosition(flapPosition - .005);
-        delay(50);
     }
 
     public void flapAdjustDown() {
         flapPosition = flap.getPosition();
         flap.setPosition(flapPosition + .005);
-        delay(50);
     }
 
     public void flapUpperPosition() {
         flap.setPosition(flapHighGoal);
-        delay(100);
         flapPosition = flap.getPosition();
     }
 
     public void flapLowerPosition() {
         flap.setPosition(flapPowerShot);
-        delay(100);
         flapPosition = flap.getPosition();
     }
 
     public void openClaw() {
         claw.setPosition(.74);
         clawClosed = false;
-        delay(350);
     }
 
     public void closeClaw() {
         claw.setPosition(clawClosePosition);
-        delay(350);
         clawClosed = true;
     }
 
@@ -172,10 +170,9 @@ public class Robot extends LinearOpMode {
             throw new IllegalArgumentException("Cannot have a delay less than zero");
         if (milliseconds == 0)
             return;
-        try {
-            wait(milliseconds);
-        }
-        catch(InterruptedException ignored){ }
+        StopWatch watch = new StopWatch();
+        watch.start();
+        while(watch.getTime(TimeUnit.MILLISECONDS) <= milliseconds);
     }
 
     /**
