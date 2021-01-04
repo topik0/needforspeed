@@ -168,11 +168,10 @@ public class Robot extends LinearOpMode {
     public void delay(int milliseconds) {
         if (milliseconds < 0)
             throw new IllegalArgumentException("Cannot have a delay less than zero");
-        if (milliseconds == 0)
-            return;
+        else if (milliseconds == 0) return;
         StopWatch watch = new StopWatch();
         watch.start();
-        while(watch.getTime(TimeUnit.MILLISECONDS) <= milliseconds);
+        while (watch.getTime(TimeUnit.MILLISECONDS) <= milliseconds) ;
     }
 
     /**
