@@ -18,7 +18,7 @@ public class Drivetrain {
     public double currentThrottle = normalDrive;
     public double currentTurnThrottle = turnThrottle;
 
-    public Motor[] drivetrain = new Motor[4];
+    public Motor[] motors = new Motor[4];
     protected HardwareMap hwMap;
     public SampleMecanumDrive mecanumDrive;
 
@@ -26,15 +26,18 @@ public class Drivetrain {
         this.hwMap = hwMap;
         for (int i = 0; i < 4; i++) {
             String[] drivetrainNames = {"lowerRight", "lowerLeft", "upperRight", "upperLeft"};
-            drivetrain[i] = new Motor(this.hwMap, drivetrainNames[i], Motor.GoBILDA.RPM_435);
-            drivetrain[i].setRunMode(Motor.RunMode.RawPower);
+            motors[i] = new Motor(this.hwMap, drivetrainNames[i], Motor.GoBILDA.RPM_435);
+            motors[i].setRunMode(Motor.RunMode.RawPower);
         }
         mecanumDrive = new SampleMecanumDrive(hwMap);
-       /* drivetrain[1].setInverted(true);
-        drivetrain[3].setInverted(true);
-        drivetrain[0].setInverted(true);
-        drivetrain[2].setInverted(true); */
+        reverseAll();
+    }
 
+    public void driveFieldCentric(double x, double y, double rx) {
+        motors[0].set(y - x + rx);
+        motors[1].set(y + x + rx);
+        motors[2].set(y - x - rx);
+        motors[3].set(y + x - rx);
     }
 
     public void toggleNormalDrive() {
@@ -80,26 +83,28 @@ public class Drivetrain {
     }
 
     public void brake() {
-        for (Motor motor : drivetrain)
+        for (Motor motor : motors)
             motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
+    public void reverseAll() {
+        for (Motor motor : motors)
+            motor.setInverted(true);
+    }
+
     public void setPower(double power) {
-        for (int i = 0; i < 4; i++) {
-            drivetrain[i].set(power);
-        }
+        for (Motor motor : motors)
+            motor.set(power);
     }
 
     public void setLeftPower(double power) {
-        for (int i = 0; i <= 2; i += 2) {
-            drivetrain[i].set(power);
-        }
+        motors[0].set(power);
+        motors[2].set(power);
     }
 
     public void setRightPower(double power) {
-        for (int i = 1; i <= 3; i += 2) {
-            drivetrain[i].set(power);
-        }
+        motors[1].set(power);
+        motors[3].set(power);
     }
 
     public double getThrottle() {
