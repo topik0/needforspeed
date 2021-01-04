@@ -181,18 +181,18 @@ public class NFSAuto extends LinearOpMode {
         while (!isStarted() && camera.getFps() < 0) {
             telemetry.addData("Status", "Not Ready");
         }
-        String height = pipeline.getHeight().toString();
+        UGContourRingPipeline.Height height = pipeline.getHeight();
         double initTime = System.currentTimeMillis() - startTime;
         double safezoneThreshold = 2000;
         double safezoneTimer = System.currentTimeMillis();
         while (!isStarted() && System.currentTimeMillis() <= safezoneTimer + safezoneThreshold) {
-            height = pipeline.getHeight().toString();
+            height = pipeline.getHeight();
             telemetry.addData("Status", "Not Ready");
             telemetry.addData("Camera Initialization Time: ", initTime);
             telemetry.update();
         }
         while (!isStarted()) {
-            height = pipeline.getHeight().toString();
+            height = pipeline.getHeight();
             telemetry.addData("Status", "Ready");
             telemetry.addData("Ring count: ", height);
             telemetry.addData("Camera Initialization Time: ", initTime);
@@ -202,7 +202,7 @@ public class NFSAuto extends LinearOpMode {
         if (isStopRequested()) return;
         drive.setPoseEstimate(startPose);
         switch (height) {
-            case "ZERO":
+            case ZERO:
                 telemetry.addData("There are no rings", "");
                 drive.followTrajectory(traj[0][0]);
                 drive.turn(Math.toRadians(90));
@@ -234,7 +234,7 @@ public class NFSAuto extends LinearOpMode {
                 robot.delay(100);
                 drive.followTrajectory(traj[0][5]);
                 break;
-            case "ONE":
+            case ONE:
                 telemetry.addData("There is one ring", "");
                 drive.followTrajectory(traj[1][0]);
                 robot.openClaw();
@@ -269,7 +269,7 @@ public class NFSAuto extends LinearOpMode {
                 drive.followTrajectory(traj[1][5]);
                 drive.followTrajectory(traj[1][6]);
                 break;
-            case "FOUR":
+            case FOUR:
                 telemetry.addData("There are four rings", "");
                 drive.followTrajectory(traj[2][0]);
                 robot.openClaw();
