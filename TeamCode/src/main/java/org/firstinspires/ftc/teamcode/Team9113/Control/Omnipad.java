@@ -11,6 +11,8 @@ public class Omnipad {
     private double[] timer = new double[9];
     public static double cooldown = 350;
     public static int shootCooldown = 80;
+    public static int clawCooldown = 700;
+    public static int flapCooldown = 450;
 
     public Omnipad(Gamepad one, Gamepad two, Robot robot) {
         this.one = one;
@@ -31,15 +33,15 @@ public class Omnipad {
     }
 
     public boolean clawOpen() {
-        return evalBoolean(one.b, 1);
+        return evalBoolean(one.b, 1, clawCooldown);
     }
 
     public boolean clawClose() {
-        return evalBoolean(one.b, 1);
+        return evalBoolean(one.b, 1, clawCooldown);
     }
 
     public boolean clawToggle() {
-        return evalBoolean(one.b, 1);
+        return evalBoolean(one.b, 1, clawCooldown);
     }
 
     public boolean intakeStart() {
@@ -55,11 +57,11 @@ public class Omnipad {
     }
 
     public boolean lowerFlap() {
-        return evalBoolean(one.dpad_down, 3);
+        return evalBoolean(one.dpad_down, 3, flapCooldown);
     }
 
     public boolean raiseFlap() {
-        return evalBoolean(one.dpad_up, 4);
+        return evalBoolean(one.dpad_up, 4, flapCooldown);
     }
 
     public boolean setOffset() {
