@@ -1,42 +1,39 @@
 package org.firstinspires.ftc.teamcode.Team9113.Robot;
 
-import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 
+@Config
 public class Drivetrain {
     /**
      * upperLeft [0] upperRight [1]
      * lowerLeft [2] lowerRight [3]
      */
 
-    public double normalDrive = 1;
-    public double snailDrive = .65;
-    public double turnThrottle = .75;
-    public double snailTurnThrottle = .4;
-    public double currentThrottle = normalDrive;
-    public double currentTurnThrottle = turnThrottle;
+    public static double normalThrottle = 1;
+    public static double snailDrive = .65;
+    public static double turnThrottle = .75;
+    public static double snailTurnThrottle = .4;
+    public static double currentThrottle = normalThrottle;
+    public static double currentTurnThrottle = turnThrottle;
 
-    public Motor[] motors = new Motor[4];
-    protected HardwareMap hwMap;
+    public DcMotorEx[] motors;
     public SampleMecanumDrive mecanumDrive;
 
-    public Drivetrain(HardwareMap hwMap) {
-        this.hwMap = hwMap;
-        for (int i = 0; i < 4; i++) {
-            String[] drivetrainNames = {"lowerRight", "lowerLeft", "upperRight", "upperLeft"};
-            motors[i] = new Motor(this.hwMap, drivetrainNames[i], Motor.GoBILDA.RPM_435);
-            motors[i].setRunMode(Motor.RunMode.RawPower);
-        }
-        mecanumDrive = new SampleMecanumDrive(hwMap);
+    public Drivetrain(HardwareGenesis gen) {
+        motors = gen.drivetrainMotors;
+        mecanumDrive = new SampleMecanumDrive(gen.hwMap);
     }
 
     public void driveFieldCentric(double x, double y, double rx) {
-        motors[0].set(-1 * (y - x + rx));
-        motors[1].set(-1 * (y + x + rx));
-        motors[2].set(-1 * (y - x - rx));
-        motors[3].set(-1 * (y + x - rx));
+        motors[0].setPower(-1 * (y - x + rx));
+        motors[1].setPower(-1 * (y + x + rx));
+        motors[2].setPower(-1 * (y - x - rx));
+        motors[3].setPower(-1 * (y + x - rx));
     }
 
     public void toggleNormalDrive() {
@@ -47,7 +44,7 @@ public class Drivetrain {
     }
 
     public void enableNormalDrive() {
-        currentThrottle = normalDrive;
+        currentThrottle = normalThrottle;
         currentTurnThrottle = turnThrottle;
     }
 
@@ -69,7 +66,7 @@ public class Drivetrain {
     }
 
     public void disableSnailDrive() {
-        currentThrottle = normalDrive;
+        currentThrottle = normalThrottle;
         currentTurnThrottle = turnThrottle;
     }
 
@@ -78,32 +75,22 @@ public class Drivetrain {
     }
 
     public boolean isNormalDriveEnabled() {
-        return currentThrottle == normalDrive;
+        return currentThrottle == normalThrottle;
     }
 
     public void brake() {
-        for (Motor motor : motors)
-            motor.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        for (DcMotorEx motor : motors)
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
     public void reverseAll() {
-        for (Motor motor : motors)
-            motor.setInverted(true);
+        for (DcMotorEx motor : motors)
+            motor.setDirection(DcMotor.Direction.REVERSE);
     }
 
     public void setPower(double power) {
-        for (Motor motor : motors)
-            motor.set(power);
-    }
-
-    public void setLeftPower(double power) {
-        motors[0].set(power);
-        motors[2].set(power);
-    }
-
-    public void setRightPower(double power) {
-        motors[1].set(power);
-        motors[3].set(power);
+        for (DcMotorEx motor : motors)
+            motor.setPower(power);
     }
 
     public double getThrottle() {
