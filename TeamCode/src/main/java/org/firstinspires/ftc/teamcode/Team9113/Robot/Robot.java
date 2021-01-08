@@ -15,10 +15,11 @@ public class Robot extends LinearOpMode {
     /*
     Robot constructor
      */
-    protected HardwareMap hwMap;
+    private HardwareMap hwMap;
     public Drivetrain drivetrain;
     public Flywheels flywheels;
-    public Servo flap, flicker, claw, wobble, intakeStopper;
+    public Flicker flicker;
+    public Servo flap, claw, wobble, intakeStopper;
     public DcMotor leftIntake, rightIntake;
     public boolean intakeRunning, intakeReversed;
     public boolean clawClosed = true, wobbleUp = true;
@@ -31,6 +32,7 @@ public class Robot extends LinearOpMode {
         this.hwMap = hwMap;
         drivetrain = new Drivetrain(hwMap);
         flywheels = new Flywheels(hwMap);
+        flicker = new Flicker(hwMap, drivetrain.mecanumDrive);
         // pref = new RobotPreferences();
         initHardware();
         flapPosition = flap.getPosition();
@@ -47,7 +49,6 @@ public class Robot extends LinearOpMode {
      */
     public void initHardware() {
         flap = hwMap.servo.get("flap");
-        flicker = hwMap.servo.get("flicker");
         claw = hwMap.servo.get("claw");
         wobble = hwMap.servo.get("wobble");
         intakeStopper = hwMap.servo.get("intakeStopper");
@@ -61,14 +62,14 @@ public class Robot extends LinearOpMode {
     public void startPositions() {
         flap.setPosition(flapHighGoal);
         wobbleUp();
-        flicker.setPosition(.55);
+        flicker.startPosition();
         claw.setPosition(clawClosePosition);
         intakeStopper.setPosition(.85);
     }
 
     public void startPositions(boolean isAuto) {
         flap.setPosition(.1);
-        flicker.setPosition(0.55);
+        flicker.startPosition();
         claw.setPosition(clawClosePosition);
         intakeStopper.setPosition(.85);
         wobbleUp();
@@ -104,12 +105,6 @@ public class Robot extends LinearOpMode {
         setIntakePower(0);
         intakeRunning = false;
         intakeReversed = false;
-    }
-
-    public void shootDisc() {
-        flicker.setPosition(0.65);
-        delay(shootDelay);
-        flicker.setPosition(.55);
     }
 
     public void flapAdjustUp() {
@@ -165,20 +160,26 @@ public class Robot extends LinearOpMode {
         intakeReversed = true;
     }
 
-    public void delay(int milliseconds) {
-        if (milliseconds < 0)
-            throw new IllegalArgumentException("Cannot have a delay less than zero");
-        else if (milliseconds == 0) return;
-        StopWatch watch = new StopWatch();
-        watch.start();
-        while (watch.getTime(TimeUnit.MILLISECONDS) <= milliseconds) ;
+    public void delayWithFlywheelPID(double milliseconds) {
+        StopWatch stopwatch = new StopWatch();
+        stopwatch.start();
+        while (stopwatch.getTime() <= milliseconds)
+            flywheels.run();
     }
 
-    /**
-     * public void turnAsync(double angle) {
-     * drivetrain.mecanumDrive.turnAsync(angle);
-     * }
-     **/
+    public void delayWithAllPID(double milliseconds) {
+        StopWatch stopwatch = new StopWatch();
+        stopwatch.start();
+        while (stopwatch.getTime() <= milliseconds)
+            drivetrain.mecanumDrive.update();
+    }
+
+    /*
+    Turns the robot a specified angle measured in radians
+     */
+    public void turn(double angle) {
+        drivetrain.mecanumDrive.turn(angle);
+    }
 
     @Override
     public void runOpMode() {
