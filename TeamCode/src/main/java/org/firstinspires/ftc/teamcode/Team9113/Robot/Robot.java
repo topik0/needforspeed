@@ -40,6 +40,7 @@ public class Robot extends LinearOpMode {
 
     public Robot(HardwareMap hwMap, boolean noDrivetrain) {
         this.hwMap = hwMap;
+        flicker = new Flicker(hwMap, drivetrain.mecanumDrive);
         initHardware();
         flapPosition = flap.getPosition();
     }
@@ -54,9 +55,6 @@ public class Robot extends LinearOpMode {
         intakeStopper = hwMap.servo.get("intakeStopper");
         leftIntake = hwMap.dcMotor.get("leftIntake");
         rightIntake = hwMap.dcMotor.get("rightIntake");
-        //flywheelFront.setVeloCoefficients(1.27272727273, 0, 0.01);
-        // pcont = new PController(1);
-        //pcont = new PIDController(5, 0, 0 );
     }
 
     public void startPositions() {
