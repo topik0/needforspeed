@@ -7,54 +7,90 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 @Config
 public class Flywheels {
     public Motor flywheelFront, flywheelBack;
-    private boolean running = false, atMaxVelocity = false;
+    private State runState;
+    private State velocityState;
     public static double targetVelocity = 0;
     public static double maxVelocity = 1900;
     public static double power = 0;
     public static double kP = 12, kI = 12, kD = 0.3;
-    private HardwareMap hwMap;
 
-    public Flywheels(HardwareMap hwMap) {
-        this.hwMap = hwMap;
-        flywheelFront = new Motor(hwMap, "flywheelFront", Motor.GoBILDA.BARE);
+    private enum State {
+        RUNNING,
+        DORMANT,
+        LOWER_VELOCITY,
+        MAX_VELOCITY
+    }
+
+    public Flywheels(HardwareGenesis gen) {
+        flywheelFront = gen.flywheelFront;
         flywheelFront.setRunMode(Motor.RunMode.VelocityControl);
         flywheelFront.setVeloCoefficients(kP, kI, kD);
-        flywheelBack = new Motor(hwMap, "flywheelBack", Motor.GoBILDA.BARE);
+        flywheelBack = gen.flywheelBack;
+        runState = State.DORMANT;
+        setVelocityState();
+        setRunningState();
     }
 
     public void run() {
         setPower(targetVelocity / 2800);
-        running = targetVelocity >= .01;
-        atMaxVelocity = doubleEquals(targetVelocity, maxVelocity);
+        setVelocityState();
+        setRunningState();
     }
 
     public void halt() {
         targetVelocity = 0;
-        atMaxVelocity = doubleEquals(targetVelocity, maxVelocity);
+        setVelocityState();
+        setRunningState();
         setPower(0);
-        running = false;
+    }
+
+    public void setRunningState() {
+        if (targetVelocity <= .001) runState = State.DORMANT;
+        else runState = State.RUNNING;
+    }
+
+    public void setVelocityState() {
+        if (targetVelocity <= .001)
+            velocityState = State.DORMANT;
+        else if (doubleEquals(targetVelocity, maxVelocity))
+            velocityState = State.MAX_VELOCITY;
+        else
+            velocityState = State.LOWER_VELOCITY;
     }
 
     public void start() {
         setPower(maxVelocity / 2800);
-        running = true;
+        runState = State.RUNNING;
     }
 
     public void setPower(double power) {
         Flywheels.power = power;
         flywheelFront.set(power);
         flywheelBack.set(flywheelFront.get());
-        running = power >= .01;
+        if (Math.abs(power) <= .001) runState = State.DORMANT;
+        else runState = State.RUNNING;
     }
 
     public void stop() {
         flywheelFront.set(0);
         flywheelBack.set(0);
-        running = false;
+        runState = State.RUNNING;
+    }
+
+    public State getRunState() {
+        return runState;
+    }
+
+    public State getVelocityState() {
+        return velocityState;
+    }
+
+    public boolean atMaxVelocity() {
+        return velocityState == State.MAX_VELOCITY;
     }
 
     public boolean running() {
-        return running;
+        return runState == State.RUNNING;
     }
 
     public double getTargetVelocity() {
@@ -78,13 +114,9 @@ public class Flywheels {
     }
 
     public void toggle() {
-        if (running)
+        if (running())
             stop();
         else start();
-    }
-
-    public boolean atMaxVelocity() {
-        return atMaxVelocity;
     }
 
     public void togglePID() {
