@@ -30,14 +30,13 @@ public class Drivetrain {
             motors[i].setRunMode(Motor.RunMode.RawPower);
         }
         mecanumDrive = new SampleMecanumDrive(hwMap);
-        reverseAll();
     }
 
     public void driveFieldCentric(double x, double y, double rx) {
-        motors[0].set(y - x + rx);
-        motors[1].set(y + x + rx);
-        motors[2].set(y - x - rx);
-        motors[3].set(y + x - rx);
+        motors[0].set(-1 * (y - x + rx));
+        motors[1].set(-1 * (y + x + rx));
+        motors[2].set(-1 * (y - x - rx));
+        motors[3].set(-1 * (y + x - rx));
     }
 
     public void toggleNormalDrive() {
