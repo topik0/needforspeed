@@ -1,34 +1,34 @@
 package org.firstinspires.ftc.teamcode.Team9113.Control;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.Team9113.Robot.Robot;
+import org.firstinspires.ftc.teamcode.Team9113.Robot.Drivetrain;
 
+@Config
 public class Omnipad {
     private Gamepad one;
     private Gamepad two;
-    Robot robot;
     private double[] timer = new double[9];
     public static double cooldown = 350;
     public static int shootCooldown = 80;
     public static int clawCooldown = 700;
     public static int flapCooldown = 450;
 
-    public Omnipad(Gamepad one, Gamepad two, Robot robot) {
+    public Omnipad(Gamepad one, Gamepad two) {
         this.one = one;
         this.two = two;
-        this.robot = robot;
     }
 
-    public boolean wobbleUp() {
+    public boolean armUp() {
         return evalBoolean(one.y, 0);
     }
 
-    public boolean wobbleDown() {
+    public boolean armDown() {
         return evalBoolean(one.y, 0);
     }
 
-    public boolean wobbleToggle() {
+    public boolean armToggle() {
         return evalBoolean(one.y, 0);
     }
 
@@ -97,15 +97,15 @@ public class Omnipad {
     public boolean turnLeft(){ return evalBoolean(one.dpad_right, 7); }
 
     public double getLeftY() {
-        return -one.left_stick_y * robot.drivetrain.currentThrottle;
+        return -one.left_stick_y * Drivetrain.currentThrottle;
     }
 
     public double getLeftX() {
-        return one.left_stick_y * robot.drivetrain.currentThrottle;
+        return one.left_stick_y * Drivetrain.currentThrottle;
     }
 
     public double getRightX() {
-        return -1 * Math.sqrt(Math.abs(one.right_stick_x)) * one.right_stick_x * robot.drivetrain.turnThrottle;
+        return -1 * Math.sqrt(Math.abs(one.right_stick_x)) * one.right_stick_x * Drivetrain.turnThrottle;
     }
 
     public double getY(double speed, double heading, double ly, double lx) {
