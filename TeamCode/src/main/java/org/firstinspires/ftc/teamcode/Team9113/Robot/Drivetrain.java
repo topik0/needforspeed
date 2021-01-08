@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.Team9113.Robot;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.HardwareMap;
-
 import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 
 @Config
@@ -95,5 +93,9 @@ public class Drivetrain {
 
     public double getThrottle() {
         return currentThrottle;
+    }
+
+    public void turn(double angle) {
+        mecanumDrive.turn(angle);
     }
 }
