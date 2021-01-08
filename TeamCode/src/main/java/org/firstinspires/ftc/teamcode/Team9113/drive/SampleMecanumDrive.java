@@ -59,7 +59,7 @@ import static org.firstinspires.ftc.teamcode.Team9113.drive.DriveConstants.kV;
  */
 @Config
 public class SampleMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(2.8, 0, 0.7);
+    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(2.3, 0, 0.7);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(4, 0, 0);
 
     public static double LATERAL_MULTIPLIER = 1.75;
@@ -263,6 +263,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         packet.put("xError", lastError.getX());
         packet.put("yError", lastError.getY());
         packet.put("headingError", lastError.getHeading());
+        packet.put("Flywheel Velocity", Math.abs(flywheels.flywheelFront.getCorrectedVelocity()));
 
         switch (mode) {
             case IDLE:
