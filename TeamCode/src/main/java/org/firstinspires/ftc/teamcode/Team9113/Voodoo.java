@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.Team9113.Robot.Robot;
 @TeleOp(name = "Voodoo", group = "Linear Opmode")
 public class Voodoo extends LinearOpMode {
     private static double offSetAngle = 0;
+    public static double turnRightAngle = 6, turnLeftAngle = -6;
 
     @Override
     public void runOpMode() {
@@ -37,6 +38,7 @@ public class Voodoo extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             robot.flywheels.run();
+            robot.flicker.checkState();
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = pad.getLeftY();
             double lx = pad.getLeftX();
@@ -47,7 +49,7 @@ public class Voodoo extends LinearOpMode {
             double x = pad.getX(speed, heading, ly, lx);
             robot.drivetrain.driveFieldCentric(x, y, rx);
             if (pad.drivetrainDormant()) robot.drivetrain.brake();
-            if (pad.shootRing()) robot.shootDisc();
+            if (pad.shootRing()) robot.flicker.shootOut();
             if (pad.flywheelsToggle()) robot.flywheels.togglePID();
             if (pad.setOffset()) offSetAngle = angles.firstAngle;
             // todo: turn for powershots (6 deg)
@@ -57,6 +59,9 @@ public class Voodoo extends LinearOpMode {
             if (pad.clawToggle()) robot.toggleClaw();
             if (pad.wobbleToggle()) robot.toggleWobble();
             if (pad.intakeReverse()) robot.reverseIntake();
+            if (pad.turnRight()) robot.drivetrain.mecanumDrive.turn(Math.toRadians(turnRightAngle));
+            else if (pad.turnLeft())
+                robot.drivetrain.mecanumDrive.turn(Math.toRadians(turnLeftAngle));
             else if (robot.intakeRunning) robot.startIntake();
             telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
             telemetry.update();
