@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.Team9113.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.apache.commons.lang3.time.StopWatch;
@@ -9,8 +8,6 @@ import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 
 @Config
 public class Flicker {
-    private HardwareMap hwMap;
-    public static String flickerName = "flicker";
     public static double startPosition = .55, outPosition = .65, inPosition = .55;
     public static double cooldown = 80;
     private SampleMecanumDrive drive;
@@ -23,15 +20,9 @@ public class Flicker {
         IN
     }
 
-    public Flicker(HardwareMap hwMap, SampleMecanumDrive drive) {
-        this.hwMap = hwMap;
-        this.drive = drive;
+    public Flicker(HardwareGenesis gen) {
+        flicker = gen.flicker;
         stopwatch = new StopWatch();
-        initServo();
-    }
-
-    private void initServo() {
-        flicker = hwMap.servo.get(flickerName);
     }
 
     public void startPosition() {
@@ -48,6 +39,7 @@ public class Flicker {
         if (state == State.IN) return;
         flicker.setPosition(inPosition);
         state = State.IN;
+        stopwatch.stop();
         stopwatch.reset();
     }
 
@@ -68,6 +60,7 @@ public class Flicker {
         stopwatch.start();
         while(timeNotAtCooldown())
             drive.update();
+        stopwatch.stop();
         stopwatch.reset();
         bringIn();
     }
