@@ -34,6 +34,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.teamcode.Team9113.Robot.Flywheels;
+import org.firstinspires.ftc.teamcode.Team9113.Robot.HardwareGenesis;
 import org.firstinspires.ftc.teamcode.Team9113.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.Team9113.util.LynxModuleUtil;
 
@@ -76,6 +77,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         FOLLOW_TRAJECTORY
     }
 
+    public HardwareGenesis gen;
     public Flywheels flywheels;
 
     private FtcDashboard dashboard;
@@ -104,11 +106,12 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
+        gen = new HardwareGenesis(hardwareMap);
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
-        flywheels = new Flywheels(hardwareMap);
+        flywheels = new Flywheels(gen);
 
         clock = NanoClock.system();
 
@@ -135,26 +138,10 @@ public class SampleMecanumDrive extends MecanumDrive {
             module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
         }
 
-        // TODO: adjust the names of the following hardware devices to match your configuration
-        //imu = hardwareMap.get(BNO055IMU.class, "imu");
-        //BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        //parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        //imu.initialize(parameters);
-
-        // TODO: if your hub is mounted vertically, remap the IMU axes so that the z-axis points
-        // upward (normal to the floor) using a command like the following:
-        // BNO055IMUUtil.remapAxes(imu, AxesOrder.XYZ, AxesSigns.NPN);
-
-        //flywheelFront = new Motor(hardwareMap, "flywheelFront", Motor.GoBILDA.BARE);
-        //flywheelFront.setRunMode(Motor.RunMode.VelocityControl);
-        //flywheelFront.setVeloCoefficients(Flywheels.kP, Flywheels.kI, Flywheels.kD);
-        //flywheelBack = new Motor(hardwareMap, "flywheelBack", Motor.GoBILDA.BARE);
-//        flywheelFront = hardwareMap.get(DcMotorEx.class, "flywheelFront");
-//        flywheelBack = hardwareMap.get(DcMotorEx.class, "flywheelBack");
-        rightRear = hardwareMap.get(DcMotorEx.class, "upperLeft");
-        rightFront = hardwareMap.get(DcMotorEx.class, "lowerLeft");
-        leftFront = hardwareMap.get(DcMotorEx.class, "lowerRight");
-        leftRear = hardwareMap.get(DcMotorEx.class, "upperRight");
+        rightRear = gen.drivetrainMotors[0];
+        leftRear = gen.drivetrainMotors[1];
+        rightFront = gen.drivetrainMotors[2];
+        leftFront = gen.drivetrainMotors[3];
         leftFront.setDirection(DcMotor.Direction.REVERSE);
         leftRear.setDirection(DcMotor.Direction.REVERSE);
 
