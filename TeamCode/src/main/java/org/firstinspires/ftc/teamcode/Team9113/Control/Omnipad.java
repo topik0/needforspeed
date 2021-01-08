@@ -92,6 +92,10 @@ public class Omnipad {
         return one.x;
     }
 
+    public boolean turnRight(){ return evalBoolean(one.dpad_right, 7); }
+
+    public boolean turnLeft(){ return evalBoolean(one.dpad_right, 7); }
+
     public double getLeftY() {
         return -one.left_stick_y * robot.drivetrain.currentThrottle;
     }
@@ -113,13 +117,15 @@ public class Omnipad {
     }
 
     public boolean evalBoolean(boolean value, int stopwatch) {
-        boolean temp = value && System.currentTimeMillis() - timer[stopwatch] > cooldown;
+        if(!value) return false;
+        boolean temp = System.currentTimeMillis() - timer[stopwatch] > cooldown;
         if (temp) stopwatch(stopwatch);
         return temp;
     }
 
     public boolean evalBoolean(boolean value, int stopwatch, int cooldown) {
-        boolean temp = value && System.currentTimeMillis() - timer[stopwatch] > cooldown;
+        if(!value) return false;
+        boolean temp = System.currentTimeMillis() - timer[stopwatch] > cooldown;
         if (temp) stopwatch(stopwatch);
         return temp;
     }
