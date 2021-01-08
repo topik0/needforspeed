@@ -52,17 +52,16 @@ public class Voodoo extends LinearOpMode {
             if (pad.shootRing()) robot.flicker.shootOut();
             if (pad.flywheelsToggle()) robot.flywheels.togglePID();
             if (pad.setOffset()) offSetAngle = angles.firstAngle;
-            // todo: turn for powershots (6 deg)
-            if (pad.raiseFlap()) robot.flapUpperPosition();
-            if (pad.lowerFlap()) robot.flapLowerPosition();
-            if (pad.intakeToggle()) robot.toggleIntake();
-            if (pad.clawToggle()) robot.toggleClaw();
-            if (pad.wobbleToggle()) robot.toggleWobble();
-            if (pad.intakeReverse()) robot.reverseIntake();
+            if (pad.raiseFlap()) robot.flap.goToHighGoalPosition();
+            if (pad.lowerFlap()) robot.flap.goToPowershotPosition();
+            if (pad.intakeToggle()) robot.intake.toggle();
+            if (pad.clawToggle()) robot.claw.toggle();
+            if (pad.armToggle()) robot.arm.toggle();
+            if (pad.intakeReverse()) robot.intake.reverse();
             if (pad.turnRight()) robot.drivetrain.mecanumDrive.turn(Math.toRadians(turnRightAngle));
             else if (pad.turnLeft())
                 robot.drivetrain.mecanumDrive.turn(Math.toRadians(turnLeftAngle));
-            else if (robot.intakeRunning) robot.startIntake();
+            else if (robot.intake.isRunning()) robot.intake.start();
             telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
             telemetry.update();
             TelemetryPacket packet = new TelemetryPacket();
