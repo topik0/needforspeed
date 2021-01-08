@@ -12,7 +12,7 @@ public class Intake {
     private State verticalState;
     private State directionState;
     public static double runPower = 1.0, stopPower = 0;
-    public static double downPosition = 1.0;
+    public static double downPosition = 1.0, stopperStartPosition = .85;
     private double currentRunPower = 0;
 
     private enum State {
@@ -39,6 +39,10 @@ public class Intake {
         state = State.DORMANT;
         verticalState = State.UP;
         directionState = State.FORWARD;
+    }
+
+    public void stopperStartPosition(){
+        stopper.setPosition(stopperStartPosition);
     }
 
     public void setPower(double power) {
