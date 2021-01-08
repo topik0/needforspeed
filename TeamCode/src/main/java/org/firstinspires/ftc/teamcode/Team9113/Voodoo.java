@@ -23,7 +23,7 @@ public class Voodoo extends LinearOpMode {
     @Override
     public void runOpMode() {
         Robot robot = new Robot(hardwareMap);
-        Omnipad pad = new Omnipad(gamepad1, gamepad2, robot);
+        Omnipad pad = new Omnipad(gamepad1, gamepad2);
         // Set things to starting positions
         robot.startPositions();
         // Initialize variables
