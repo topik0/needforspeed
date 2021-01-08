@@ -1,17 +1,21 @@
 package org.firstinspires.ftc.teamcode.Team9113.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.apache.commons.lang3.time.StopWatch;
 
+
+/*
+ * @author Topik
+ * @version 1.0
+ * @since 1.0
+ *
+ * This class all of the robot functions and classes, including all robot objects, Hardware Maps, and PID delays
+ */
 @Config
-public class Robot extends LinearOpMode {
-    /*
-    Robot constructor
-     */
+public class Robot {
     public HardwareMap hwMap;
     public HardwareGenesis genesis;
     public Drivetrain drivetrain;
@@ -21,8 +25,11 @@ public class Robot extends LinearOpMode {
     public Flap flap;
     public Claw claw;
     public Intake intake;
-    public Servo intakeStopper;
 
+    /*
+    * Robot constructor.  This creates all of the hardware objects
+    * @param hwMap the hardware map of the op mode from which it was made
+     */
     public Robot(HardwareMap hwMap) {
         this.hwMap = hwMap;
         genesis = new HardwareGenesis(hwMap);
@@ -35,14 +42,21 @@ public class Robot extends LinearOpMode {
         flicker = new Flicker(genesis);
     }
 
+    /*
+    * Moves all Robot objects to their respective starting positions
+     */
     public void startPositions() {
         flap.setStartPosition();
         arm.setStartPosition();
         flicker.startPosition();
         claw.setStartPosition();
-        intakeStopper.setPosition(.85);
+        intake.stopperStartPosition();
     }
 
+    /*
+    * Sets a delay while looping flywheel PID
+    * @param milliseconds the amount of delay time in milliseconds
+     */
     public void delayWithFlywheelPID(double milliseconds) {
         StopWatch stopwatch = new StopWatch();
         stopwatch.start();
@@ -50,21 +64,14 @@ public class Robot extends LinearOpMode {
             flywheels.run();
     }
 
+    /*
+     * Sets a delay while looping all PID
+     * @param milliseconds the amount of delay time in milliseconds
+     */
     public void delayWithAllPID(double milliseconds) {
         StopWatch stopwatch = new StopWatch();
         stopwatch.start();
         while (stopwatch.getTime() <= milliseconds)
             drivetrain.mecanumDrive.update();
-    }
-
-    /*
-    Turns the robot a specified angle measured in radians
-     */
-    public void turn(double angle) {
-        drivetrain.mecanumDrive.turn(angle);
-    }
-
-    @Override
-    public void runOpMode() {
     }
 }
