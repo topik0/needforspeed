@@ -163,7 +163,7 @@ public class NFSAuto extends LinearOpMode {
                     robot.claw.close();
                 })
                 .build();
-        while (!isStarted() && vision.isReadyToRead())
+        while (!isStarted() && !vision.isReadyToRead())
             telemetry.addData("Vision Status", "Not Ready");
         UGContourRingPipeline.Height height = vision.getHeight();
         while (!isStarted() && vision.isReady()) {
