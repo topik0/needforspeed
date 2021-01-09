@@ -20,7 +20,8 @@ public class Flicker {
         IN
     }
 
-    public Flicker(HardwareGenesis gen) {
+    public Flicker(HardwareGenesis gen, SampleMecanumDrive drive) {
+        this.drive = drive;
         flicker = gen.flicker;
         stopwatch = new StopWatch();
     }
