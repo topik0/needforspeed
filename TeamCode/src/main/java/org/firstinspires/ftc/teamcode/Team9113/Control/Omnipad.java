@@ -28,6 +28,11 @@ public class Omnipad {
         return evalBoolean(one.y, 0);
     }
 
+    /**
+     * One/Y
+     *
+     * @return true if an arm toggle is requested
+     */
     public boolean armToggle() {
         return evalBoolean(one.y, 0);
     }
@@ -92,9 +97,13 @@ public class Omnipad {
         return one.x;
     }
 
-    public boolean turnRight(){ return evalBoolean(one.dpad_right, 7); }
+    public boolean turnRight() {
+        return evalBoolean(one.dpad_right, 7);
+    }
 
-    public boolean turnLeft(){ return evalBoolean(one.dpad_right, 7); }
+    public boolean turnLeft() {
+        return evalBoolean(one.dpad_right, 7);
+    }
 
     public double getLeftY() {
         return -one.left_stick_y * Drivetrain.currentThrottle;
@@ -117,14 +126,14 @@ public class Omnipad {
     }
 
     public boolean evalBoolean(boolean value, int stopwatch) {
-        if(!value) return false;
+        if (!value) return false;
         boolean temp = System.currentTimeMillis() - timer[stopwatch] > cooldown;
         if (temp) stopwatch(stopwatch);
         return temp;
     }
 
     public boolean evalBoolean(boolean value, int stopwatch, int cooldown) {
-        if(!value) return false;
+        if (!value) return false;
         boolean temp = System.currentTimeMillis() - timer[stopwatch] > cooldown;
         if (temp) stopwatch(stopwatch);
         return temp;
