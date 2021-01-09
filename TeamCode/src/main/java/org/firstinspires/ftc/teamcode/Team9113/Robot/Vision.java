@@ -14,7 +14,7 @@ import org.openftc.easyopencv.OpenCvInternalCamera;
 
 public class Vision {
     private HardwareMap hwMap;
-    public static int camera_width = 1280, camera_height = 720, horizon = 260, init_threshold = 2000;
+    public static int camera_width = 480, camera_height = 360, horizon = 260, init_threshold = 2000;
     public static boolean using_webcam = true, debug = false;
     public static String webcam_name = "Webcam 1";
     private double camera_init_time;
