@@ -39,7 +39,7 @@ public class Robot {
         intake = new Intake(genesis);
         drivetrain = new Drivetrain(genesis);
         flywheels = new Flywheels(genesis);
-        flicker = new Flicker(genesis);
+        flicker = new Flicker(genesis, drivetrain.mecanumDrive);
     }
 
     /**
