@@ -26,7 +26,7 @@ public class HardwareGenesis {
             flywheelFrontName = "flywheelFront",
             flywheelBackName = "flywheelBack";
 
-    public String[] drivetrainNames = {"lowerRight", "lowerLeft", "upperRight", "upperLeft"};
+    public static String[] drivetrainNames = {"lowerRight", "lowerLeft", "upperRight", "upperLeft"};
 
     public HardwareGenesis(HardwareMap hwMap) {
         this.hwMap = hwMap;
