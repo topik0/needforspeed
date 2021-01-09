@@ -41,7 +41,7 @@ public class Intake {
         directionState = State.FORWARD;
     }
 
-    public void stopperStartPosition(){
+    public void stopperStartPosition() {
         stopper.setPosition(stopperStartPosition);
     }
 
@@ -77,7 +77,7 @@ public class Intake {
         setPower(-runPower);
     }
 
-    public void down(){
+    public void down() {
         stopper.setPosition(downPosition);
         verticalState = State.DOWN;
     }
@@ -90,7 +90,7 @@ public class Intake {
         return directionState;
     }
 
-    public State getVerticalState(){
+    public State getVerticalState() {
         return verticalState;
     }
 
