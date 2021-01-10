@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
 public class Flap {
+    private Robot robot;
     public Servo flap;
     private State state;
     public static double highGoalPosition = .2785, powerShotPosition = .3, adjustUpThreshold = .005, adjustDownThreshold = .005;
@@ -15,9 +16,12 @@ public class Flap {
         NEUTRAL
     }
 
-    public Flap(HardwareGenesis gen) {
+    public Flap(HardwareGenesis gen, Robot robot) {
         if (gen == null)
             throw new BadInitializationException("Flap genesis is null");
+        if (robot == null)
+            throw new BadInitializationException("Robot given to flap is null");
+        this.robot = robot;
         flap = gen.flap;
         if (flap == null)
             throw new BadInitializationException("Flap is null");
@@ -32,11 +36,13 @@ public class Flap {
     public void goToHighGoalPosition() {
         flap.setPosition(highGoalPosition);
         state = State.HIGH_GOAL;
+        robot.flywheels.setHighGoalVelocity();
     }
 
     public void goToPowershotPosition() {
         flap.setPosition(powerShotPosition);
         state = State.POWERSHOT;
+        robot.flywheels.setPowershotVelocity();
     }
 
     public void adjustUp() {
