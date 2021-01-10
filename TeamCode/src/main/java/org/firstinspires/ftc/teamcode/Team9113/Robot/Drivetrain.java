@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.Team9113.Robot;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+
 import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 
 @Config
@@ -25,12 +26,14 @@ public class Drivetrain {
     public Drivetrain(HardwareGenesis gen) {
         motors = gen.drivetrainMotors;
         mecanumDrive = new SampleMecanumDrive(gen.hwMap);
+        motors[0].setDirection(DcMotor.Direction.REVERSE);
+        motors[2].setDirection(DcMotor.Direction.REVERSE);
     }
 
     public void driveFieldCentric(double x, double y, double rx) {
-        motors[0].setPower(-1 * (y - x + rx));
+        motors[0].setPower((y - x + rx));
         motors[1].setPower(-1 * (y + x + rx));
-        motors[2].setPower(-1 * (y - x - rx));
+        motors[2].setPower((y - x - rx));
         motors[3].setPower(-1 * (y + x - rx));
     }
 
