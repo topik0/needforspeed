@@ -27,7 +27,7 @@ public class Drivetrain {
     public static double snailTurnThrottle = .4;
     public static double currentThrottle = normalThrottle;
     public static double currentTurnThrottle = turnThrottle;
-    public static double turnSpeed = 1;
+    public static double turnkP = .04, turnErrorThreshold = 2;
 
     public DcMotorEx[] motors;
     public SampleMecanumDrive mecanumDrive;
@@ -123,12 +123,27 @@ public class Drivetrain {
         motors[3].setPower(power);
     }
 
+    public void setSideMotorPowers(double leftPower, double rightPower) {
+        leftPower(leftPower);
+        rightPower(rightPower);
+    }
+
     public void turn(double degrees) {
-        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
-        while (angles.firstAngle <= degrees) {
-            leftPower(turnSpeed);
-            rightPower(-turnSpeed);
-            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
+        double error = -1 * degrees;
+        double originalHeading = getHeading();
+        double leftPow;
+        double rightPow;
+        while ((Math.abs(error) >= turnErrorThreshold)) {
+            robot.flywheels.run();
+            error = getHeading() - degrees - originalHeading;
+            leftPow = error * turnkP;
+            rightPow = -error * turnkP;
+            setSideMotorPowers(leftPow, rightPow);
         }
+    }
+
+    public double getHeading() {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
+        return angles.firstAngle;
     }
 }
