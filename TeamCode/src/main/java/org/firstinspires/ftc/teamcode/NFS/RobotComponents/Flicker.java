@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Exceptions.StopwatchBrokenException;
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 
 @Config
@@ -48,7 +47,7 @@ public class Flicker {
     }
 
     public void checkState() {
-        if (state == State.OUT && !reachedCooldown())
+        if (state == State.OUT && reachedCooldown())
             bringIn();
     }
 
