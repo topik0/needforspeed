@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;
 
-import org.apache.commons.lang3.time.StopWatch;
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Exceptions.StopwatchBrokenException;
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 
@@ -16,7 +15,7 @@ public class Flicker {
     private SampleMecanumDrive drive;
     public Servo flicker;
     private State state = State.IN;
-    private StopWatch stopwatch;
+    private double startTime = 0;
 
     private enum State {
         OUT,
@@ -27,7 +26,6 @@ public class Flicker {
         this.robot = robot;
         this.drive = drive;
         flicker = gen.flicker;
-        stopwatch = new StopWatch();
     }
 
     public void startPosition() {
@@ -39,26 +37,27 @@ public class Flicker {
             return;
         flicker.setPosition(outPosition);
         state = State.OUT;
-        stopwatch.reset();
-        stopwatch.start();
+        startTime = System.currentTimeMillis();
     }
 
     public void bringIn() {
         if (state == State.IN) return;
         flicker.setPosition(inPosition);
         state = State.IN;
-        stopwatch.reset();
+        startTime = 0;
     }
 
     public void checkState() {
-        if (state == State.OUT && !timeNotAtCooldown())
+        if (state == State.OUT && !reachedCooldown())
             bringIn();
     }
 
-    private boolean timeNotAtCooldown() {
-        if (!stopwatch.isStarted())
-            throw new StopwatchBrokenException();
-        return stopwatch.getTime() <= cooldown;
+    private boolean reachedCooldown() {
+        return System.currentTimeMillis() - startTime >= cooldown;
+    }
+
+    public State flickerState() {
+        return state;
     }
 
     /*
@@ -66,11 +65,10 @@ public class Flicker {
      */
     public void launch() {
         shootOut();
-        stopwatch.start();
-        while (timeNotAtCooldown())
+        startTime = System.currentTimeMillis();
+        while (!reachedCooldown())
             drive.update();
-        stopwatch.stop();
-        stopwatch.reset();
+        startTime = 0;
         bringIn();
     }
 }
