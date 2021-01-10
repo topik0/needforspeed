@@ -113,7 +113,7 @@ public class Omnipad {
     }
 
     public double getLeftX() {
-        return one.left_stick_y * Drivetrain.currentThrottle;
+        return one.left_stick_x * Drivetrain.currentThrottle;
     }
 
     public double getRightX() {
