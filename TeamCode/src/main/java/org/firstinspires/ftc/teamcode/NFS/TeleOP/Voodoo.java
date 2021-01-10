@@ -19,14 +19,14 @@ import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
 @Config
 @TeleOp(name = "Voodoo", group = "Linear Opmode")
 public class Voodoo extends LinearOpMode {
-    private static double offSetAngle = 0;
-    public static double turnRightAngle = 6, turnLeftAngle = -6;
+    public static double turnRightAngle = -6, turnLeftAngle = 6;
     public static double flywheelTimerThreshold = 200, armTimerThreshold = 200;
     public static boolean activeBreakingEnabled = true;
+    private static double offSetAngle = 0;
 
     @Override
     public void runOpMode() {
-        Robot robot = new Robot(hardwareMap);
+        Robot robot = new Robot(hardwareMap, telemetry);
         Omnipad pad = new Omnipad(gamepad1, gamepad2, robot);
         StopWatch flywheelStopwatch = new StopWatch();
         StopWatch armStopwatch = new StopWatch();
