@@ -23,6 +23,7 @@ public class Claw {
         if (claw == null)
             throw new BadInitializationException("Claw is null");
         setStartPosition();
+        state = State.CLOSED;
     }
 
     public void setStartPosition() {
