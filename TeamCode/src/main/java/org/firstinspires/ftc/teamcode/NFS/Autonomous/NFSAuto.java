@@ -12,8 +12,8 @@ import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.teamcode.NFS.Robot.Robot;
-import org.firstinspires.ftc.teamcode.NFS.Robot.Vision;
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Vision;
 import org.firstinspires.ftc.teamcode.NFS.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 

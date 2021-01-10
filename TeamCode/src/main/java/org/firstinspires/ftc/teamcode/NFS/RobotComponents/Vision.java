@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.NFS.Robot;
+package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.qualcomm.robotcore.hardware.HardwareMap;

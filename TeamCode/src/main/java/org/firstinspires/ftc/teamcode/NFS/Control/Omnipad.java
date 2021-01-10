@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.NFS.Control;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
-import org.firstinspires.ftc.teamcode.NFS.Robot.Drivetrain;
-import org.firstinspires.ftc.teamcode.NFS.Robot.Robot;
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Drivetrain;
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
 
 /**
  * @author Topik

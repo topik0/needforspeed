@@ -4,7 +4,7 @@ import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.NFS.Robot.Vision;
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Vision;
 
 @TeleOp(name = "ContorTest", group = "Linear Opmode")
 public class ContorTest extends LinearOpMode {

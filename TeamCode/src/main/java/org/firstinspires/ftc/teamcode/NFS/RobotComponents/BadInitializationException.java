@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.NFS.Robot;
+package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 
 public class BadInitializationException extends RuntimeException {
     public BadInitializationException() {

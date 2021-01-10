@@ -33,8 +33,8 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
-import org.firstinspires.ftc.teamcode.NFS.Robot.Flywheels;
-import org.firstinspires.ftc.teamcode.NFS.Robot.HardwareGenesis;
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Flywheels;
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.HardwareGenesis;
 import org.firstinspires.ftc.teamcode.NFS.util.DashboardUtil;
 import org.firstinspires.ftc.teamcode.NFS.util.LynxModuleUtil;
 

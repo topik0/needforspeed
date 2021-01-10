@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.NFS.Robot;
+package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;

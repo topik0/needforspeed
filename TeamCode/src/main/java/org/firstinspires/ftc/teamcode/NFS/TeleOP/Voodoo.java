@@ -13,8 +13,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.NFS.Control.Omnipad;
-import org.firstinspires.ftc.teamcode.NFS.Robot.Drivetrain;
-import org.firstinspires.ftc.teamcode.NFS.Robot.Robot;
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Drivetrain;
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
 
 @Config
 @TeleOp(name = "Voodoo", group = "Linear Opmode")
