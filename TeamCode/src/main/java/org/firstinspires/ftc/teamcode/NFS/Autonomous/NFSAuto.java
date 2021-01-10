@@ -25,7 +25,7 @@ public class NFSAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        Robot robot = new Robot(hardwareMap, true);
+        Robot robot = new Robot(hardwareMap, telemetry, true);
         Vision vision = new Vision(hardwareMap, telemetry);
         robot.startPositions();
         SampleMecanumDrive drive = robot.drivetrain.mecanumDrive;
