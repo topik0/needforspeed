@@ -43,7 +43,7 @@ public class Robot {
         flap = new Flap(genesis, this);
         claw = new Claw(genesis);
         intake = new Intake(genesis);
-        drivetrain = new Drivetrain(genesis);
+        drivetrain = new Drivetrain(genesis, this);
         flywheels = new Flywheels(genesis);
         flicker = new Flicker(genesis, drivetrain.mecanumDrive, this);
     }
@@ -61,7 +61,7 @@ public class Robot {
         flap = new Flap(genesis, this);
         claw = new Claw(genesis);
         intake = new Intake(genesis);
-        drivetrain = new Drivetrain(genesis);
+        drivetrain = new Drivetrain(genesis, this);
         flywheels = new Flywheels(genesis);
         flicker = new Flicker(genesis, drivetrain.mecanumDrive, this);
     }
