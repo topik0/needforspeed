@@ -63,7 +63,7 @@ public class Voodoo extends LinearOpMode {
             if (pad.raiseFlap()) robot.flap.goToHighGoalPosition();
             if (pad.lowerFlap()) robot.flap.goToPowershotPosition();
             if (pad.intakeToggle()) robot.intake.toggle();
-            if (pad.clawToggle()) robot.claw.toggle();
+            if (pad.clawToggle() && !robot.arm.isUp()) robot.claw.toggle();
             if (pad.armToggle()) robot.arm.toggle();
             if (pad.intakeReverse()) robot.intake.reverse();
             if (pad.turnRight()) robot.drivetrain.mecanumDrive.turn(Math.toRadians(turnRightAngle));
