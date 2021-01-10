@@ -31,9 +31,9 @@ public class Drivetrain {
     }
 
     public void driveFieldCentric(double x, double y, double rx) {
-        motors[0].setPower((y - x + rx));
-        motors[1].setPower(-1 * (y + x + rx));
-        motors[2].setPower((y - x - rx));
+        motors[0].setPower(-1 * (y + x + rx));
+        motors[1].setPower(-1 * (y - x - rx));
+        motors[2].setPower(-1 * (y - x + rx));
         motors[3].setPower(-1 * (y + x - rx));
     }
 
