@@ -22,6 +22,7 @@ public class Voodoo extends LinearOpMode {
     private static double offSetAngle = 0;
     public static double turnRightAngle = 6, turnLeftAngle = -6;
     public static double flywheelTimerThreshold = 200, armTimerThreshold = 200;
+    public static boolean activeBreakingEnabled = true;
 
     @Override
     public void runOpMode() {
@@ -54,11 +55,9 @@ public class Voodoo extends LinearOpMode {
             double y = pad.getY(speed, heading, ly, lx);
             double x = pad.getX(speed, heading, ly, lx);
             robot.drivetrain.driveFieldCentric(x, y, rx);
-            if (pad.drivetrainDormant()) robot.drivetrain.brake();
+            if (activeBreakingEnabled && pad.drivetrainDormant()) robot.drivetrain.brake();
             if (pad.shootRing()) robot.flicker.shootOut();
-            if (pad.flywheelsToggle()) {
-                robot.flywheels.togglePID();
-            }
+            if (pad.flywheelsToggle()) robot.flywheels.togglePID();
             if (pad.setOffset()) offSetAngle = angles.firstAngle;
             if (pad.raiseFlap()) robot.flap.goToHighGoalPosition();
             if (pad.lowerFlap()) robot.flap.goToPowershotPosition();
