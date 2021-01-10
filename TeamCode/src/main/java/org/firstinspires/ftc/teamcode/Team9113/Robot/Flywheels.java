@@ -9,8 +9,8 @@ public class Flywheels {
     public Motor flywheelFront, flywheelBack;
     private State runState;
     private State velocityState;
-    public static double targetVelocity = 0, plannedVelocity = targetVelocity;
     public static double maxVelocity = 1900, powershotVelocity = 1900;
+    public static double targetVelocity = 0, plannedVelocity = maxVelocity;
     public static double power = 0;
     public static double kP = 12, kI = 12, kD = 0.3;
 
@@ -39,6 +39,7 @@ public class Flywheels {
 
     public void halt() {
         targetVelocity = 0;
+        plannedVelocity = 0;
         setVelocityState();
         setRunningState();
         setPower(0);
