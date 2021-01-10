@@ -5,15 +5,12 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.lang3.time.StopWatch;
 
-import javax.annotation.Nullable;
-
-
 /**
  * @author Topik
  * @version 1.0
  * @since 1.0
  * <p>
- * This class all of the robot functions and classes, including all robot objects, Hardware Maps, and PID delays
+ * This class has all of the robot functions and classes, including all robot objects, Hardware Maps, and PID delays
  */
 @Config
 public class Robot {
