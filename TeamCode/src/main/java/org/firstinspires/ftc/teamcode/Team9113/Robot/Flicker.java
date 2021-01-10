@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 
 @Config
 public class Flicker {
+    private Robot robot;
     public static double startPosition = .55, outPosition = .65, inPosition = .55;
     public static double cooldown = 80;
     private SampleMecanumDrive drive;
@@ -20,7 +21,8 @@ public class Flicker {
         IN
     }
 
-    public Flicker(HardwareGenesis gen, SampleMecanumDrive drive) {
+    public Flicker(HardwareGenesis gen, SampleMecanumDrive drive, Robot robot) {
+        this.robot = robot;
         this.drive = drive;
         flicker = gen.flicker;
         stopwatch = new StopWatch();
@@ -31,6 +33,7 @@ public class Flicker {
     }
 
     public void shootOut() {
+        if (!robot.flywheels.running()) return;
         flicker.setPosition(outPosition);
         state = State.OUT;
         stopwatch.start();
@@ -44,22 +47,22 @@ public class Flicker {
         stopwatch.reset();
     }
 
-    public void checkState(){
+    public void checkState() {
         if (state == State.OUT || timeNotAtCooldown())
             bringIn();
     }
 
-    private boolean timeNotAtCooldown(){
+    private boolean timeNotAtCooldown() {
         return stopwatch.getTime() <= cooldown;
     }
 
     /*
     FOR USE IN AUTONOMOUS PROGRAMS ONLY
      */
-    public void launch(){
+    public void launch() {
         shootOut();
         stopwatch.start();
-        while(timeNotAtCooldown())
+        while (timeNotAtCooldown())
             drive.update();
         stopwatch.stop();
         stopwatch.reset();
