@@ -5,6 +5,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.lang3.time.StopWatch;
 
+import javax.annotation.Nullable;
+
 
 /**
  * @author Topik
@@ -24,13 +26,38 @@ public class Robot {
     public Flap flap;
     public Claw claw;
     public Intake intake;
+    private Mode mode;
+
+    private enum Mode {
+        TELEOP,
+        AUTO
+    }
 
     /**
-     * Robot constructor.  This creates all of the hardware objects
+     * Robot constructor for teleop.  This creates all of the hardware objects and sets the mode to teleop
      *
      * @param hwMap the hardware map of the op mode from which it was made
      */
     public Robot(HardwareMap hwMap) {
+        mode = Mode.TELEOP;
+        this.hwMap = hwMap;
+        genesis = new HardwareGenesis(hwMap);
+        arm = new Arm(genesis);
+        flap = new Flap(genesis, this);
+        claw = new Claw(genesis);
+        intake = new Intake(genesis);
+        drivetrain = new Drivetrain(genesis);
+        flywheels = new Flywheels(genesis);
+        flicker = new Flicker(genesis, drivetrain.mecanumDrive, this);
+    }
+
+    /**
+     * Robot constructor for auto.  This creates all of the hardware objects and sets the mode to auto
+     *
+     * @param hwMap the hardware map of the op mode from which it was made
+     */
+    public Robot(HardwareMap hwMap, boolean isAuto) {
+        if (isAuto) mode = Mode.AUTO;
         this.hwMap = hwMap;
         genesis = new HardwareGenesis(hwMap);
         arm = new Arm(genesis);
@@ -75,5 +102,13 @@ public class Robot {
         stopwatch.start();
         while (stopwatch.getTime() <= milliseconds)
             drivetrain.mecanumDrive.update();
+    }
+
+    /**
+     * Checks if the robot is in autonomous mode
+     * @return true if the robot is in autonomous mode
+     */
+    public boolean isAuto() {
+        return mode == Mode.AUTO;
     }
 }
