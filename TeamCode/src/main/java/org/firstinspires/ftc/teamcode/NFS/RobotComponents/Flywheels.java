@@ -33,7 +33,7 @@ public class Flywheels {
     public void run() {
         setVelocityState();
         setRunningState();
-        if (runState != State.RUNNING)
+        if (runState == State.RUNNING)
             setPower(targetVelocity / 2800);
     }
 
