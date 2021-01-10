@@ -10,7 +10,7 @@ public class Flywheels {
     private State runState;
     private State velocityState;
     public static double targetVelocity = 0;
-    public static double maxVelocity = 1900;
+    public static double maxVelocity = 1900, powershotVelocity = 1900;
     public static double power = 0;
     public static double kP = 12, kI = 12, kD = 0.3;
 
@@ -56,6 +56,14 @@ public class Flywheels {
             velocityState = State.MAX_VELOCITY;
         else
             velocityState = State.LOWER_VELOCITY;
+    }
+
+    public void setPowershotVelocity() {
+        targetVelocity = powershotVelocity;
+    }
+
+    public void setHighGoalVelocity() {
+        targetVelocity = maxVelocity;
     }
 
     public void start() {
