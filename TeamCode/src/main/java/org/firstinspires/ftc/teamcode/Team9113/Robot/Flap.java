@@ -87,9 +87,9 @@ public class Flap {
     }
 
     /**
-     * Gets the current
+     * Gets the current state of the flap
      *
-     * @return
+     * @return the state of the flap as a State
      */
     public State getState() {
         return state;
