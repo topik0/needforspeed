@@ -1,9 +1,14 @@
 package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 
 @Config
@@ -13,17 +18,23 @@ public class Drivetrain {
      * lowerLeft [2] lowerRight [3]
      */
 
+    private Robot robot;
+    private BNO055IMU imu;
+
     public static double normalThrottle = 1;
     public static double snailDrive = .65;
     public static double turnThrottle = .75;
     public static double snailTurnThrottle = .4;
     public static double currentThrottle = normalThrottle;
     public static double currentTurnThrottle = turnThrottle;
+    public static double turnSpeed = 1;
 
     public DcMotorEx[] motors;
     public SampleMecanumDrive mecanumDrive;
 
-    public Drivetrain(HardwareGenesis gen) {
+    public Drivetrain(HardwareGenesis gen, Robot robot) {
+        this.robot = robot;
+        imu = robot.genesis.imu;
         motors = gen.drivetrainMotors;
         mecanumDrive = new SampleMecanumDrive(gen.hwMap);
         motors[0].setDirection(DcMotor.Direction.REVERSE);
@@ -102,7 +113,22 @@ public class Drivetrain {
         return currentThrottle;
     }
 
-    public void turn(double angle) {
-        mecanumDrive.turn(angle);
+    public void leftPower(double power) {
+        motors[0].setPower(power);
+        motors[2].setPower(power);
+    }
+
+    public void rightPower(double power) {
+        motors[1].setPower(power);
+        motors[3].setPower(power);
+    }
+
+    public void turn(double degrees) {
+        Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
+        while (angles.firstAngle <= degrees) {
+            leftPower(turnSpeed);
+            rightPower(-turnSpeed);
+            angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
+        }
     }
 }
