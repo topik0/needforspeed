@@ -21,7 +21,7 @@ import org.firstinspires.ftc.teamcode.Team9113.Robot.Robot;
 public class Voodoo extends LinearOpMode {
     private static double offSetAngle = 0;
     public static double turnRightAngle = 6, turnLeftAngle = -6;
-    public static double flywheelTimerTheshold = 200, armTimerThreshold = 200;
+    public static double flywheelTimerThreshold = 200, armTimerThreshold = 200;
 
     @Override
     public void runOpMode() {
@@ -70,7 +70,7 @@ public class Voodoo extends LinearOpMode {
             else if (pad.turnLeft())
                 robot.drivetrain.mecanumDrive.turn(Math.toRadians(turnLeftAngle));
             else if (robot.intake.isRunning()) robot.intake.start();
-            if (robot.flywheels.running() && flywheelStopwatch.getTime() >= flywheelTimerTheshold)
+            if (robot.flywheels.running() && flywheelStopwatch.getTime() >= flywheelTimerThreshold)
                 Drivetrain.setTurnThrottle(.5);
             else if (!robot.arm.isUp() && armStopwatch.getTime() >= armTimerThreshold)
                 Drivetrain.setTurnThrottle(.6);
