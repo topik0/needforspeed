@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.Team9113.Robot;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
 @Config
 public class Flywheels {
@@ -32,9 +31,10 @@ public class Flywheels {
     }
 
     public void run() {
-        setPower(targetVelocity / 2800);
         setVelocityState();
         setRunningState();
+        if (runState != State.RUNNING)
+            setPower(targetVelocity / 2800);
     }
 
     public void halt() {
