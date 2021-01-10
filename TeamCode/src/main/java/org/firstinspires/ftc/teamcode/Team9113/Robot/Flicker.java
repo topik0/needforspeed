@@ -49,7 +49,7 @@ public class Flicker {
     }
 
     public void checkState() {
-        if (state == State.OUT || timeNotAtCooldown())
+        if (state == State.OUT && !timeNotAtCooldown())
             bringIn();
     }
 
