@@ -11,6 +11,7 @@ public class Flicker {
     private Robot robot;
     public static double startPosition = .55, outPosition = .65, inPosition = .55;
     public static double cooldown = 80;
+    public static boolean noShootWhileFlywheelsDormant = true;
     private SampleMecanumDrive drive;
     public Servo flicker;
     private State state = State.IN;
@@ -33,7 +34,7 @@ public class Flicker {
     }
 
     public void shootOut() {
-        if (!robot.flywheels.running()) return;
+        if (noShootWhileFlywheelsDormant && !robot.flywheels.running()) return;
         flicker.setPosition(outPosition);
         state = State.OUT;
         stopwatch.start();
