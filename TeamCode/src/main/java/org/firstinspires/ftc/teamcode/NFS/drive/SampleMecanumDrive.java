@@ -94,11 +94,9 @@ public class SampleMecanumDrive extends MecanumDrive {
     private TrajectoryFollower follower;
 
     private LinkedList<Pose2d> poseHistory;
-    //public static Motor flywheelBack, flywheelFront;
 
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
     private List<DcMotorEx> motors;
-    //private BNO055IMU imu;
 
     private VoltageSensor batteryVoltageSensor;
 
