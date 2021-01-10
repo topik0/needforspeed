@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.apache.commons.lang3.time.StopWatch;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 /**
  * @author Topik
@@ -23,6 +24,7 @@ public class Robot {
     public Flap flap;
     public Claw claw;
     public Intake intake;
+    public Telemetry telemetry;
     private Mode mode;
 
     /**
@@ -38,8 +40,9 @@ public class Robot {
      *
      * @param hwMap the hardware map of the op mode from which it was made
      */
-    public Robot(HardwareMap hwMap) {
+    public Robot(HardwareMap hwMap, Telemetry telemetry) {
         mode = Mode.TELEOP;
+        this.telemetry = telemetry;
         this.hwMap = hwMap;
         genesis = new HardwareGenesis(hwMap);
         arm = new Arm(genesis);
@@ -56,8 +59,10 @@ public class Robot {
      *
      * @param hwMap the hardware map of the op mode from which it was made
      */
-    public Robot(HardwareMap hwMap, boolean isAuto) {
+    public Robot(HardwareMap hwMap, Telemetry telemetry, boolean isAuto) {
         if (isAuto) mode = Mode.AUTO;
+        else mode = Mode.TELEOP;
+        this.telemetry = telemetry;
         this.hwMap = hwMap;
         genesis = new HardwareGenesis(hwMap);
         arm = new Arm(genesis);
