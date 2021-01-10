@@ -13,23 +13,18 @@ import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 
 public class Vision {
-    private HardwareMap hwMap;
     public static int camera_width = 480, camera_height = 360, horizon = 260, init_threshold = 2000;
     public static boolean using_webcam = true, debug = false;
     public static String webcam_name = "Webcam 1";
     private double camera_init_time;
 
-    private OpenCvCamera camera;
-    private Telemetry telemetry;
-    private UGContourRingPipeline pipeline;
+    private final OpenCvCamera camera;
+    private final UGContourRingPipeline pipeline;
     StopWatch stopwatch;
 
     public Vision(HardwareMap hwMap, Telemetry telemetry) {
-        this.hwMap = hwMap;
-        this.telemetry = telemetry;
         stopwatch = new StopWatch();
-        int cameraMonitorViewId = this
-                .hwMap
+        int cameraMonitorViewId = hwMap
                 .appContext
                 .getResources().getIdentifier(
                         "cameraMonitorViewId",
