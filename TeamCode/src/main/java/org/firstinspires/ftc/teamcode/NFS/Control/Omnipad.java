@@ -20,7 +20,7 @@ public class Omnipad {
     private Gamepad two;
     private double[] timer = new double[9];
     public static double cooldown = 350;
-    public static int shootCooldown = 80;
+    public static int shootCooldown = 175;
     public static int clawCooldown = 700;
     public static int flapCooldown = 450;
 
@@ -249,7 +249,7 @@ public class Omnipad {
      */
     private boolean evalBoolean(boolean value, int stopwatch) {
         if (!value) return false;
-        boolean temp = System.currentTimeMillis() - timer[stopwatch] > cooldown;
+        boolean temp = System.currentTimeMillis() - timer[stopwatch] >= cooldown;
         if (temp) stopwatch(stopwatch);
         return temp;
     }
@@ -263,7 +263,7 @@ public class Omnipad {
      */
     private boolean evalBoolean(boolean value, int stopwatch, int cooldown) {
         if (!value) return false;
-        boolean temp = System.currentTimeMillis() - timer[stopwatch] > cooldown;
+        boolean temp = System.currentTimeMillis() - timer[stopwatch] >= cooldown;
         if (temp) stopwatch(stopwatch);
         return temp;
     }
