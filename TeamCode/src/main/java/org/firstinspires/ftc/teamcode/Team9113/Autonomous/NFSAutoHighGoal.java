@@ -24,7 +24,7 @@ import java.util.Arrays;
 public class NFSAutoHighGoal extends LinearOpMode {
     @Override
     public void runOpMode() {
-        Robot robot = new Robot(hardwareMap);
+        Robot robot = new Robot(hardwareMap, true);
         Vision vision = new Vision(hardwareMap, telemetry);
         robot.startPositions();
         SampleMecanumDrive drive = robot.drivetrain.mecanumDrive;
