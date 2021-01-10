@@ -37,7 +37,6 @@ public class Flicker {
         if (noShootWhileFlywheelsDormant && !robot.flywheels.running()) return;
         flicker.setPosition(outPosition);
         state = State.OUT;
-        stopwatch.stop();
         stopwatch.reset();
     }
 
