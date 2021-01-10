@@ -37,11 +37,11 @@ public class NFSAuto extends LinearOpMode {
                 .addTemporalMarker(0.1, () -> robot.flap.setPosition(.32))
                 .addTemporalMarker(.25, () -> robot.intake.down())
                 .addTemporalMarker(.75, () -> robot.arm.down())
-                .addTemporalMarker(1.7, () -> robot.claw.open())
+                .addTemporalMarker(1.85, () -> robot.claw.open())
                 .addTemporalMarker(1.9, () -> robot.arm.up())
                 .build();
         traj[0][1] = drive.trajectoryBuilder(traj[0][0].end().plus(new Pose2d(0, 0, Math.toRadians(90))), false)
-                .splineTo(new Vector2d(-6, -12), Math.toRadians(-11))
+                .splineTo(new Vector2d(-6, -12), Math.toRadians(-13))
                 .addTemporalMarker(.2, () -> drive.flywheels.doMaxVelocity())
                 .build();
         traj[0][2] = drive.trajectoryBuilder(traj[0][1].end(), false)
@@ -63,12 +63,12 @@ public class NFSAuto extends LinearOpMode {
                 .splineTo(new Vector2d(-12, -55), Math.toRadians(0))
                 .addTemporalMarker(0.1, () -> robot.flap.setPosition(.32))
                 .addTemporalMarker(.25, () -> robot.intake.down())
-                .splineTo(new Vector2d(22.5, -42), Math.toRadians(30))
+                .splineTo(new Vector2d(17.5, -42), Math.toRadians(30))
                 .addTemporalMarker(1.5, () -> robot.arm.down())
                 .addDisplacementMarker(() -> drive.flywheels.doMaxVelocity())
                 .build();
         traj[1][1] = drive.trajectoryBuilder(traj[1][0].end(), true)
-                .splineTo(new Vector2d(-6, -12), Math.toRadians(169))
+                .splineTo(new Vector2d(-6, -12), Math.toRadians(164))
                 .build();
         traj[1][2] = drive.trajectoryBuilder(traj[1][1].end(), false)
                 .splineTo(new Vector2d(0, 0), Math.toRadians(135))
@@ -77,11 +77,11 @@ public class NFSAuto extends LinearOpMode {
                     robot.flap.setPosition(0.28);
                     robot.claw.open();
                 })
-                .splineTo(new Vector2d(-32, -24), Math.toRadians(-135))
+                .splineTo(new Vector2d(-32, -24), Math.toRadians(-138))
                 .build();
         traj[1][3] = drive.trajectoryBuilder(traj[1][2].end(), false)
                 .splineTo(new Vector2d(-24, -55), Math.toRadians(-20))
-                .splineTo(new Vector2d(19, -42), Math.toRadians(45))
+                .splineTo(new Vector2d(16, -32), Math.toRadians(45))
                 .addTemporalMarker(1.75, () -> robot.arm.down())
                 .addDisplacementMarker(() -> robot.intake.start())
                 .build();
@@ -108,7 +108,7 @@ public class NFSAuto extends LinearOpMode {
                 .addTemporalMarker(2, () -> robot.arm.down())
                 .build();
         traj[2][1] = drive.trajectoryBuilder(traj[2][0].end(), true)
-                .splineTo(new Vector2d(-6, -12), Math.toRadians(167.5))
+                .splineTo(new Vector2d(-6, -12), Math.toRadians(170))
                 .addTemporalMarker(.5, () -> drive.flywheels.doMaxVelocity())
                 .build();
         traj[2][2] = drive.trajectoryBuilder(traj[2][1].end(), true)
@@ -129,15 +129,15 @@ public class NFSAuto extends LinearOpMode {
                         )
                         ), new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        traj[2][4] = drive.trajectoryBuilder(traj[2][3].end().plus(new Pose2d(0, 0, Math.toRadians(75))))
-                .splineTo(new Vector2d(-39.5, -40), Math.toRadians(165))
+        traj[2][4] = drive.trajectoryBuilder(traj[2][3].end().plus(new Pose2d(0, 0, Math.toRadians(70))))
+                .splineTo(new Vector2d(-39, -39.5), Math.toRadians(165))
                 .addDisplacementMarker(() -> {
                     robot.claw.close();
                     robot.intake.stop();
                 })
                 .build();
         traj[2][5] = drive.trajectoryBuilder(traj[2][4].end().plus(new Pose2d(0, 0, Math.toRadians(-165))), false)
-                .splineTo(new Vector2d(-4.5, -40), Math.toRadians(0))
+                .splineTo(new Vector2d(-4.5, -40), Math.toRadians(-2.5))
                 .addTemporalMarker(.1, () -> {
                     drive.flywheels.doMaxVelocity();
                     robot.flap.setPosition(.28);
@@ -148,7 +148,7 @@ public class NFSAuto extends LinearOpMode {
                 .addTemporalMarker(.1, () -> robot.intake.start())
                 .build();
         traj[2][7] = drive.trajectoryBuilder(traj[2][6].end(), false)
-                .splineTo(new Vector2d(-4.5, -40), Math.toRadians(0))
+                .splineTo(new Vector2d(-4.5, -40), Math.toRadians(-2.5))
                 .addDisplacementMarker(() -> robot.intake.stop())
                 .addTemporalMarker(.1, () -> drive.flywheels.doMaxVelocity())
                 .build();
@@ -191,11 +191,11 @@ public class NFSAuto extends LinearOpMode {
                 drive.followTrajectory(traj[0][1]);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
-                drive.turn(Math.toRadians(6));
+                drive.turn(Math.toRadians(7.5));
                 robot.delayWithAllPID(300);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
-                drive.turn(Math.toRadians(6));
+                drive.turn(Math.toRadians(7.5));
                 robot.delayWithAllPID(300);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
@@ -229,7 +229,7 @@ public class NFSAuto extends LinearOpMode {
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
                 drive.turn(Math.toRadians(7));
-                robot.delayWithAllPID(300);
+                robot.delayWithAllPID(500);
                 robot.flicker.launch();
                 robot.delayWithAllPID(200);
                 drive.flywheels.halt();
@@ -263,14 +263,14 @@ public class NFSAuto extends LinearOpMode {
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
                 drive.turn(Math.toRadians(6));
-                robot.delayWithAllPID(300);
+                robot.delayWithAllPID(500);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
                 drive.flywheels.halt();
                 drive.followTrajectory(traj[2][2]);
                 drive.followTrajectory(traj[2][3]);
                 robot.arm.down();
-                drive.turn(Math.toRadians(75));
+                drive.turn(Math.toRadians(70));
                 drive.followTrajectory(traj[2][4]);
                 robot.delayWithAllPID(300);
                 robot.arm.up();
