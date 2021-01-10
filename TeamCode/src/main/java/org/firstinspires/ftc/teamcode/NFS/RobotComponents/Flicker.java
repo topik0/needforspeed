@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 public class Flicker {
     private Robot robot;
     public static double startPosition = .55, outPosition = .65, inPosition = .55;
-    public static double cooldown = 80;
+    public static double cooldown = 60;
     public static boolean noShootWhileFlywheelsDormant = true;
     private SampleMecanumDrive drive;
     public Servo flicker;
