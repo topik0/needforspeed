@@ -37,15 +37,17 @@ public class Flicker {
         if (noShootWhileFlywheelsDormant && !robot.flywheels.running()) return;
         flicker.setPosition(outPosition);
         state = State.OUT;
-        stopwatch.reset();
+        if (stopwatch.isStarted() || stopwatch.getTime() != 0) stopwatch.reset();
     }
 
     public void bringIn() {
         if (state == State.IN) return;
         flicker.setPosition(inPosition);
         state = State.IN;
-        stopwatch.stop();
-        stopwatch.reset();
+        if (stopwatch.isStarted()) {
+            stopwatch.stop();
+            stopwatch.reset();
+        }
     }
 
     public void checkState() {
@@ -54,6 +56,8 @@ public class Flicker {
     }
 
     private boolean timeNotAtCooldown() {
+        if (stopwatch.isStopped())
+            throw new StopwatchBrokenException();
         return stopwatch.getTime() <= cooldown;
     }
 
