@@ -39,7 +39,6 @@ public class Flywheels {
 
     public void halt() {
         targetVelocity = 0;
-        plannedVelocity = 0;
         setVelocityState();
         setRunningState();
         setPower(0);
