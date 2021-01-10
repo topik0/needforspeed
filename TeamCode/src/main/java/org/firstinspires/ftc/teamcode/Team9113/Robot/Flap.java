@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 public class Flap {
     public Servo flap;
     private State state;
-    public static double highGoalPosition = .2785, powerShotPosition = .1, adjustUpThreshold = .005, adjustDownThreshold = .005;
+    public static double highGoalPosition = .2785, powerShotPosition = .3, adjustUpThreshold = .005, adjustDownThreshold = .005;
 
     private enum State {
         HIGH_GOAL,
