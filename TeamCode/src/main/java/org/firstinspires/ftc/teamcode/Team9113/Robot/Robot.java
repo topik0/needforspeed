@@ -34,12 +34,12 @@ public class Robot {
         this.hwMap = hwMap;
         genesis = new HardwareGenesis(hwMap);
         arm = new Arm(genesis);
-        flap = new Flap(genesis);
+        flap = new Flap(genesis, this);
         claw = new Claw(genesis);
         intake = new Intake(genesis);
         drivetrain = new Drivetrain(genesis);
         flywheels = new Flywheels(genesis);
-        flicker = new Flicker(genesis, drivetrain.mecanumDrive);
+        flicker = new Flicker(genesis, drivetrain.mecanumDrive, this);
     }
 
     /**
