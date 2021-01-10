@@ -20,7 +20,7 @@ import org.firstinspires.ftc.teamcode.Team9113.drive.SampleMecanumDrive;
 import java.util.Arrays;
 
 @Config
-@Autonomous(name = "NFSAuto", group = "Linear Opmode")
+@Autonomous(name = "NFSAutoHighGoal", group = "Linear Opmode")
 public class NFSAutoHighGoal extends LinearOpMode {
     @Override
     public void runOpMode() {
