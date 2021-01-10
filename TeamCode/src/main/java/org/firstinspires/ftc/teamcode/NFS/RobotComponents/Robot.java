@@ -25,6 +25,9 @@ public class Robot {
     public Intake intake;
     private Mode mode;
 
+    /**
+     * An enum to keep track of whether the robot is being made in a TeleOP or Autonomous program
+     */
     private enum Mode {
         TELEOP,
         AUTO
@@ -103,6 +106,7 @@ public class Robot {
 
     /**
      * Checks if the robot is in autonomous mode
+     *
      * @return true if the robot is in autonomous mode
      */
     public boolean isAuto() {
