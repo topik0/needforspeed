@@ -91,6 +91,10 @@ public class Drivetrain {
             motor.setPower(power);
     }
 
+    public static void setTurnThrottle(double turnThrottle) {
+        currentThrottle = turnThrottle;
+    }
+
     public double getThrottle() {
         return currentThrottle;
     }
