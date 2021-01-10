@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -14,6 +15,7 @@ public class HardwareGenesis {
     public DcMotor leftIntake, rightIntake;
     public Motor flywheelFront, flywheelBack;
     public DcMotorEx[] drivetrainMotors;
+    public BNO055IMU imu;
 
     public static String
             flapName = "flap",
@@ -24,7 +26,8 @@ public class HardwareGenesis {
             rightIntakeName = "rightIntake",
             flickerName = "flicker",
             flywheelFrontName = "flywheelFront",
-            flywheelBackName = "flywheelBack";
+            flywheelBackName = "flywheelBack",
+            imuName = "imu";
 
     public static String[] drivetrainNames = {"lowerRight", "lowerLeft", "upperRight", "upperLeft"};
 
@@ -42,6 +45,8 @@ public class HardwareGenesis {
 
         flywheelFront = new Motor(hwMap, flywheelFrontName, Motor.GoBILDA.BARE);
         flywheelBack = new Motor(hwMap, flywheelBackName, Motor.GoBILDA.BARE);
+
+        imu = hwMap.get(BNO055IMU.class, imuName);
 
         for (int i = 0; i < 4; i++) {
             drivetrainMotors[i] = hwMap.get(DcMotorEx.class, drivetrainNames[i]);
