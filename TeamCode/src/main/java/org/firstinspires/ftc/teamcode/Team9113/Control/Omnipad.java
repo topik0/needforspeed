@@ -4,9 +4,11 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Gamepad;
 
 import org.firstinspires.ftc.teamcode.Team9113.Robot.Drivetrain;
+import org.firstinspires.ftc.teamcode.Team9113.Robot.Robot;
 
 @Config
 public class Omnipad {
+    private Robot robot;
     private Gamepad one;
     private Gamepad two;
     private double[] timer = new double[9];
@@ -15,9 +17,10 @@ public class Omnipad {
     public static int clawCooldown = 700;
     public static int flapCooldown = 450;
 
-    public Omnipad(Gamepad one, Gamepad two) {
+    public Omnipad(Gamepad one, Gamepad two, Robot robot) {
         this.one = one;
         this.two = two;
+        this.robot = robot;
     }
 
     public boolean armUp() {
@@ -46,7 +49,7 @@ public class Omnipad {
     }
 
     public boolean clawToggle() {
-        return evalBoolean(one.b, 1, clawCooldown);
+        return evalBoolean(one.b && !robot.arm.isUp(), 1, clawCooldown);
     }
 
     public boolean intakeStart() {
