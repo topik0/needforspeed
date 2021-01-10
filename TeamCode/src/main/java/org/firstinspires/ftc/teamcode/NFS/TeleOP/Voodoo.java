@@ -30,16 +30,14 @@ public class Voodoo extends LinearOpMode {
         Omnipad pad = new Omnipad(gamepad1, gamepad2, robot);
         StopWatch flywheelStopwatch = new StopWatch();
         StopWatch armStopwatch = new StopWatch();
-        // Set things to starting positions
         robot.startPositions();
-        // Initialize variables
         FtcDashboard dashboard = FtcDashboard.getInstance();
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.mode = BNO055IMU.SensorMode.IMU;
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
         parameters.loggingEnabled = false;
-        BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU imu = robot.genesis.imu;
         imu.initialize(parameters);
         waitForStart();
         while (opModeIsActive()) {
@@ -65,9 +63,8 @@ public class Voodoo extends LinearOpMode {
             if (pad.clawToggle()) robot.claw.toggle();
             if (pad.armToggle()) robot.arm.toggle();
             if (pad.intakeReverse()) robot.intake.reverse();
-            if (pad.turnRight()) robot.drivetrain.mecanumDrive.turn(Math.toRadians(turnRightAngle));
-            else if (pad.turnLeft())
-                robot.drivetrain.mecanumDrive.turn(Math.toRadians(turnLeftAngle));
+            if (pad.turnRight()) robot.drivetrain.turn(turnRightAngle);
+            else if (pad.turnLeft()) robot.drivetrain.turn(turnLeftAngle);
             else if (robot.intake.isRunning()) robot.intake.start();
             if (robot.flywheels.running() && flywheelStopwatch.getTime() >= flywheelTimerThreshold)
                 Drivetrain.setTurnThrottle(.5);
