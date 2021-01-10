@@ -43,6 +43,10 @@ public class Arm {
         return state == State.UP;
     }
 
+    public State getState(){
+        return state;
+    }
+
     public void setPosition(double position) {
         arm.setPosition(position);
     }
