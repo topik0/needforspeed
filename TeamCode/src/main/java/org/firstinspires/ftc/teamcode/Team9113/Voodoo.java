@@ -26,7 +26,7 @@ public class Voodoo extends LinearOpMode {
     @Override
     public void runOpMode() {
         Robot robot = new Robot(hardwareMap);
-        Omnipad pad = new Omnipad(gamepad1, gamepad2);
+        Omnipad pad = new Omnipad(gamepad1, gamepad2, robot);
         StopWatch flywheelStopwatch = new StopWatch();
         StopWatch armStopwatch = new StopWatch();
         // Set things to starting positions
@@ -63,7 +63,7 @@ public class Voodoo extends LinearOpMode {
             if (pad.raiseFlap()) robot.flap.goToHighGoalPosition();
             if (pad.lowerFlap()) robot.flap.goToPowershotPosition();
             if (pad.intakeToggle()) robot.intake.toggle();
-            if (pad.clawToggle() && !robot.arm.isUp()) robot.claw.toggle();
+            if (pad.clawToggle()) robot.claw.toggle();
             if (pad.armToggle()) robot.arm.toggle();
             if (pad.intakeReverse()) robot.intake.reverse();
             if (pad.turnRight()) robot.drivetrain.mecanumDrive.turn(Math.toRadians(turnRightAngle));
