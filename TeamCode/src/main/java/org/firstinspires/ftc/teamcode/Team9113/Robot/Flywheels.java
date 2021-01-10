@@ -9,7 +9,7 @@ public class Flywheels {
     public Motor flywheelFront, flywheelBack;
     private State runState;
     private State velocityState;
-    public static double targetVelocity = 0;
+    public static double targetVelocity = 0, plannedVelocity = targetVelocity;
     public static double maxVelocity = 1900, powershotVelocity = 1900;
     public static double power = 0;
     public static double kP = 12, kI = 12, kD = 0.3;
@@ -59,11 +59,11 @@ public class Flywheels {
     }
 
     public void setPowershotVelocity() {
-        targetVelocity = powershotVelocity;
+        plannedVelocity = powershotVelocity;
     }
 
     public void setHighGoalVelocity() {
-        targetVelocity = maxVelocity;
+        plannedVelocity = maxVelocity;
     }
 
     public void start() {
@@ -117,6 +117,10 @@ public class Flywheels {
         targetVelocity = maxVelocity;
     }
 
+    public void doVelocity() {
+        targetVelocity = plannedVelocity;
+    }
+
     public double getPower() {
         return power;
     }
@@ -128,9 +132,9 @@ public class Flywheels {
     }
 
     public void togglePID() {
-        if (atMaxVelocity())
+        if (running())
             halt();
-        else doMaxVelocity();
+        else doVelocity();
     }
 
     private static boolean doubleEquals(double a, double b) {
