@@ -7,11 +7,13 @@ import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.Team9113.Control.Omnipad;
+import org.firstinspires.ftc.teamcode.Team9113.Robot.Drivetrain;
 import org.firstinspires.ftc.teamcode.Team9113.Robot.Robot;
 
 @Config
@@ -19,11 +21,14 @@ import org.firstinspires.ftc.teamcode.Team9113.Robot.Robot;
 public class Voodoo extends LinearOpMode {
     private static double offSetAngle = 0;
     public static double turnRightAngle = 6, turnLeftAngle = -6;
+    public static double flywheelTimerTheshold = 200, armTimerThreshold = 200;
 
     @Override
     public void runOpMode() {
         Robot robot = new Robot(hardwareMap);
         Omnipad pad = new Omnipad(gamepad1, gamepad2);
+        StopWatch flywheelStopwatch = new StopWatch();
+        StopWatch armStopwatch = new StopWatch();
         // Set things to starting positions
         robot.startPositions();
         // Initialize variables
@@ -50,7 +55,9 @@ public class Voodoo extends LinearOpMode {
             robot.drivetrain.driveFieldCentric(x, y, rx);
             if (pad.drivetrainDormant()) robot.drivetrain.brake();
             if (pad.shootRing()) robot.flicker.shootOut();
-            if (pad.flywheelsToggle()) robot.flywheels.togglePID();
+            if (pad.flywheelsToggle()) {
+                robot.flywheels.togglePID();
+            }
             if (pad.setOffset()) offSetAngle = angles.firstAngle;
             if (pad.raiseFlap()) robot.flap.goToHighGoalPosition();
             if (pad.lowerFlap()) robot.flap.goToPowershotPosition();
@@ -62,6 +69,11 @@ public class Voodoo extends LinearOpMode {
             else if (pad.turnLeft())
                 robot.drivetrain.mecanumDrive.turn(Math.toRadians(turnLeftAngle));
             else if (robot.intake.isRunning()) robot.intake.start();
+            if (robot.flywheels.running() && flywheelStopwatch.getTime() >= flywheelTimerTheshold)
+                Drivetrain.setTurnThrottle(.5);
+            else if (!robot.arm.isUp() && armStopwatch.getTime() >= armTimerThreshold)
+                Drivetrain.setTurnThrottle(.6);
+            else Drivetrain.setTurnThrottle(.75);
             telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
             telemetry.update();
             TelemetryPacket packet = new TelemetryPacket();
