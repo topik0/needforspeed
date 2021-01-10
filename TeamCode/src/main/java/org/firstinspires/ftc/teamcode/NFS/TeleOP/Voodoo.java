@@ -72,6 +72,7 @@ public class Voodoo extends LinearOpMode {
                 Drivetrain.setTurnThrottle(.6);
             else Drivetrain.setTurnThrottle(.75);
             telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
+            telemetry.addData("Flicker State", robot.flicker.flickerState());
             telemetry.update();
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
