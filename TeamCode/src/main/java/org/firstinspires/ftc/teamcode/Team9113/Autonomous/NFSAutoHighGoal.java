@@ -166,13 +166,13 @@ public class NFSAutoHighGoal extends LinearOpMode {
         UGContourRingPipeline.Height height = vision.getHeight();
         while (!isStarted() && vision.isReady()) {
             height = vision.getHeight();
-            telemetry.addData("Status", "Not Ready");
+            telemetry.addData("Vision Status", "Not Ready");
             telemetry.addData("Camera Initialization Time: ", vision.cameraInitTime());
             telemetry.update();
         }
         while (!isStarted()) {
             height = vision.getHeight();
-            telemetry.addData("Status", "Ready");
+            telemetry.addData("Vision Status", "Ready");
             telemetry.addData("Ring count: ", height);
             telemetry.addData("Camera Initialization Time: ", vision.cameraInitTime());
             telemetry.update();
