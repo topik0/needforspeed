@@ -33,15 +33,23 @@ public class Flywheels {
     public void run() {
         setVelocityState();
         setRunningState();
-        if (runState == State.RUNNING)
+        if (runState == State.RUNNING) {
             setPower(targetVelocity / 2800);
+        } else {
+            setPower(0);
+            brake();
+        }
     }
 
     public void halt() {
-        targetVelocity = 0;
+        setTargetVelocity(0);
         setVelocityState();
         setRunningState();
-        setPower(0);
+    }
+
+    public void brake() {
+        flywheelFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        flywheelBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
     }
 
     public void setRunningState() {
@@ -114,11 +122,11 @@ public class Flywheels {
     }
 
     public void doMaxVelocity() {
-        targetVelocity = maxVelocity;
+        setTargetVelocity(maxVelocity);
     }
 
     public void doVelocity() {
-        targetVelocity = plannedVelocity;
+        setTargetVelocity(plannedVelocity);
     }
 
     public double getPower() {
