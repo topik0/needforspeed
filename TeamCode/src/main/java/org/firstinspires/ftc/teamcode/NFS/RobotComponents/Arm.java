@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Exceptions.BadInitializationException;
+
 @Config
 public class Arm {
     public Servo arm;

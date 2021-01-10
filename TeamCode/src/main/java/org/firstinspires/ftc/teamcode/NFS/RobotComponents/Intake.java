@@ -4,6 +4,8 @@ import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Exceptions.BadInitializationException;
+
 @Config
 public class Intake {
     public DcMotor leftIntake, rightIntake;
