@@ -13,12 +13,21 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
-import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Vision;
+import org.firstinspires.ftc.teamcode.NFS.Vision.Vision;
 import org.firstinspires.ftc.teamcode.NFS.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 
 import java.util.Arrays;
 
+/**
+ * @author Topik
+ * @version 1.0
+ * @since 1.0
+ * The high goal (backup) autonomous
+ * Zero Ring: 71 Points
+ * One Ring: 83 Points
+ * Four Rings: 119 Points
+ */
 @Config
 @Autonomous(name = "NFSAutoHighGoal", group = "Linear Opmode")
 public class NFSAutoHighGoal extends LinearOpMode {

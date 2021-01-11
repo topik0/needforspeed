@@ -13,16 +13,24 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
-import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Vision;
+import org.firstinspires.ftc.teamcode.NFS.Vision.Vision;
 import org.firstinspires.ftc.teamcode.NFS.drive.DriveConstants;
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 
 import java.util.Arrays;
 
+/**
+ * @author Topik
+ * @version 1.0
+ * @since 1.0
+ * The normal (powershot) autonomous
+ * Zero Ring: 80 Points
+ * One Ring: 92 Points
+ * Four Rings: 128 Points
+ */
 @Config
 @Autonomous(name = "NFSAuto", group = "Linear Opmode")
 public class NFSAuto extends LinearOpMode {
-
     @Override
     public void runOpMode() {
         Robot robot = new Robot(hardwareMap, telemetry, true);
