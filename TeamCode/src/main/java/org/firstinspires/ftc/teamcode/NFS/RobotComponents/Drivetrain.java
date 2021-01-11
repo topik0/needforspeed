@@ -9,38 +9,79 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Exceptions.BadInitializationException;
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 
+/**
+ * @author Topik
+ * @version 1.0
+ * @since 1.0
+ * This class contains the drivetrain and drive control
+ */
 @Config
 public class Drivetrain {
-    /**
+    /*
+     * Map of motors
      * upperLeft [0] upperRight [1]
      * lowerLeft [2] lowerRight [3]
      */
 
-    private Robot robot;
-    private BNO055IMU imu;
-
+    /**
+     * The default drivetrain throttle
+     */
     public static double normalThrottle = 1;
-    public static double snailDrive = .65;
+    /**
+     * The default throttle for turning
+     */
     public static double turnThrottle = .75;
-    public static double snailTurnThrottle = .4;
-    public static double currentThrottle = normalThrottle;
-    public static double currentTurnThrottle = turnThrottle;
-    public static double turnkP = .04, turnErrorThreshold = 2;
+    /**
+     * The kP and error thresholds for the turn function
+     */
+    public static double turnKP = .04, turnErrorThreshold = 2;
 
+    /**
+     * The drivetrain motors
+     */
     public DcMotorEx[] motors;
+    /**
+     * The SampleMecanumDrive used for odometry and Road Runner
+     */
     public SampleMecanumDrive mecanumDrive;
 
+    private final Robot robot;
+    private final BNO055IMU imu;
+    private double currentThrottle = normalThrottle;
+
+    /**
+     * Drivetrain constructor
+     *
+     * @param gen   the HardwareGenesis object needed to get the drivetrain motors and IMU
+     * @param robot the Robot object needed for Robot functions
+     */
     public Drivetrain(HardwareGenesis gen, Robot robot) {
-        this.robot = robot;
-        imu = robot.genesis.imu;
+        if (gen == null)
+            throw new BadInitializationException("Null Genesis detected in drivetrain");
+        imu = gen.imu;
         motors = gen.drivetrainMotors;
+        if (motors == null)
+            throw new BadInitializationException("Null motors detected in drivetrain");
+        if (imu == null)
+            throw new BadInitializationException("Null IMU detected in drivetrain");
+        this.robot = robot;
+        if (robot == null)
+            throw new BadInitializationException("Null Robot detected in drivetrain");
         mecanumDrive = new SampleMecanumDrive(gen.hwMap);
         motors[0].setDirection(DcMotor.Direction.REVERSE);
         motors[2].setDirection(DcMotor.Direction.REVERSE);
     }
 
+    /**
+     * Drives the drivetrain in field centric mode
+     *
+     * @param x  the x value
+     * @param y  the y value
+     * @param rx the right x value
+     */
     public void driveFieldCentric(double x, double y, double rx) {
         motors[0].setPower(-1 * (y + x + rx));
         motors[1].setPower(-1 * (y - x - rx));
@@ -48,86 +89,77 @@ public class Drivetrain {
         motors[3].setPower(-1 * (y + x - rx));
     }
 
-    public void toggleNormalDrive() {
-        if (!isNormalDriveEnabled())
-            enableNormalDrive();
-        else
-            disableNormalDrive();
-    }
-
-    public void enableNormalDrive() {
-        currentThrottle = normalThrottle;
-        currentTurnThrottle = turnThrottle;
-    }
-
-    public void disableNormalDrive() {
-        currentThrottle = snailDrive;
-        currentTurnThrottle = snailTurnThrottle;
-    }
-
-    public void toggleSnailDrive() {
-        if (!isSnailDriveEnabled())
-            enableSnailDrive();
-        else
-            disableSnailDrive();
-    }
-
-    public void enableSnailDrive() {
-        currentThrottle = snailDrive;
-        currentTurnThrottle = snailTurnThrottle;
-    }
-
-    public void disableSnailDrive() {
-        currentThrottle = normalThrottle;
-        currentTurnThrottle = turnThrottle;
-    }
-
-    public boolean isSnailDriveEnabled() {
-        return currentThrottle == snailDrive;
-    }
-
-    public boolean isNormalDriveEnabled() {
-        return currentThrottle == normalThrottle;
-    }
-
+    /**
+     * Brakes the drivetrain motors using ZeroPowerBehavior
+     */
     public void brake() {
         for (DcMotorEx motor : motors)
             motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    /**
+     * Reverses all of the drivetrain motors
+     */
     public void reverseAll() {
         for (DcMotorEx motor : motors)
             motor.setDirection(DcMotor.Direction.REVERSE);
     }
 
+    /**
+     * Sets the power of all drivetrain motors
+     *
+     * @param power the power to be set
+     */
     public void setPower(double power) {
         for (DcMotorEx motor : motors)
             motor.setPower(power);
     }
 
-    public static void setTurnThrottle(double turnThrottle) {
+    /**
+     * Sets the turn throttle of the drivetrain
+     *
+     * @param turnThrottle the turn throttle to be set
+     */
+    public void setTurnThrottle(double turnThrottle) {
         currentThrottle = turnThrottle;
     }
 
-    public double getThrottle() {
-        return currentThrottle;
-    }
-
+    /**
+     * Sets the power of the left side of the drivetrain
+     *
+     * @param power the power to be set
+     */
     public void leftPower(double power) {
         motors[0].setPower(power);
         motors[2].setPower(power);
     }
 
+    /**
+     * Sets the power of the right side of the drivetrain
+     *
+     * @param power the power to be set
+     */
     public void rightPower(double power) {
         motors[1].setPower(power);
         motors[3].setPower(power);
     }
 
+    /**
+     * Sets the power of both sides of the drivetrain
+     *
+     * @param leftPower  the power to be given to the left side
+     * @param rightPower the power to be given to the right side
+     */
     public void setSideMotorPowers(double leftPower, double rightPower) {
         leftPower(leftPower);
         rightPower(rightPower);
     }
 
+    /**
+     * Turns the drivetrain a specified angle in degrees
+     *
+     * @param degrees the angle to turn in degrees
+     */
     public void turn(double degrees) {
         double error = -1 * degrees;
         double originalHeading = getHeading();
@@ -136,14 +168,37 @@ public class Drivetrain {
         while ((Math.abs(error) >= turnErrorThreshold)) {
             robot.flywheels.run();
             error = getHeading() - degrees - originalHeading;
-            leftPow = error * turnkP;
-            rightPow = -error * turnkP;
+            leftPow = error * turnKP;
+            rightPow = -error * turnKP;
             setSideMotorPowers(leftPow, rightPow);
         }
     }
 
+    /**
+     * Gets the current heading using the IMU
+     *
+     * @return the current heading
+     */
     public double getHeading() {
         Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES);
         return angles.firstAngle;
+    }
+
+    /**
+     * Gets the current throttle
+     *
+     * @return the current throttle
+     */
+    public double getThrottle() {
+        return currentThrottle;
+    }
+
+    /**
+     * Gets the current turn throttle
+     *
+     * @return the turn throttle
+     */
+    public double getTurnThrottle() {
+        return turnThrottle;
     }
 }
