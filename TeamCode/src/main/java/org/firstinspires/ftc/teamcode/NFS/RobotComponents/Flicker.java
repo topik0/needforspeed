@@ -3,16 +3,35 @@ package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Exceptions.BadInitializationException;
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 
+/**
+ * @author Topik
+ * @version 1.0
+ * @since 1.0
+ * This class controls the flicker which shoots the rings
+ */
 @Config
 public class Flicker {
-    private Robot robot;
+    /**
+     * The various positions of the flicker
+     */
     public static double startPosition = .55, outPosition = .65, inPosition = .55;
+    /**
+     * The delay between movements
+     */
     public static double cooldown = 60;
+    /**
+     * Controls if the flicker should shoot if the flywheels aren't running
+     */
     public static boolean noShootWhileFlywheelsDormant = true;
-    private SampleMecanumDrive drive;
+    /**
+     * The flicker servo
+     */
     public Servo flicker;
+    private final Robot robot;
+    private final SampleMecanumDrive drive;
     private State state = State.IN;
     private double startTime = 0;
 
@@ -21,16 +40,34 @@ public class Flicker {
         IN
     }
 
-    public Flicker(HardwareGenesis gen, SampleMecanumDrive drive, Robot robot) {
-        this.robot = robot;
-        this.drive = drive;
+    /**
+     * Flicker constructor
+     *
+     * @param gen   the HardwareGenesis object needed to get the flicker servo
+     * @param robot the robot object needed to use robot functions
+     */
+    public Flicker(HardwareGenesis gen, Robot robot) {
+        if (gen == null)
+            throw new BadInitializationException("Null Genesis detected in flicker");
         flicker = gen.flicker;
+        if (flicker == null)
+            throw new BadInitializationException("Null Flicker Servo detected in flicker");
+        this.robot = robot;
+        if (robot == null)
+            throw new BadInitializationException("Null Robot detected in flicker");
+        this.drive = robot.drivetrain.mecanumDrive;
     }
 
+    /**
+     * Sets the flicker to the start position
+     */
     public void startPosition() {
         flicker.setPosition(startPosition);
     }
 
+    /**
+     * Moves the flicker to the out position
+     */
     public void shootOut() {
         if ((noShootWhileFlywheelsDormant && !robot.flywheels.running()) || state == State.OUT)
             return;
@@ -39,6 +76,9 @@ public class Flicker {
         startTime = System.currentTimeMillis();
     }
 
+    /**
+     * Brings the flicker to the in position
+     */
     public void bringIn() {
         if (state == State.IN) return;
         flicker.setPosition(inPosition);
@@ -46,21 +86,34 @@ public class Flicker {
         startTime = 0;
     }
 
+    /**
+     * Checks the current state of the flicker, and decides whether it needs to be brought in
+     */
     public void checkState() {
         if (state == State.OUT && reachedCooldown())
             bringIn();
     }
 
+    /**
+     * Checks if the cooldown in between movements has been reached
+     *
+     * @return true if the cooldown between movements has been reached
+     */
     private boolean reachedCooldown() {
         return System.currentTimeMillis() - startTime >= cooldown;
     }
 
+    /**
+     * Gets the flicker state
+     *
+     * @return the flicker state
+     */
     public State flickerState() {
         return state;
     }
 
-    /*
-    FOR USE IN AUTONOMOUS PROGRAMS ONLY
+    /**
+     * Shoots a ring and loops PID for the cooldown (recommended use only in autonomous programs)
      */
     public void launch() {
         shootOut();
