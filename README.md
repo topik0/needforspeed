@@ -4,13 +4,12 @@ Any programming questions can be asked to Topik#3044 on Discord.
 
 [**Click here to view the Javadoc documenation**](https://www.javadoc.needforspeedrobotics.org)
 
-This project uses the following external libraries/projects
-* FTClib
-* FTClib-Vision
-* EasyOpenCV
-* RoadRunner
-* FTC Dashboard
-* Apache Commons
+**This project uses the following external libraries/projects**
+* [FTClib](https://ftclib.org)
+* [FTClib-Vision/EasyOpenCV](https://docs.ftclib.org/ftclib/features/computer-vision)
+* [RoadRunner](https://github.com/acmerobotics/road-runner)
+* [FTC Dashboard](https://acmerobotics.github.io/ftc-dashboard)
+* [Apache Commons](https://commons.apache.org)
 
 # Links
 * [Public Discord server](https://discord.com/invite/EHbNfhpjFP)
