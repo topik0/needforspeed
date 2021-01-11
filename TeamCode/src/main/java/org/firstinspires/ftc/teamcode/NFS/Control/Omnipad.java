@@ -21,7 +21,7 @@ public class Omnipad {
     private double[] timer = new double[9];
     public static double cooldown = 350;
     public static int shootCooldown = 150;
-    public static int clawCooldown = 700;
+    public static int clawCooldown = 300;
     public static int flapCooldown = 450;
 
     /**
