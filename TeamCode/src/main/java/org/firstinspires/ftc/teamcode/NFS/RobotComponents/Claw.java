@@ -48,4 +48,8 @@ public class Claw {
         if (isClosed()) open();
         else close();
     }
+
+    public State getState(){
+        return state;
+    }
 }
