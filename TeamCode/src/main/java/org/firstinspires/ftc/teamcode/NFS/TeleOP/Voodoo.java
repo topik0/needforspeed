@@ -16,11 +16,23 @@ import org.firstinspires.ftc.teamcode.NFS.Control.Omnipad;
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Drivetrain;
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
 
+/**
+ * @author Topik
+ * @version 1.0
+ * @since 1.0
+ * This class is the main TeleOP OP Mode, which contains all of the robot controls
+ */
 @Config
 @TeleOp(name = "Voodoo", group = "Linear Opmode")
 public class Voodoo extends LinearOpMode {
+    /**
+     * The angles for the constant turns
+     */
     public static double turnRightAngle = -6, turnLeftAngle = 6;
     public static double flywheelTimerThreshold = 200, armTimerThreshold = 200;
+    /**
+     * Controls whether or not active breaking is enabled
+     */
     public static boolean activeBreakingEnabled = true;
     private static double offSetAngle = 0;
 
@@ -67,10 +79,10 @@ public class Voodoo extends LinearOpMode {
             else if (pad.turnLeft()) robot.drivetrain.turn(turnLeftAngle);
             else if (robot.intake.isRunning()) robot.intake.start();
             if (robot.flywheels.running() && flywheelStopwatch.getTime() >= flywheelTimerThreshold)
-                Drivetrain.setTurnThrottle(.5);
+                robot.drivetrain.setTurnThrottle(.5);
             else if (!robot.arm.isUp() && armStopwatch.getTime() >= armTimerThreshold)
-                Drivetrain.setTurnThrottle(.6);
-            else Drivetrain.setTurnThrottle(.75);
+                robot.drivetrain.setTurnThrottle(.6);
+            else robot.drivetrain.setTurnThrottle(.75);
             telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
             telemetry.addData("Flicker State", robot.flicker.flickerState());
             telemetry.addData("Flywheel Runstate", robot.flywheels.getRunState());
