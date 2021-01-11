@@ -9,15 +9,20 @@ import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Exceptions.BadInitiali
  * @author Topik
  * @version 1.0
  * @since 1.0
- * <p>
  * This class controls the movement of the aiming flap
  */
 @Config
 public class Flap {
-    private final Robot robot;
-    public Servo flap;
-    private State state;
+    /**
+     * The various positions of the flap
+     */
     public static double highGoalPosition = .2785, powerShotPosition = .3, adjustUpThreshold = .005, adjustDownThreshold = .005;
+    /**
+     * The flap Servo object
+     */
+    public Servo flap;
+    private final Robot robot;
+    private State state;
 
     private enum State {
         HIGH_GOAL,
@@ -97,14 +102,31 @@ public class Flap {
         return state;
     }
 
+    /**
+     * Sets the flap to a specified position
+     *
+     * @param position the position to set the flap to
+     */
     public void setPosition(double position) {
+        if (Math.abs(position) > 1 || position < 0)
+            throw new IllegalArgumentException("Tried to set invalid flap position: " + position);
         flap.setPosition(position);
     }
 
-    public boolean isHighGoal() {
+    /**
+     * Checks if the flap is in the high goal position
+     *
+     * @return true if the flap is in the high goal position
+     */
+    public boolean isInHighGoalPosition() {
         return state == State.HIGH_GOAL;
     }
 
+    /**
+     * Checks if the flap is in a neutral state (not in powershot or high goal position)
+     *
+     * @return true if the flap is neutral
+     */
     public boolean isNeutral() {
         return state == State.NEUTRAL;
     }
