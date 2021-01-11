@@ -15,7 +15,7 @@ public class VisionTest extends LinearOpMode {
     @Override
     public void runOpMode() {
         Vision vision = new Vision(hardwareMap, telemetry);
-        while (!isStarted() && !vision.isReadyToRead())
+        while (!isStarted() && vision.isNotReadyToRead())
             telemetry.addData("Vision Status", "Not Ready");
         UGContourRingPipeline.Height height;
         while (!isStarted() && vision.isReady()) {
