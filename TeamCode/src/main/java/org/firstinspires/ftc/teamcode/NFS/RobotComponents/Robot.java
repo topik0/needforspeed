@@ -10,22 +10,51 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * @author Topik
  * @version 1.0
  * @since 1.0
- * <p>
  * This class has all of the robot functions and classes, including all robot objects, Hardware Maps, and PID delays
  */
 @Config
 public class Robot {
+    /**
+     * The hardware map used to make HardwareGenesis
+     */
     public HardwareMap hwMap;
+    /**
+     * HardwareGenesis to pass on to robot components
+     */
     public HardwareGenesis genesis;
+    /**
+     * Robot drivetrain
+     */
     public Drivetrain drivetrain;
+    /**
+     * Robot flywheels
+     */
     public Flywheels flywheels;
+    /**
+     * Robot flicker (to shoot)
+     */
     public Flicker flicker;
+    /**
+     * The wobble arm
+     */
     public Arm arm;
+    /**
+     * The flap to aim rings
+     */
     public Flap flap;
+    /**
+     * The claw mechanism to grab the wobble goal
+     */
     public Claw claw;
+    /**
+     * The robot intake
+     */
     public Intake intake;
+    /**
+     * OP Mode telemetry
+     */
     public Telemetry telemetry;
-    private Mode mode;
+    private final Mode mode;
 
     /**
      * An enum to keep track of whether the robot is being made in a TeleOP or Autonomous program
@@ -51,7 +80,7 @@ public class Robot {
         intake = new Intake(genesis);
         drivetrain = new Drivetrain(genesis, this);
         flywheels = new Flywheels(genesis);
-        flicker = new Flicker(genesis, drivetrain.mecanumDrive, this);
+        flicker = new Flicker(genesis, this);
     }
 
     /**
@@ -71,7 +100,7 @@ public class Robot {
         intake = new Intake(genesis);
         drivetrain = new Drivetrain(genesis, this);
         flywheels = new Flywheels(genesis);
-        flicker = new Flicker(genesis, drivetrain.mecanumDrive, this);
+        flicker = new Flicker(genesis, this);
     }
 
     /**
