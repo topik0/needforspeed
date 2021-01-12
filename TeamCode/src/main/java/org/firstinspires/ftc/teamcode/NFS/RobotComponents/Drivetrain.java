@@ -50,7 +50,8 @@ public class Drivetrain {
 
     private final Robot robot;
     private final BNO055IMU imu;
-    private double currentThrottle = 1;
+    private double currentThrottle = normalThrottle;
+    private double currentTurnThrottle = turnThrottle;
 
     /**
      * Drivetrain constructor
@@ -116,15 +117,6 @@ public class Drivetrain {
     }
 
     /**
-     * Sets the turn throttle of the drivetrain
-     *
-     * @param turnThrottle the turn throttle to be set
-     */
-    public void setTurnThrottle(double turnThrottle) {
-        currentThrottle = turnThrottle;
-    }
-
-    /**
      * Sets the power of the left side of the drivetrain
      *
      * @param power the power to be set
@@ -186,12 +178,30 @@ public class Drivetrain {
     }
 
     /**
+     * Sets the turn throttle of the drivetrain
+     *
+     * @param turnThrottle the turn throttle to be set
+     */
+    public void setTurnThrottle(double turnThrottle) {
+        currentTurnThrottle = turnThrottle;
+    }
+
+    /**
+     * Sets the throttle of the drivetrain
+     *
+     * @param throttle the throttle to be set
+     */
+    public void setThrottle(double throttle) {
+        currentThrottle = turnThrottle;
+    }
+
+    /**
      * Gets the current throttle
      *
      * @return the current throttle
      */
     public double getThrottle() {
-        return 1/*currentThrottle*/;
+        return currentThrottle;
     }
 
     /**
@@ -200,6 +210,6 @@ public class Drivetrain {
      * @return the turn throttle
      */
     public double getTurnThrottle() {
-        return turnThrottle;
+        return currentTurnThrottle;
     }
 }
