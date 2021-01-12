@@ -50,7 +50,7 @@ public class Drivetrain {
 
     private final Robot robot;
     private final BNO055IMU imu;
-    private double currentThrottle = normalThrottle;
+    private double currentThrottle = 1;
 
     /**
      * Drivetrain constructor
@@ -168,6 +168,7 @@ public class Drivetrain {
         while ((Math.abs(error) >= turnErrorThreshold)) {
             robot.flywheels.run();
             error = getHeading() - degrees - originalHeading;
+            error = getHeading() - degrees - originalHeading;
             leftPow = error * turnKP;
             rightPow = -error * turnKP;
             setSideMotorPowers(leftPow, rightPow);
@@ -190,7 +191,7 @@ public class Drivetrain {
      * @return the current throttle
      */
     public double getThrottle() {
-        return currentThrottle;
+        return 1/*currentThrottle*/;
     }
 
     /**
