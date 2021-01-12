@@ -160,7 +160,6 @@ public class Drivetrain {
         while ((Math.abs(error) >= turnErrorThreshold)) {
             robot.flywheels.run();
             error = getHeading() - degrees - originalHeading;
-            error = getHeading() - degrees - originalHeading;
             leftPow = error * turnKP;
             rightPow = -error * turnKP;
             setSideMotorPowers(leftPow, rightPow);
