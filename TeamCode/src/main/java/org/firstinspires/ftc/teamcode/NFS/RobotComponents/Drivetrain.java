@@ -72,8 +72,8 @@ public class Drivetrain {
         if (robot == null)
             throw new BadInitializationException("Null Robot detected in drivetrain");
         mecanumDrive = new SampleMecanumDrive(gen.hwMap);
-        motors[0].setDirection(DcMotor.Direction.REVERSE);
-        motors[2].setDirection(DcMotor.Direction.REVERSE);
+        motors[1].setDirection(DcMotor.Direction.REVERSE);
+        motors[3].setDirection(DcMotor.Direction.REVERSE);
     }
 
     /**
@@ -84,10 +84,10 @@ public class Drivetrain {
      * @param rx the right x value
      */
     public void driveFieldCentric(double x, double y, double rx) {
-        motors[0].setPower(-1 * (y + x + rx));
-        motors[1].setPower(-1 * (y - x - rx));
-        motors[2].setPower(-1 * (y - x + rx));
-        motors[3].setPower(-1 * (y + x - rx));
+        motors[0].setPower(1 * (y + x + rx));
+        motors[1].setPower(1 * (y - x - rx));
+        motors[2].setPower(1 * (y - x + rx));
+        motors[3].setPower(1 * (y + x - rx));
     }
 
     /**
