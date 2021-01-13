@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 public class Drivetrain {
     /*
      * Map of motors
-     * upperLeft [0] upperRight [1]
-     * lowerLeft [2] lowerRight [3]
+     * upperLeft [3] upperRight [2]
+     * lowerLeft[1] lowerRight[0]
      */
 
     /**
@@ -72,8 +72,8 @@ public class Drivetrain {
         if (robot == null)
             throw new BadInitializationException("Null Robot detected in drivetrain");
         mecanumDrive = new SampleMecanumDrive(gen.hwMap);
-        motors[1].setDirection(DcMotor.Direction.REVERSE);
-        motors[3].setDirection(DcMotor.Direction.REVERSE);
+        motors[0].setDirection(DcMotor.Direction.REVERSE);
+        motors[2].setDirection(DcMotor.Direction.REVERSE);
     }
 
     /**
