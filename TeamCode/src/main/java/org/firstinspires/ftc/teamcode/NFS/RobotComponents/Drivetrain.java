@@ -23,7 +23,7 @@ public class Drivetrain {
     /*
      * Map of motors
      * upperLeft [3] upperRight [2]
-     * lowerLeft[1] lowerRight[0]
+     * lowerLeft [1] lowerRight [0]
      */
 
     /**
