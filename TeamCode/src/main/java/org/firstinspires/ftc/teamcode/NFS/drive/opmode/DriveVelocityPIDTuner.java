@@ -51,7 +51,7 @@ import static org.firstinspires.ftc.teamcode.NFS.drive.DriveConstants.kV;
  * control back to the tuning process.
  */
 
-@Disabled
+//@Disabled
 @Config
 @Autonomous(group = "drive")
 public class DriveVelocityPIDTuner extends LinearOpMode {
