@@ -68,7 +68,7 @@ public class Vision {
      * @return true if the camera has a FPS higher than zero
      */
     private boolean hasFPS() {
-        return camera.getFps() < 0;
+        return camera.getFps() > 0;
     }
 
     /**
