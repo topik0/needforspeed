@@ -59,7 +59,7 @@ public class HardwareGenesis {
     /**
      * Names of the drivetrain motors in the configuration
      */
-    public static String[] drivetrainNames = {"lowerRight", "lowerLeft", "upperRight", "upperLeft"};
+    public static String[] drivetrainNames = {"backLeft", "frontLeft", "frontRight", "backRight"};
 
     /**
      * HardwareGenesis constructor which makes all of the robot hardware objects
