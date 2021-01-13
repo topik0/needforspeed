@@ -22,8 +22,8 @@ import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 public class Drivetrain {
     /*
      * Map of motors
-     * upperLeft [3] upperRight [2]
-     * lowerLeft [1] lowerRight [0]
+     * frontLeft [1] frontRight [2]
+     * backLeft [0] backRight [3]
      */
 
     /**
@@ -40,13 +40,14 @@ public class Drivetrain {
     public static double turnKP = .04, turnErrorThreshold = 2;
 
     /**
-     * The drivetrain motors
-     */
-    public DcMotorEx[] motors;
-    /**
      * The SampleMecanumDrive used for odometry and Road Runner
      */
     public SampleMecanumDrive mecanumDrive;
+
+    /**
+     * The drivetrain motors
+     */
+    private final DcMotorEx[] motors;
 
     private final Robot robot;
     private final BNO055IMU imu;
@@ -72,8 +73,6 @@ public class Drivetrain {
         if (robot == null)
             throw new BadInitializationException("Null Robot detected in drivetrain");
         mecanumDrive = new SampleMecanumDrive(gen.hwMap);
-        motors[0].setDirection(DcMotor.Direction.REVERSE);
-        motors[2].setDirection(DcMotor.Direction.REVERSE);
     }
 
     /**
@@ -210,5 +209,25 @@ public class Drivetrain {
      */
     public double getTurnThrottle() {
         return currentTurnThrottle;
+    }
+
+    public DcMotorEx getBackLeft() {
+        return motors[0];
+    }
+
+    public DcMotorEx getFrontLeft() {
+        return motors[1];
+    }
+
+    public DcMotorEx getFrontRight() {
+        return motors[2];
+    }
+
+    public DcMotorEx getBackRight() {
+        return motors[3];
+    }
+
+    public DcMotorEx[] getMotorsArray() {
+        return motors;
     }
 }
