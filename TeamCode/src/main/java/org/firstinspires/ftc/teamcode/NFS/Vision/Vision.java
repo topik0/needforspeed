@@ -22,7 +22,7 @@ public class Vision {
     /**
      * Camera Dimensions
      */
-    public static int camera_width = 480, camera_height = 360, horizon = 260, init_threshold = 2000;
+    public static int camera_width = 640, camera_height = 360, horizon = 130, init_threshold = 2000;
     public static boolean using_webcam = true, debug = false;
     /**
      * The name of the webcam in the robot configuration
@@ -104,8 +104,8 @@ public class Vision {
      *
      * @return true if the camera is ready for normal vision use
      */
-    public boolean isReady() {
-        return hasFPS() && hasInitializationThresholdElapsed();
+    public boolean isNotReady() {
+        return !(hasFPS() && hasInitializationThresholdElapsed());
     }
 
     /**
