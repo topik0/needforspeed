@@ -73,6 +73,8 @@ public class Drivetrain {
         if (robot == null)
             throw new BadInitializationException("Null Robot detected in drivetrain");
         mecanumDrive = new SampleMecanumDrive(gen.hwMap);
+        getBackLeft().setDirection(DcMotor.Direction.REVERSE);
+        getFrontLeft().setDirection(DcMotor.Direction.REVERSE);
     }
 
     /**

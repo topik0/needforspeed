@@ -140,6 +140,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         leftFront = gen.drivetrainMotors[1];
         rightFront = gen.drivetrainMotors[2];
         rightRear = gen.drivetrainMotors[3];
+        leftRear.setDirection(DcMotor.Direction.REVERSE);
+        leftFront.setDirection(DcMotor.Direction.REVERSE);
 
         motors = Arrays.asList(leftFront, leftRear, rightRear, rightFront);
 
