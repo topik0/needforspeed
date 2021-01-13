@@ -22,12 +22,16 @@ public class MotorTest extends LinearOpMode {
         while (opModeIsActive()) {
             if (gamepad1.a)
                 robot.drivetrain.motors[3].setPower(1);
+            else robot.drivetrain.motors[3].setPower(0);
             if (gamepad1.b)
                 robot.drivetrain.motors[2].setPower(1);
+            else robot.drivetrain.motors[2].setPower(0);
             if (gamepad1.x)
                 robot.drivetrain.motors[1].setPower(1);
+            else robot.drivetrain.motors[1].setPower(0);
             if (gamepad1.y)
                 robot.drivetrain.motors[0].setPower(1);
+            else robot.drivetrain.motors[0].setPower(0);
         }
     }
 }
