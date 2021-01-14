@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
  * @author Topik
  * @version 1.0
  * @since 1.0
- * This class is used to test the flicker
+ * This class is a test OP mode for testing the flicker
  */
 @Config
 @TeleOp(name = "FlickerTest", group = "Linear Opmode")
@@ -23,9 +23,10 @@ public class FlickerTest extends LinearOpMode {
         waitForStart();
         while (opModeIsActive()) {
             robot.flywheels.run();
+            robot.flicker.checkState();
             if (pad.shootRing()) robot.flicker.shootOut();
+            if (pad.flywheelsToggle()) robot.flywheels.togglePID();
             if (pad.shootRingNonFSM()) robot.flicker.launch();
-            if (pad.flywheelsToggle()) robot.flywheels.toggle();
             telemetry.addData("Flicker State", robot.flicker.getState());
             telemetry.update();
         }
