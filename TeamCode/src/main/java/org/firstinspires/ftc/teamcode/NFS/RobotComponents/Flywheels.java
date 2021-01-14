@@ -217,6 +217,8 @@ public class Flywheels {
      */
     public void setTargetVelocity(double velocity) {
         targetVelocity = velocity;
+        setRunningState();
+        setVelocityState();
     }
 
     /**
