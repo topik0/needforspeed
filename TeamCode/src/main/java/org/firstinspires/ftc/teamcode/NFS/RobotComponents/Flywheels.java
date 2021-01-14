@@ -87,8 +87,10 @@ public class Flywheels {
      */
     public void halt() {
         setTargetVelocity(0);
-        setVelocityState();
-        setRunningState();
+//        setVelocityState();
+//        setRunningState();
+        runState = State.DORMANT;
+        velocityState = State.DORMANT;
     }
 
     /**
@@ -217,8 +219,6 @@ public class Flywheels {
      */
     public void setTargetVelocity(double velocity) {
         targetVelocity = velocity;
-        setRunningState();
-        setVelocityState();
     }
 
     /**
@@ -235,6 +235,8 @@ public class Flywheels {
      */
     public void doMaxVelocity() {
         setTargetVelocity(maxVelocity);
+        runState = State.RUNNING;
+        velocityState = State.MAX_VELOCITY;
     }
 
     /**
