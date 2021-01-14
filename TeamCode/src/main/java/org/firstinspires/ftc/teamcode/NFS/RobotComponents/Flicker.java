@@ -117,10 +117,7 @@ public class Flicker {
      */
     public void launch() {
         shootOut();
-        startTime = System.currentTimeMillis();
-        while (!reachedCooldown())
-            drive.update();
-        startTime = 0;
+        robot.delayWithAllPID(cooldown);
         bringIn();
     }
 }
