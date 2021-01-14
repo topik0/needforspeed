@@ -105,7 +105,7 @@ public class Voodoo extends LinearOpMode {
             if (robot.arm.isUp() && !robot.flywheels.running())
                 robot.drivetrain.setTurnThrottle(.75);
             telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
-            telemetry.addData("Flicker State", robot.flicker.flickerState());
+            telemetry.addData("Flicker State", robot.flicker.getState());
             telemetry.addData("Flywheel Runstate", robot.flywheels.getRunState());
             telemetry.addData("Arm State", robot.arm.getState());
             telemetry.addData("Claw State", robot.claw.getState());
