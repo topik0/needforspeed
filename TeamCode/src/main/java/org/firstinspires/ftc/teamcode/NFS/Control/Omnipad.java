@@ -195,6 +195,10 @@ public class Omnipad {
         return evalBoolean(one.right_bumper, 6, shootCooldown);
     }
 
+    /**
+     * One/A
+     * @return true if a ring shoot without an FSM is requested
+     */
     public boolean shootRingNonFSM() {
         return evalBoolean(one.a, 8, shootCooldown);
     }
