@@ -28,6 +28,7 @@ public class FlickerTest extends LinearOpMode {
             if (pad.flywheelsToggle()) robot.flywheels.togglePID();
             if (pad.shootRingNonFSM()) robot.flicker.launch();
             telemetry.addData("Flicker State", robot.flicker.getState());
+            telemetry.addData("Flywheel State", robot.flywheels.getRunState());
             telemetry.update();
         }
     }
