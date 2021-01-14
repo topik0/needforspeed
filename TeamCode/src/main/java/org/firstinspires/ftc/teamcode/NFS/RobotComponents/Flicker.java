@@ -69,7 +69,7 @@ public class Flicker {
      * Moves the flicker to the out position
      */
     public void shootOut() {
-        if ((noShootWhileFlywheelsDormant && !robot.flywheels.running()) || state == State.OUT)
+        if (state == State.OUT || (noShootWhileFlywheelsDormant && !robot.flywheels.running()))
             return;
         flicker.setPosition(outPosition);
         state = State.OUT;
