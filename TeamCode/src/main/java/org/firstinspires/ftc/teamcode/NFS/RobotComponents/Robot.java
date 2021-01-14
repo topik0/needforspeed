@@ -134,11 +134,8 @@ public class Robot {
     public void delayWithAllPID(double milliseconds) {
         StopWatch stopwatch = new StopWatch();
         stopwatch.start();
-        while (stopwatch.getTime() <= milliseconds) {
+        while (stopwatch.getTime() <= milliseconds)
             drivetrain.mecanumDrive.update();
-            telemetry.addData("Flywheels State", flywheels.getRunState());
-            telemetry.update();
-        }
     }
 
     /**
