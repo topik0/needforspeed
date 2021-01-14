@@ -16,7 +16,7 @@ public class Flap {
     /**
      * The various positions of the flap
      */
-    public static double startPosition = .1, highGoalPosition = .2785, powerShotPosition = .3, adjustUpThreshold = .005, adjustDownThreshold = .005;
+    public static double startPosition = 0, highGoalPosition = .2785, powerShotPosition = .3, adjustUpThreshold = .005, adjustDownThreshold = .005;
     /**
      * The flap Servo object
      */
@@ -52,8 +52,13 @@ public class Flap {
      * Sets the flap to its stop position
      */
     public void setStartPosition() {
-        flap.setPosition(startPosition);
-        state = State.NEUTRAL;
+        if (robot.isAuto()) {
+            flap.setPosition(startPosition);
+            state = State.NEUTRAL;
+        } else {
+            flap.setPosition(highGoalPosition);
+            state = State.HIGH_GOAL;
+        }
     }
 
     /**
