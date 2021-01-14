@@ -105,8 +105,8 @@ public class Flywheels {
      * Sets the correct running state depending on the target velocity
      */
     private void setRunningState() {
-        if (targetVelocity <= .001) runState = State.DORMANT;
-        else runState = State.RUNNING;
+        if (targetVelocity >= 1) runState = State.RUNNING;
+        else runState = State.DORMANT;
     }
 
     /**
@@ -117,8 +117,7 @@ public class Flywheels {
             velocityState = State.DORMANT;
         else if (doubleEquals(targetVelocity, maxVelocity))
             velocityState = State.MAX_VELOCITY;
-        else
-            velocityState = State.LOWER_VELOCITY;
+        else velocityState = State.LOWER_VELOCITY;
     }
 
     /**
