@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -53,6 +54,9 @@ public class Voodoo extends LinearOpMode {
         imu.initialize(parameters);
         waitForStart();
         while (opModeIsActive()) {
+            for (LynxModule hub : hardwareMap.getAll(LynxModule.class)) {
+                hub.clearBulkCache();
+            }
             robot.flywheels.run();
             robot.flicker.checkState();
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
