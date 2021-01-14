@@ -251,6 +251,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         packet.put("yError", lastError.getY());
         packet.put("headingError", lastError.getHeading());
         packet.put("Flywheel Velocity", Math.abs(flywheels.flywheelFront.getCorrectedVelocity()));
+        packet.put("Flywheel Runstate", flywheels.getRunState());
 
         switch (mode) {
             case IDLE:
