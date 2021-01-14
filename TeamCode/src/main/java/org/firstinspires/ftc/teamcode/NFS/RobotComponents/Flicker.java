@@ -108,7 +108,7 @@ public class Flicker {
      *
      * @return the flicker state
      */
-    public State flickerState() {
+    public State getState() {
         return state;
     }
 
