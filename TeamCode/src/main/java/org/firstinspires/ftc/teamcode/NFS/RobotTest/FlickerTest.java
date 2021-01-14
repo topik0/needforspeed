@@ -22,6 +22,7 @@ public class FlickerTest extends LinearOpMode {
         Omnipad pad = new Omnipad(gamepad1, gamepad2, robot);
         waitForStart();
         while (opModeIsActive()) {
+            robot.flywheels.run();
             if (pad.shootRing()) robot.flicker.shootOut();
             if (pad.shootRingNonFSM()) robot.flicker.launch();
             if (pad.flywheelsToggle()) robot.flywheels.toggle();
