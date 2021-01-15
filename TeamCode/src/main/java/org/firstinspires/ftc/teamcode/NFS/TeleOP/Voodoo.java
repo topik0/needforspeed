@@ -62,7 +62,7 @@ public class Voodoo extends LinearOpMode {
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = pad.getLeftY();
             double lx = pad.getLeftX();
-            double rx = pad.getRightX();
+            double rx = -pad.getRightX();
             rx = Math.sqrt(Math.abs(rx)) * rx * Drivetrain.turnThrottle;
             double heading = angles.firstAngle - offSetAngle + 180;
             double speed = Math.hypot(ly, lx);
