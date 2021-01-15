@@ -64,7 +64,7 @@ public class Voodoo extends LinearOpMode {
             double lx = pad.getLeftX();
             double rx = -pad.getRightX();
             rx = Math.sqrt(Math.abs(rx)) * rx * Drivetrain.turnThrottle;
-            double heading = angles.firstAngle - offSetAngle + 225;
+            double heading = angles.firstAngle - offSetAngle + Math.toRadians(270);
             double speed = Math.hypot(ly, lx);
             double y = pad.getY(speed, heading, ly, lx);
             double x = pad.getX(speed, heading, ly, lx);
@@ -115,6 +115,8 @@ public class Voodoo extends LinearOpMode {
             telemetry.addData("Claw State", robot.claw.getState());
             telemetry.addData("LeftY", pad.getLeftY());
             telemetry.addData("LeftX", pad.getLeftX());
+            telemetry.addData("Y", y);
+            telemetry.addData("X", x);
             telemetry.update();
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
