@@ -101,6 +101,7 @@ public class Robot {
         drivetrain = new Drivetrain(genesis, this);
         flywheels = new Flywheels(genesis);
         flicker = new Flicker(genesis, this);
+        Flicker.noShootWhileFlywheelsDormant = false;
     }
 
     /**
