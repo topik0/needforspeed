@@ -116,10 +116,10 @@ public class NFSAuto extends LinearOpMode {
                 .addTemporalMarker(2, () -> robot.arm.down())
                 .build();
         traj[2][1] = drive.trajectoryBuilder(traj[2][0].end(), true)
-                .splineTo(new Vector2d(-6, -12), Math.toRadians(170))
-                .addTemporalMarker(.5, () -> drive.flywheels.doMaxVelocity())
+                .splineTo(new Vector2d(-6, -12), Math.toRadians(164))
+                .addTemporalMarker(.5, () -> drive.flywheels.doPowershotVelocity())
                 .build();
-        traj[2][2] = drive.trajectoryBuilder(traj[2][1].end(), true)
+        traj[2][2] = drive.trajectoryBuilder(traj[2][1].end().plus(new Pose2d(0, 0, Math.toRadians(13))), true)
                 .splineTo(new Vector2d(-24, -18), Math.toRadians(270))
                 .addDisplacementMarker(() -> robot.intake.start())
                 .build();
