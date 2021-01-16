@@ -30,7 +30,18 @@ public class Voodoo extends LinearOpMode {
      * The angles for the constant turns
      */
     public static double turnRightAngle = -6, turnLeftAngle = 6;
+    /**
+     * The timer values for different drivetrain throttles depending on the flywheel and arm states
+     */
     public static double flywheelTimerThreshold = 200, armTimerThreshold = 200;
+    /**
+     * The turn throttle values to be set in certain cases depending on robot component states
+     */
+    public static double flywheelsTurnThrottle = .5, armTurnThrottle = .6, armDownFlywheelsRunningTurnThrottle = .75;
+    /**
+     * The drivetrain throttle values to be set in certain cases depending on robot component states
+     */
+    public static double flywheelsDrivetrainThrottle = .75, armDrivetrainThrottle = 1, armDownDrivetrainRunningDrivetrainThrottle = 1;
     /**
      * Controls whether or not active breaking is enabled
      */
@@ -84,7 +95,7 @@ public class Voodoo extends LinearOpMode {
             if (pad.raiseFlap()) robot.flap.goToHighGoalPosition();
             else if (pad.lowerFlap()) robot.flap.goToPowershotPosition();
             if (pad.intakeToggle()) robot.intake.toggle();
-            else robot.intake.start()
+            if (pad.intakeReverse()) robot.intake.reverse();
             if (pad.clawToggle()) robot.claw.toggle();
             if (pad.armToggle()) {
                 robot.arm.toggle();
@@ -95,20 +106,23 @@ public class Voodoo extends LinearOpMode {
                 } catch (Exception ignored) {
                 }
             }
-            if (pad.intakeReverse()) robot.intake.reverse();
             if (pad.turnRight()) robot.drivetrain.turn(turnRightAngle);
             else if (pad.turnLeft()) robot.drivetrain.turn(turnLeftAngle);
             else if (robot.intake.isRunning()) robot.intake.start();
             if (robot.flywheels.running() && flywheelStopwatch.getTime() >= flywheelTimerThreshold) {
-                robot.drivetrain.setTurnThrottle(.5);
+                robot.drivetrain.setTurnThrottle(flywheelsTurnThrottle);
+                robot.drivetrain.setDrivetrainThrottle(flywheelsDrivetrainThrottle);
                 flywheelStopwatch.reset();
             }
             if (!robot.arm.isUp() && armStopwatch.getTime() >= armTimerThreshold) {
-                robot.drivetrain.setTurnThrottle(.6);
+                robot.drivetrain.setTurnThrottle(armTurnThrottle);
+                robot.drivetrain.setDrivetrainThrottle(armDrivetrainThrottle);
                 armStopwatch.reset();
             }
-            if (robot.arm.isUp() && !robot.flywheels.running())
-                robot.drivetrain.setTurnThrottle(.75);
+            if (robot.arm.isUp() && !robot.flywheels.running()) {
+                robot.drivetrain.setTurnThrottle(armDownFlywheelsRunningTurnThrottle);
+                robot.drivetrain.setDrivetrainThrottle(armDownDrivetrainRunningDrivetrainThrottle);
+            }
             telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
             telemetry.addData("Flicker State", robot.flicker.getState());
             telemetry.addData("Flywheel Runstate", robot.flywheels.getRunState());
