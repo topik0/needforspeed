@@ -20,6 +20,7 @@ public class IntakeStopperTest extends LinearOpMode {
     public void runOpMode() {
         Robot robot = new Robot(hardwareMap, telemetry);
         Omnipad pad = new Omnipad(gamepad1, gamepad2, robot);
+        robot.intake.stopperStartPosition();
         waitForStart();
         while (opModeIsActive()) {
             if (pad.intakeStopperToggle()) {
