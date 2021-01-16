@@ -26,7 +26,7 @@ public class IntakeStopperTest extends LinearOpMode {
             if (pad.intakeStopperToggle()) {
                 if (robot.intake.isUp())
                     robot.intake.down();
-                else robot.intake.stopper.setPosition(.85);
+                else robot.intake.stopper.setPosition(1);
             }
             telemetry.addData("Intake Stopper State", robot.intake.getVerticalState());
             telemetry.update();

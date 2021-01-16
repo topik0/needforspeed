@@ -29,7 +29,7 @@ public class Intake {
     /**
      * The positions for the intake stopper
      */
-    public static double downPosition = 1.0, stopperStartPosition = .85;
+    public static double downPosition = .85, stopperStartPosition = 1.0;
     private State state;
     private State verticalState;
     private State directionState;
