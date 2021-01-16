@@ -79,7 +79,7 @@ public class Robot {
         claw = new Claw(genesis);
         intake = new Intake(genesis);
         drivetrain = new Drivetrain(genesis, this);
-        flywheels = new Flywheels(genesis);
+        flywheels = new Flywheels(genesis, this);
         flicker = new Flicker(genesis, this);
     }
 
@@ -99,7 +99,7 @@ public class Robot {
         claw = new Claw(genesis);
         intake = new Intake(genesis);
         drivetrain = new Drivetrain(genesis, this);
-        flywheels = new Flywheels(genesis);
+        flywheels = new Flywheels(genesis, this);
         flicker = new Flicker(genesis, this);
         Flicker.noShootWhileFlywheelsDormant = false;
     }
