@@ -36,7 +36,7 @@ public class Omnipad {
     private final Robot robot;
     private final Gamepad one;
     private Gamepad two;
-    private final double[] timer = new double[9];
+    private final double[] timer = new double[10];
 
     /**
      * Constructor for the omnipad
