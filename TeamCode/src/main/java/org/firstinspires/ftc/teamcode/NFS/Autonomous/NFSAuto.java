@@ -260,11 +260,14 @@ public class NFSAuto extends LinearOpMode {
                 break;
             case FOUR:
                 telemetry.addData("There are four rings", "");
+                //first wobble drop
                 drive.followTrajectory(traj[2][0]);
                 robot.claw.open();
                 robot.delayWithAllPID(200);
                 robot.arm.up();
                 robot.delayWithAllPID(100);
+
+                //powershot shooting
                 drive.followTrajectory(traj[2][1]);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
@@ -277,8 +280,12 @@ public class NFSAuto extends LinearOpMode {
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
                 drive.flywheels.halt();
+
+                //intake stack (3)
                 drive.followTrajectory(traj[2][2]);
                 drive.followTrajectory(traj[2][3]);
+
+                //grab wobble
                 robot.arm.down();
                 drive.turn(Math.toRadians(70));
                 drive.followTrajectory(traj[2][4]);
@@ -286,7 +293,9 @@ public class NFSAuto extends LinearOpMode {
                 robot.arm.up();
                 robot.delayWithAllPID(300);
                 drive.turn(Math.toRadians(-165));
-                drive.followTrajectory(traj[2][5]); //shoot
+
+                //shoot 3 high
+                drive.followTrajectory(traj[2][5]);
                 robot.delayWithAllPID(500);
                 robot.flicker.launch();
                 robot.delayWithAllPID(400);
@@ -295,15 +304,23 @@ public class NFSAuto extends LinearOpMode {
                 robot.flicker.launch();
                 robot.delayWithAllPID(400);
                 drive.flywheels.halt();
-                drive.followTrajectory(traj[2][6]); //intake
-                drive.followTrajectory(traj[2][7]); //shoot 1
+
+                //intake stack (1)
+                drive.followTrajectory(traj[2][6]);
+
+                //shoot 1 high
+                drive.followTrajectory(traj[2][7]);
                 robot.delayWithAllPID(500);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
                 drive.flywheels.halt();
+
+                //place wobble
                 drive.followTrajectory(traj[2][8]);
                 robot.claw.open();
                 robot.delayWithAllPID(200);
+
+                //park
                 drive.followTrajectory(traj[2][9]);
                 break;
         }
