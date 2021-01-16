@@ -191,8 +191,8 @@ public class Drivetrain {
      *
      * @param throttle the throttle to be set
      */
-    public void setThrottle(double throttle) {
-        currentThrottle = turnThrottle;
+    public void setDrivetrainThrottle(double throttle) {
+        currentThrottle = throttle;
     }
 
     /**
