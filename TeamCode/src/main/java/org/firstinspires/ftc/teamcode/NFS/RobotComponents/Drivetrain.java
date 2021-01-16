@@ -123,8 +123,8 @@ public class Drivetrain {
      * @param power the power to be set
      */
     public void leftPower(double power) {
-        motors[0].setPower(power);
-        motors[2].setPower(power);
+        getBackLeft().setPower(power);
+        getFrontLeft().setPower(power);
     }
 
     /**
@@ -133,8 +133,8 @@ public class Drivetrain {
      * @param power the power to be set
      */
     public void rightPower(double power) {
-        motors[1].setPower(power);
-        motors[3].setPower(power);
+        getBackRight().setPower(power);
+        getFrontRight().setPower(power);
     }
 
     /**
