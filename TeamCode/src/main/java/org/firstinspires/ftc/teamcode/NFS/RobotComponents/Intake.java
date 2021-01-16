@@ -84,11 +84,10 @@ public class Intake {
      * @param power the power that the intake motors will run at
      */
     public void setPower(double power) {
-
         leftIntake.setPower(power);
         rightIntake.setPower(power);
         currentRunPower = power;
-        if (Math.abs(power) >= .00001)
+        if (Math.abs(power) >= .001)
             state = State.RUNNING;
         else state = State.DORMANT;
         if (power > 0) directionState = State.FORWARD;
@@ -130,7 +129,7 @@ public class Intake {
      * Reverses the intake direction
      */
     public void reverse() {
-        setPower(-runPower);
+        setPower(-1 * runPower);
     }
 
     /**
