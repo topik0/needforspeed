@@ -96,6 +96,7 @@ public class Voodoo extends LinearOpMode {
             else if (pad.lowerFlap()) robot.flap.goToPowershotPosition();
             if (pad.intakeToggle()) robot.intake.toggle();
             if (pad.intakeReverse()) robot.intake.reverse();
+            else if (robot.intake.isRunning()) robot.intake.start();
             if (pad.clawToggle()) robot.claw.toggle();
             if (pad.armToggle()) {
                 robot.arm.toggle();
@@ -108,7 +109,6 @@ public class Voodoo extends LinearOpMode {
             }
             if (pad.turnRight()) robot.drivetrain.turn(turnRightAngle);
             else if (pad.turnLeft()) robot.drivetrain.turn(turnLeftAngle);
-            else if (robot.intake.isRunning()) robot.intake.start();
             if (robot.flywheels.running() && flywheelStopwatch.getTime() >= flywheelTimerThreshold) {
                 robot.drivetrain.setTurnThrottle(flywheelsTurnThrottle);
                 robot.drivetrain.setDrivetrainThrottle(flywheelsDrivetrainThrottle);
