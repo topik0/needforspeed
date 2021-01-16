@@ -25,7 +25,7 @@ public class Intake {
     /**
      * The power that the intake is run at when it is running and stopped
      */
-    public static double runPower = 1.0, stopPower = 0;
+    public static double runPower = 1.0, reverseRunPower = -1.0, stopPower = 0;
     /**
      * The positions for the intake stopper
      */
@@ -129,7 +129,7 @@ public class Intake {
      * Reverses the intake direction
      */
     public void reverse() {
-        setPower(-1 * runPower);
+        setPower(reverseRunPower);
     }
 
     /**
