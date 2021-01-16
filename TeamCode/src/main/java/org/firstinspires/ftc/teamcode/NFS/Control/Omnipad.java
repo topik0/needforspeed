@@ -17,7 +17,7 @@ public class Omnipad {
     /**
      * The default button cooldown
      */
-    public static double cooldown = 350;
+    public static int cooldown = 350;
 
     /**
      * The ring shoot cooldown
@@ -212,11 +212,34 @@ public class Omnipad {
 
     /**
      * One/X
-     *
      * @return true if an intake reversal is requested
      */
     public boolean intakeReverse() {
         return one.x;
+    }
+
+    /**
+     * One/A
+     * @return true if an intake stopper down is requested
+     */
+    public boolean intakeStopperDown(){
+        return evalBoolean(one.a, 9);
+    }
+
+    /**
+     * One/A
+     * @return true if an intake stopper up is requested
+     */
+    public boolean intakeStopperUp(){
+        return evalBoolean(one.a, 9);
+    }
+
+    /**
+     * One/A
+     * @return true if an intake stopper toggle is requested
+     */
+    public boolean intakeStopperToggle(){
+        return evalBoolean(one.a, 9);
     }
 
     /**
