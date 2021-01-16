@@ -20,7 +20,7 @@ public class Flywheels {
     /**
      * The max velocity and the powershot velocity (in terms of TPS)
      */
-    public static double maxVelocity = 2400, powershotVelocity = 1800;
+    public static double maxVelocity = 2400, autoMaxVelocity = 2200, powershotVelocity = 1800;
     /**
      * The TPS the flywheels should run at
      */
@@ -52,7 +52,7 @@ public class Flywheels {
      *
      * @param gen the HardwareGenesis object needed to get the motors
      */
-    public Flywheels(HardwareGenesis gen) {
+    public Flywheels(HardwareGenesis gen, Robot robot) {
         if (gen == null)
             throw new BadInitializationException("Null Genesis detected in flywheels");
         flywheelFront = gen.flywheelFront;
@@ -64,6 +64,8 @@ public class Flywheels {
         if (flywheelBack == null)
             throw new BadInitializationException("Null flywheelBack detected");
         runState = State.DORMANT;
+        if (robot != null && robot.isAuto())
+            maxVelocity = autoMaxVelocity;
         setVelocityState();
         setRunningState();
     }
