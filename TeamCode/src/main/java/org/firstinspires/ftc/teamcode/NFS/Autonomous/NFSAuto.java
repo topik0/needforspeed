@@ -267,7 +267,7 @@ public class NFSAuto extends LinearOpMode {
                 robot.arm.up();
                 robot.delayWithAllPID(100);
 
-                //powershot shooting
+                //shoot powershots (3 rings)
                 drive.followTrajectory(traj[2][1]);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
@@ -281,11 +281,11 @@ public class NFSAuto extends LinearOpMode {
                 robot.delayWithAllPID(300);
                 drive.flywheels.halt();
 
-                //intake stack (3)
+                //intake stack (3 rings)
                 drive.followTrajectory(traj[2][2]);
                 drive.followTrajectory(traj[2][3]);
 
-                //grab wobble
+                //wobble grab
                 robot.arm.down();
                 drive.turn(Math.toRadians(70));
                 drive.followTrajectory(traj[2][4]);
@@ -294,7 +294,7 @@ public class NFSAuto extends LinearOpMode {
                 robot.delayWithAllPID(300);
                 drive.turn(Math.toRadians(-165));
 
-                //shoot 3 high
+                //shoot high (3 rings)
                 drive.followTrajectory(traj[2][5]);
                 robot.delayWithAllPID(500);
                 robot.flicker.launch();
@@ -305,17 +305,17 @@ public class NFSAuto extends LinearOpMode {
                 robot.delayWithAllPID(400);
                 drive.flywheels.halt();
 
-                //intake stack (1)
+                //intake stack (1 ring)
                 drive.followTrajectory(traj[2][6]);
 
-                //shoot 1 high
+                //shoot high (1 ring)
                 drive.followTrajectory(traj[2][7]);
                 robot.delayWithAllPID(500);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
                 drive.flywheels.halt();
 
-                //place wobble
+                //second wobble drop
                 drive.followTrajectory(traj[2][8]);
                 robot.claw.open();
                 robot.delayWithAllPID(200);
