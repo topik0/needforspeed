@@ -104,7 +104,6 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-        gen = new HardwareGenesis(hardwareMap);
 
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
@@ -132,6 +131,10 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
+        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
+            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
+        }
+
         leftRear = gen.drivetrainMotors[0];
         leftFront = gen.drivetrainMotors[1];
         rightFront = gen.drivetrainMotors[2];
@@ -157,10 +160,6 @@ public class SampleMecanumDrive extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        // TODO: reverse any motors using DcMotor.setDirection()
-
-        // TODO: if desired, use setLocalizer() to change the localization method
-        // for instance, setLocalizer(new ThreeTrackingWheelLocalizer(...));
         setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
     }
 
@@ -239,11 +238,12 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         packet.put("x", currentPose.getX());
         packet.put("y", currentPose.getY());
-        packet.put("heading", currentPose.getHeading());
+        packet.put("heading (deg)", Math.toDegrees(currentPose.getHeading()));
 
         packet.put("xError", lastError.getX());
         packet.put("yError", lastError.getY());
-        packet.put("headingError", lastError.getHeading());
+        packet.put("headingError (deg)", Math.toDegrees(lastError.getHeading()));
+
         packet.put("Flywheel Velocity", Math.abs(flywheels.flywheelFront.getCorrectedVelocity()));
         packet.put("Flywheel Runstate", flywheels.getRunState());
 
@@ -281,7 +281,7 @@ public class SampleMecanumDrive extends MecanumDrive {
                 break;
             }
             case FOLLOW_TRAJECTORY: {
-                setDriveSignal(follower.update(currentPose));
+                setDriveSignal(follower.update(currentPose, getPoseVelocity()));
 
                 Trajectory trajectory = follower.getTrajectory();
 
@@ -305,8 +305,6 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         fieldOverlay.setStroke("#3F51B5");
         DashboardUtil.drawRobot(fieldOverlay, currentPose);
-
-        flywheels.run();
 
         dashboard.sendTelemetryPacket(packet);
     }
