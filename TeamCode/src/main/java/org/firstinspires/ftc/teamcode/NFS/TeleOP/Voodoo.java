@@ -65,9 +65,6 @@ public class Voodoo extends LinearOpMode {
         imu.initialize(parameters);
         waitForStart();
         while (opModeIsActive()) {
-            for (LynxModule hub : hardwareMap.getAll(LynxModule.class)) {
-                hub.clearBulkCache();
-            }
             robot.flywheels.run();
             robot.flicker.checkState();
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
