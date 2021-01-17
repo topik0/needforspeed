@@ -108,6 +108,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
+        gen = new HardwareGenesis(hardwareMap);
         flywheels = new Flywheels(gen, null);
 
         clock = NanoClock.system();
