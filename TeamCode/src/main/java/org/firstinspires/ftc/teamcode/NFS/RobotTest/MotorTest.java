@@ -32,6 +32,13 @@ public class MotorTest extends LinearOpMode {
             if (gamepad1.y)
                 robot.drivetrain.getBackRight().setPower(1);
             else robot.drivetrain.getBackRight().setPower(0);
+            telemetry.addData("back left", robot.drivetrain.getBackLeft().getCurrentPosition());
+            telemetry.addData("back right", robot.drivetrain.getBackRight().getCurrentPosition());
+            telemetry.addData("front left", robot.drivetrain.getFrontLeft().getCurrentPosition());
+            telemetry.addData("front right", robot.drivetrain.getFrontRight().getCurrentPosition());
+            telemetry.addData("flywheels", robot.flywheels.flywheelFront.getCurrentPosition());
+
+            telemetry.update();
         }
     }
 }
