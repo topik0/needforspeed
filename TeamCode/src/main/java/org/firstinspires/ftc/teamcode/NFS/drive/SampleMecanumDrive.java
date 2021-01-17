@@ -132,10 +132,6 @@ public class SampleMecanumDrive extends MecanumDrive {
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        for (LynxModule module : hardwareMap.getAll(LynxModule.class)) {
-            module.setBulkCachingMode(LynxModule.BulkCachingMode.AUTO);
-        }
-
         leftRear = gen.drivetrainMotors[0];
         leftFront = gen.drivetrainMotors[1];
         rightFront = gen.drivetrainMotors[2];
@@ -224,9 +220,6 @@ public class SampleMecanumDrive extends MecanumDrive {
     }
 
     public void update() {
-        for (LynxModule hub : gen.hwMap.getAll(LynxModule.class)) {
-            hub.clearBulkCache();
-        }
         flywheels.run();
         updatePoseEstimate();
 
