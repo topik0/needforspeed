@@ -33,7 +33,6 @@ import static org.firstinspires.ftc.teamcode.NFS.drive.DriveConstants.rpmToVeloc
  *      regression.
  */
 
-@Disabled
 @Config
 @Autonomous(group = "drive")
 public class AutomaticFeedforwardTuner extends LinearOpMode {
