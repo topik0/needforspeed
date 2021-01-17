@@ -70,6 +70,10 @@ public class MaxVelocityTuner extends LinearOpMode {
 
         telemetry.addData("Max Velocity", maxVelocity);
         telemetry.addData("Voltage Compensated kF", effectiveKf * batteryVoltageSensor.getVoltage() / 12);
+        telemetry.addData("back left", drive.leftRear.getCurrentPosition());
+        telemetry.addData("back right", drive.rightRear.getCurrentPosition());
+        telemetry.addData("front left", drive.leftFront.getCurrentPosition());
+        telemetry.addData("front right", drive.rightFront.getCurrentPosition());
         telemetry.update();
 
         while (!isStopRequested() && opModeIsActive()) idle();
