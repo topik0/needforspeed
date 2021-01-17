@@ -20,7 +20,7 @@ public class Flywheels {
     /**
      * The max velocity and the powershot velocity (in terms of TPS)
      */
-    public static double maxVelocity = 2400, autoMaxVelocity = 2200, powershotVelocity = 1800;
+    public static double maxVelocity = 2400, autoMaxVelocity = 2000, powershotVelocity = 1800;
     /**
      * The TPS the flywheels should run at
      */
