@@ -42,10 +42,11 @@ import static org.firstinspires.ftc.teamcode.NFS.drive.DriveConstants.kV;
  * control back to the tuning process.
  */
 
+
 @Config
 @Autonomous(group = "drive")
 public class ManualFeedforwardTuner extends LinearOpMode {
-    public static double DISTANCE = 72; // in
+    public static double DISTANCE = 90; // in
 
     private FtcDashboard dashboard = FtcDashboard.getInstance();
 
@@ -104,7 +105,7 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     // calculate and set the motor power
                     double profileTime = clock.seconds() - profileStart;
 
-                    if (profileTime > activeProfile.duration()) {
+                    if (profileTime > activeProfile.duration() + 0.5) {
                         // generate a new profile
                         movingForwards = !movingForwards;
                         activeProfile = generateProfile(movingForwards);
@@ -114,7 +115,12 @@ public class ManualFeedforwardTuner extends LinearOpMode {
                     MotionState motionState = activeProfile.get(profileTime);
                     double targetPower = Kinematics.calculateMotorFeedforward(motionState.getV(), motionState.getA(), kV, kA, kStatic);
 
-                    drive.setDrivePower(new Pose2d(targetPower, 0, 0));
+                    if (profileTime < activeProfile.duration()) {
+                        drive.setDrivePower(new Pose2d(targetPower, 0, 0));
+                    } else {
+                        drive.setDrivePower(new Pose2d());
+                    }
+
                     drive.updatePoseEstimate();
 
                     Pose2d poseVelo = Objects.requireNonNull(drive.getPoseVelocity(), "poseVelocity() must not be null. Ensure that the getWheelVelocities() method has been overridden in your localizer.");
