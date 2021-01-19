@@ -207,7 +207,7 @@ public class Omnipad {
      * @return true if the drivetrain controls are inactive
      */
     public boolean drivetrainDormant() {
-        return (one.right_stick_x <= .01 && one.left_stick_x <= .01) && (one.left_stick_y <= 0.01 && one.left_stick_x <= .01);
+        return (one.right_stick_x <= 0.01 && one.right_stick_y <= 0.01) && (one.left_stick_y <= 0.01 && one.left_stick_x <= 0.01);
     }
 
     /**
