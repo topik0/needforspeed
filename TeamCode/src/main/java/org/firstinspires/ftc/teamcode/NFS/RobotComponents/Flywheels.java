@@ -75,15 +75,17 @@ public class Flywheels {
      * Runs flywheel PID loop
      */
     public void run() {
-        flywheelFront.setVeloCoefficients(kP, kI, kD);
-        flywheelFront.setFeedforwardCoefficients(kS, kV);
         setVelocityState();
         setRunningState();
         if (runState == State.RUNNING) {
+            flywheelFront.setVeloCoefficients(kP, kI, kD);
+            flywheelFront.setFeedforwardCoefficients(kS, kV);
             setPower(targetVelocity / 2800);
         } else {
+            flywheelFront.setVeloCoefficients(0, 0, 0);
             setPower(0);
             brake();
+
         }
     }
 
@@ -104,6 +106,7 @@ public class Flywheels {
     public void brake() {
         flywheelFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
         flywheelBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+
     }
 
     /**
