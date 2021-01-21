@@ -32,7 +32,7 @@ public class Flywheels {
     /**
      * The PID coefficients
      */
-    public static double kP = 12, kI = 12, kD = 0.3;
+    public static double kP = 5/*12*/, kI = 0/*12*/, kD = 1/*0.3*/, kS = 0, kV = 1.7;
     /**
      * The power of the flywheels
      */
@@ -60,6 +60,7 @@ public class Flywheels {
             throw new BadInitializationException("Null flywheelFront detected");
         flywheelFront.setRunMode(Motor.RunMode.VelocityControl);
         flywheelFront.setVeloCoefficients(kP, kI, kD);
+        flywheelFront.setFeedforwardCoefficients(kS, kV);
         flywheelBack = gen.flywheelBack;
         if (flywheelBack == null)
             throw new BadInitializationException("Null flywheelBack detected");
@@ -74,6 +75,8 @@ public class Flywheels {
      * Runs flywheel PID loop
      */
     public void run() {
+        flywheelFront.setVeloCoefficients(kP, kI, kD);
+        flywheelFront.setFeedforwardCoefficients(kS, kV);
         setVelocityState();
         setRunningState();
         if (runState == State.RUNNING) {
