@@ -77,12 +77,16 @@ public class Flywheels {
     public void run() {
         setVelocityState();
         setRunningState();
+//        flywheelFront.setVeloCoefficients(kP, kI, kD);
+//        flywheelFront.setFeedforwardCoefficients(kS, kV);
+        flywheelFront.setRunMode(Motor.RunMode.VelocityControl);
         if (runState == State.RUNNING) {
-            flywheelFront.setVeloCoefficients(kP, kI, kD);
-            flywheelFront.setFeedforwardCoefficients(kS, kV);
+           //flywheelFront.setVeloCoefficients(kP, kI, kD);  //only use for tuning
+           //flywheelFront.setFeedforwardCoefficients(kS, kV); //only use for tuning
             setPower(targetVelocity / 2800);
         } else {
-            flywheelFront.setVeloCoefficients(0, 0, 0);
+            flywheelFront.setRunMode(Motor.RunMode.RawPower);
+            //flywheelFront.setVeloCoefficients(0, 0, 0);
             setPower(0);
             brake();
 
