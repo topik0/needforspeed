@@ -102,8 +102,8 @@ public class Flywheels {
      * Brakes the flywheels by setting a ZeroPowerBehavior
      */
     public void brake() {
-        flywheelFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
-        flywheelBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.BRAKE);
+        flywheelFront.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
+        flywheelBack.setZeroPowerBehavior(Motor.ZeroPowerBehavior.FLOAT);
     }
 
     /**
