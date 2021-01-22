@@ -70,7 +70,7 @@ public class Voodoo extends LinearOpMode {
             double ly = pad.getLeftY();
             double lx = pad.getLeftX();
             double rx = -pad.getRightX();
-            rx = Math.sqrt(Math.abs(rx)) * rx * Drivetrain.turnThrottle;
+            rx = Math.sqrt(Math.abs(rx)) * rx * robot.drivetrain.getTurnThrottle();
             double heading = angles.firstAngle - offSetAngle + Math.toRadians(270);
             double speed = Math.hypot(ly, lx);
             double y = pad.getY(speed, heading, ly, lx);
