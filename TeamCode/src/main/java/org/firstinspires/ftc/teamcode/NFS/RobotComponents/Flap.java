@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Exceptions.BadInitiali
 
 /**
  * @author Topik
- * @version 1.0
+ * @version 1.1
  * @since 1.0
  * This class controls the movement of the aiming flap
  */
@@ -16,7 +16,7 @@ public class Flap {
     /**
      * The various positions of the flap
      */
-    public static double startPosition = 0, highGoalPosition = .3, powerShotPosition = .3, adjustUpThreshold = .005, adjustDownThreshold = .005;
+    public static double startPosition = 0, highGoalPosition = .3, powerShotPosition = .3, flushPosition = 1, adjustUpThreshold = .005, adjustDownThreshold = .005;
     /**
      * The flap Servo object
      */
@@ -27,7 +27,8 @@ public class Flap {
     private enum State {
         HIGH_GOAL,
         POWERSHOT,
-        NEUTRAL
+        FLUSH,
+        NEUTRAL,
     }
 
     /**
@@ -40,7 +41,7 @@ public class Flap {
         if (gen == null)
             throw new BadInitializationException("Flap genesis is null");
         if (robot == null)
-            throw new BadInitializationException("Robot given to flap is null");
+            throw new BadInitializationException("Null robot in flap detected");
         this.robot = robot;
         flap = gen.flap;
         if (flap == null)
@@ -79,6 +80,11 @@ public class Flap {
         robot.flywheels.setPowershotVelocity();
     }
 
+    public void goFlush() {
+        flap.setPosition(flushPosition);
+        state = State.FLUSH;
+    }
+
     /**
      * Raises the flap up an increment
      */
@@ -91,15 +97,6 @@ public class Flap {
      */
     public void adjustDown() {
         flap.setPosition(flap.getPosition() + adjustDownThreshold);
-    }
-
-    /**
-     * Gets the current state of the flap
-     *
-     * @return the state of the flap as a State
-     */
-    public State getState() {
-        return state;
     }
 
     /**
@@ -129,5 +126,22 @@ public class Flap {
      */
     public boolean isNeutral() {
         return state == State.NEUTRAL;
+    }
+
+    /**
+     * Checks if the flap is vertically flush with the rest of the robot
+     * @return true if the flap is flush
+     */
+    public boolean isFlush() {
+        return state == State.FLUSH;
+    }
+
+    /**
+     * Gets the current state of the flap
+     *
+     * @return the state of the flap as a State
+     */
+    public State getState() {
+        return state;
     }
 }

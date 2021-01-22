@@ -97,9 +97,10 @@ public class Voodoo extends LinearOpMode {
             if (pad.armToggle()) {
                 robot.arm.toggle();
                 try {
-                    if (!robot.arm.isUp())
+                    if (!robot.arm.isUp()) {
+                        robot.flap.goFlush();
                         armStopwatch.start();
-                    else armStopwatch.reset();
+                    } else armStopwatch.reset();
                 } catch (Exception ignored) {
                 }
             }
@@ -119,16 +120,12 @@ public class Voodoo extends LinearOpMode {
                 robot.drivetrain.setTurnThrottle(armDownFlywheelsRunningTurnThrottle);
                 robot.drivetrain.setDrivetrainThrottle(armDownDrivetrainRunningDrivetrainThrottle);
             }
-            telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
             telemetry.addData("Flicker State", robot.flicker.getState());
+            telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
             telemetry.addData("Flywheel Runstate", robot.flywheels.getRunState());
             telemetry.addData("Flywheel Velostate", robot.flywheels.getVelocityState());
             telemetry.addData("Arm State", robot.arm.getState());
             telemetry.addData("Claw State", robot.claw.getState());
-//            telemetry.addData("LeftY", pad.getLeftY());
-//            telemetry.addData("LeftX", pad.getLeftX());
-//            telemetry.addData("Y", y);
-//            telemetry.addData("X", x);
             telemetry.update();
             TelemetryPacket packet = new TelemetryPacket();
             packet.put("Flywheel Velocity", robot.flywheels.flywheelFront.getCorrectedVelocity());
