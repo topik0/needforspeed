@@ -20,7 +20,7 @@ public class Flywheels {
     /**
      * The max velocity and the powershot velocity (in terms of TPS)
      */
-    public static double maxVelocity = 2400, autoMaxVelocity = 2000, powershotVelocity = 1800;
+    public static double maxVelocity = 2400, autoMaxVelocity = 2000, powershotVelocity = 1800, autoPowershotVelocity = 1500;
     /**
      * The TPS the flywheels should run at
      */
@@ -64,8 +64,10 @@ public class Flywheels {
         if (flywheelBack == null)
             throw new BadInitializationException("Null flywheelBack detected");
         runState = State.DORMANT;
-        if (robot != null && robot.isAuto())
+        if (robot != null && robot.isAuto()) {
             maxVelocity = autoMaxVelocity;
+            powershotVelocity = autoPowershotVelocity;
+        }
         setVelocityState();
         setRunningState();
     }
