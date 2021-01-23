@@ -55,8 +55,10 @@ public class Voodoo extends LinearOpMode {
     public void runOpMode() {
         Robot robot = new Robot(hardwareMap, telemetry);
         Omnipad pad = new Omnipad(gamepad1, gamepad2, robot);
+     /*
         StopWatch flywheelStopwatch = new StopWatch();
         StopWatch armStopwatch = new StopWatch();
+     */
         robot.startPositions();
         FtcDashboard dashboard = FtcDashboard.getInstance();
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
@@ -74,7 +76,6 @@ public class Voodoo extends LinearOpMode {
             double ly = pad.getLeftY();
             double lx = pad.getLeftX();
             double rx = pad.getRightX();
-            //rx = Math.sqrt(Math.abs(rx)) * rx * robot.drivetrain.getTurnThrottle();
             double heading = angles.firstAngle - offSetAngle + Math.toRadians(270);
             double speed = Math.hypot(ly, lx);
             double y = pad.getY(speed, heading, ly, lx);
@@ -107,6 +108,7 @@ public class Voodoo extends LinearOpMode {
             if (pad.armToggle()) {
                 robot.arm.toggle();
                 armTimer.reset();
+/*
                 try {
                     if (!robot.arm.isUp()) {
                         robot.flap.goFlush();
@@ -114,6 +116,7 @@ public class Voodoo extends LinearOpMode {
                     } else armStopwatch.reset();
                 } catch (Exception ignored) {
                 }
+*/
             }
 
             //lowering flap when wobble is out and putting it back up after
