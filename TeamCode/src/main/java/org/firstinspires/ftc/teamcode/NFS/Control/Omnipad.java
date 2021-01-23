@@ -278,7 +278,7 @@ public class Omnipad {
      * @return the value of the right stick x
      */
     public double getRightX() {
-        return -1 * Math.sqrt(Math.abs(one.right_stick_x)) * one.right_stick_x * robot.drivetrain.getTurnThrottle();
+        return Math.sqrt(Math.abs(one.right_stick_x)) * one.right_stick_x * robot.drivetrain.getTurnThrottle();
     }
 
     /**
