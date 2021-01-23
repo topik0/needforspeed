@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Exceptions.BadInitializationException;
+import org.firstinspires.ftc.teamcode.NFS.TeleOP.Voodoo;
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 
 /**
@@ -33,7 +35,7 @@ public class Drivetrain {
     /**
      * The default throttle for turning
      */
-    public static double turnThrottle = .75;
+    public static double turnThrottle = Voodoo.normalTurnThrottle;
     /**
      * The kP and error thresholds for the turn function
      */
