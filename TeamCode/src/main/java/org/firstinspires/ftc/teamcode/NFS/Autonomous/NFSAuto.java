@@ -148,7 +148,7 @@ public class NFSAuto extends LinearOpMode {
                 .splineTo(new Vector2d(-4.5, -40), Math.toRadians(-2.5))
                 .addTemporalMarker(.1, () -> {
                     drive.flywheels.doMaxVelocity();
-                    robot.flap.setPosition(.28);
+                    robot.flap.setPosition(.3);
                 })
                 .build();
         traj[2][6] = drive.trajectoryBuilder(traj[2][5].end(), true)
