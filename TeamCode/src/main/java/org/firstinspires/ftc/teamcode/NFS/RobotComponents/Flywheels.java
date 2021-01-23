@@ -69,6 +69,7 @@ public class Flywheels {
             maxVelocity = autoMaxVelocity;
             powershotVelocity = autoPowershotVelocity;
         }
+        setTargetVelocity(0);
         setVelocityState();
         setRunningState();
     }
