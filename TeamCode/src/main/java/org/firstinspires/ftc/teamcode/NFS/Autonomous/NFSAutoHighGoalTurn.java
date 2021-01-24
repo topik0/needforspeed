@@ -23,13 +23,13 @@ import java.util.Arrays;
  * @author Topik
  * @version 1.0
  * @since 1.0
- * The normal (powershot) autonomous
+ * The normal (High Goal) autonomous
  * Zero Ring: 71 Points
  * One Ring: 83 Points
  * Four Rings: 119 Points
  */
 @Config
-@Autonomous(name = "NFSAutoHighGoal", group = "Linear Opmode")
+@Autonomous(name = "NFSAutoHighGoalTurn", group = "Linear Opmode")
 public class NFSAutoHighGoalTurn extends LinearOpMode {
     private Trajectory build;
 
