@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
@@ -28,6 +29,7 @@ import java.util.Arrays;
  * One Ring: 83 Points
  * Four Rings: 119 Points
  */
+@Disabled
 @Config
 @Autonomous(name = "NFSAutoHighGoal", group = "Linear Opmode")
 public class NFSAutoHighGoal extends LinearOpMode {
