@@ -44,7 +44,7 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
         Trajectory[][] traj = new Trajectory[3][12];
         traj[0][0] = drive.trajectoryBuilder(startPose, false)
                 .splineTo(new Vector2d(-5, -57), Math.toRadians(0))
-                .addTemporalMarker(0.1, () -> robot.flap.setPosition(.32))
+                .addTemporalMarker(0.1, () -> robot.flap.setPosition(.29))
                 .addTemporalMarker(.25, () -> robot.intake.down())
                 .addTemporalMarker(.75, () -> robot.arm.down())
                 .addTemporalMarker(1.85, () -> robot.claw.open())
@@ -52,11 +52,9 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
                 .build();
 
         traj[0][1] = drive.trajectoryBuilder(traj[0][0].end().plus(new Pose2d(0, 0, Math.toRadians(90))), false)
-                .splineTo(new Vector2d(-6, -18), Math.toRadians(-22.5))
-                .addDisplacementMarker(() -> {
-                    robot.flicker.launch();
-                })
+                .splineTo(new Vector2d(-6, -18), Math.toRadians(-13))
                 .addTemporalMarker(.1, () -> drive.flywheels.doMaxVelocity())
+              //  .addDisplacementMarker(() -> robot.flicker.launch())
                 .build();
         traj[0][2] = drive.trajectoryBuilder(traj[0][1].end(), false)
                 .splineTo(new Vector2d(0, 0), Math.toRadians(135))
@@ -75,27 +73,28 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
                 .build();
         traj[1][0] = drive.trajectoryBuilder(startPose, false)
                 .splineTo(new Vector2d(-12, -55), Math.toRadians(0))
-                .addTemporalMarker(0.1, () -> robot.flap.setPosition(.32))
+                .addTemporalMarker(0.1, () -> robot.flap.setPosition(.29))
                 .addTemporalMarker(.25, () -> robot.intake.down())
-                .splineTo(new Vector2d(17.5, -42), Math.toRadians(30))
+               // .splineTo(new Vector2d(17.5, -42), Math.toRadians(30))
+                .splineTo(new Vector2d(21, -44), Math.toRadians(30))
                 .addTemporalMarker(1.5, () -> robot.arm.down())
                 .addDisplacementMarker(() -> drive.flywheels.doMaxVelocity())
                 .build();
         traj[1][1] = drive.trajectoryBuilder(traj[1][0].end(), true)
-                .splineTo(new Vector2d(-6, -18), Math.toRadians(157.5))
+                .splineTo(new Vector2d(-6, -18), Math.toRadians(160))
                 .build();
         traj[1][2] = drive.trajectoryBuilder(traj[1][1].end(), false)
                 .splineTo(new Vector2d(0, 0), Math.toRadians(135))
                 .addTemporalMarker(.1, () -> {
                     robot.arm.down();
-                    robot.flap.setPosition(0.28);
+                    robot.flap.setPosition(0.29);
                     robot.claw.open();
                 })
                 .splineTo(new Vector2d(-32, -24), Math.toRadians(-138))
                 .build();
         traj[1][3] = drive.trajectoryBuilder(traj[1][2].end(), false)
                 .splineTo(new Vector2d(-24, -55), Math.toRadians(-20))
-                .splineTo(new Vector2d(16, -32), Math.toRadians(45))
+                .splineTo(new Vector2d(12, -42), Math.toRadians(45))
                 .addTemporalMarker(1.75, () -> robot.arm.down())
                 .addDisplacementMarker(() -> robot.intake.start())
                 .build();
@@ -107,7 +106,6 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
                 .splineTo(new Vector2d(-2, -36), Math.toRadians(0))
                 .addDisplacementMarker(() -> {
                     robot.intake.stop();
-                    robot.flicker.launch();
                 })
                 .build();
         traj[1][6] = drive.trajectoryBuilder(traj[1][5].end(), false)
@@ -119,13 +117,13 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
         traj[2][0] = drive.trajectoryBuilder(startPose, false)
                 .splineTo(new Vector2d(-12, -55), Math.toRadians(0))
                 .splineTo(new Vector2d(40, -55), Math.toRadians(0))
-                .addTemporalMarker(0.1, () -> robot.flap.setPosition(.31))
+                .addTemporalMarker(0.1, () -> robot.flap.setPosition(.29))
                 .addTemporalMarker(.25, () -> robot.intake.down())
                 .addTemporalMarker(2, () -> robot.arm.down())
                 .build();
         traj[2][1] = drive.trajectoryBuilder(traj[2][0].end(), true)
-                .splineTo(new Vector2d(-6, -18), Math.toRadians(157.5))
-                .addTemporalMarker(.1, () -> drive.flywheels.doPowershotVelocity())
+                .splineTo(new Vector2d(-6, -18), Math.toRadians(160))
+                .addTemporalMarker(.1, () -> drive.flywheels.doMaxVelocity())
                 .build();
         traj[2][2] = drive.trajectoryBuilder(traj[2][1].end(), true)
                 .splineTo(new Vector2d(-24, -18), Math.toRadians(270))
@@ -156,7 +154,7 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
                 .splineTo(new Vector2d(-4.5, -40), Math.toRadians(-2.5))
                 .addTemporalMarker(.1, () -> {
                     drive.flywheels.doMaxVelocity();
-                    robot.flap.setPosition(.3);
+                    robot.flap.setPosition(.29);
                 })
                 .build();
         traj[2][6] = drive.trajectoryBuilder(traj[2][5].end(), true)
@@ -169,8 +167,9 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
                 .addTemporalMarker(.1, () -> drive.flywheels.doMaxVelocity())
                 .build();
         traj[2][8] = drive.trajectoryBuilder(traj[2][7].end(), false)
-                .splineTo(new Vector2d(44, -44), Math.toRadians(-20))
+                .splineTo(new Vector2d(44, -46), Math.toRadians(-20))
                 .addTemporalMarker(.75, () -> robot.arm.down())
+                .addDisplacementMarker(() -> robot.claw.open())
                 .build();
         traj[2][9] = drive.trajectoryBuilder(traj[2][8].end(), true)
                 .splineTo(new Vector2d(12, -36), Math.toRadians(180))
@@ -208,6 +207,7 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
                 drive.turn(Math.toRadians(90));
                 robot.delayWithAllPID(100);
                 drive.followTrajectory(traj[0][1]);
+                robot.delayWithAllPID(300);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
                 robot.flicker.launch();
@@ -232,12 +232,17 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
                 break;
             case ONE:
                 telemetry.addData("There is one ring", "");
+
+               //1st wobble drop
                 drive.followTrajectory(traj[1][0]);
                 robot.claw.open();
                 robot.delayWithAllPID(200);
                 robot.arm.up();
                 robot.delayWithAllPID(200);
+
+              //shoot 3
                 drive.followTrajectory(traj[1][1]);
+                robot.delayWithAllPID(200);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
                 robot.flicker.launch();
@@ -245,21 +250,40 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
                 robot.flicker.launch();
                 robot.delayWithAllPID(200);
                 drive.flywheels.halt();
+
+                //wobble grab
                 drive.followTrajectory(traj[1][2]);
                 robot.claw.close();
                 robot.delayWithAllPID(300);
                 robot.arm.up();
                 robot.delayWithAllPID(750);
+
+                //wobble drop
                 drive.followTrajectory(traj[1][3]);
                 robot.claw.open();
                 robot.delayWithAllPID(200);
                 robot.arm.up();
                 robot.delayWithAllPID(750);
                 robot.claw.close();
+
+
                 drive.followTrajectory(traj[1][4]);
+
+                //shoot
                 drive.followTrajectory(traj[1][5]);
+                robot.intake.reverse();
+                robot.delayWithAllPID(50);
+                robot.intake.start();
+                robot.delayWithAllPID(150);
+                robot.intake.stop();
+                robot.delayWithAllPID(100);
+                robot.flicker.launch();
+
+                //park
                 drive.followTrajectory(traj[1][6]);
                 break;
+
+
             case FOUR:
                 telemetry.addData("There are four rings", "");
                 //first wobble drop
@@ -269,8 +293,9 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
                 robot.arm.up();
                 robot.delayWithAllPID(100);
 
-                //shoot powershots (3 rings)
+                //shoot highgoal (3 rings)
                 drive.followTrajectory(traj[2][1]);
+                robot.delayWithAllPID(400);
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
                 robot.flicker.launch();
@@ -294,28 +319,27 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
 
                 //shoot high (3 rings)
                 drive.followTrajectory(traj[2][5]);
-                robot.delayWithAllPID(500);
-                robot.flicker.launch();
                 robot.delayWithAllPID(400);
                 robot.flicker.launch();
                 robot.delayWithAllPID(400);
                 robot.flicker.launch();
                 robot.delayWithAllPID(400);
+                robot.flicker.launch();
+                robot.delayWithAllPID(150);
                 drive.flywheels.halt();
 
                 //intake stack (1 ring)
-                drive.followTrajectory(traj[2][6]);
+                drive.followTrajectory(traj[2][6]); //possably ajust heading
 
                 //shoot high (1 ring)
                 drive.followTrajectory(traj[2][7]);
-                robot.delayWithAllPID(500);
+                robot.delayWithAllPID(250);
                 robot.flicker.launch();
-                robot.delayWithAllPID(300);
+                robot.delayWithAllPID(150);
                 drive.flywheels.halt();
 
                 //second wobble drop
                 drive.followTrajectory(traj[2][8]);
-                robot.claw.open();
                 robot.delayWithAllPID(200);
 
                 //park
