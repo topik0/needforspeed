@@ -43,9 +43,9 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
         drive.setPoseEstimate(startPose);
         Trajectory[][] traj = new Trajectory[3][12];
         traj[0][0] = drive.trajectoryBuilder(startPose, false)
-                .splineTo(new Vector2d(-5, -57), Math.toRadians(0))
-                .addTemporalMarker(0.1, () -> robot.flap.setPosition(.29))
-                .addTemporalMarker(.25, () -> robot.intake.down())
+                .splineTo(new Vector2d(-2, -57), Math.toRadians(0))
+                .addTemporalMarker(0.1, () -> robot.flap.setPosition(.31))
+                .addTemporalMarker(.75, () -> robot.intake.down())
                 .addTemporalMarker(.75, () -> robot.arm.down())
                 .addTemporalMarker(1.85, () -> robot.claw.open())
                 .addTemporalMarker(1.9, () -> robot.arm.up())
@@ -59,7 +59,7 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
         traj[0][2] = drive.trajectoryBuilder(traj[0][1].end(), false)
                 .splineTo(new Vector2d(0, 0), Math.toRadians(135))
                 .addTemporalMarker(1.5, () -> robot.arm.down())
-                .splineTo(new Vector2d(-32, -24), Math.toRadians(-135))
+                .splineTo(new Vector2d(-32, -24), Math.toRadians(-137))
                 .build();
         traj[0][3] = drive.trajectoryBuilder(traj[0][2].end(), false)
                 .splineTo(new Vector2d(-2, -48), Math.toRadians(-20))
@@ -204,9 +204,13 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
         switch (height) {
             case ZERO:
                 telemetry.addData("There are no rings", "");
+
+              //wobble drop
                 drive.followTrajectory(traj[0][0]);
                 drive.turn(Math.toRadians(90));
                 robot.delayWithAllPID(100);
+
+               //shoot
                 drive.followTrajectory(traj[0][1]);
                 robot.delayWithAllPID(300);
                 robot.flicker.launch();
@@ -216,17 +220,23 @@ public class NFSAutoHighGoalTurn extends LinearOpMode {
                 robot.flicker.launch();
                 robot.delayWithAllPID(300);
                 drive.flywheels.halt();
+
+                //wobble grab
                 drive.followTrajectory(traj[0][2]);
                 robot.claw.close();
                 robot.delayWithAllPID(300);
                 robot.arm.up();
                 robot.delayWithAllPID(750);
+
+                //wobble drop
                 drive.followTrajectory(traj[0][3]);
                 robot.claw.open();
                 robot.delayWithAllPID(200);
                 robot.arm.up();
                 robot.delayWithAllPID(750);
                 robot.claw.close();
+
+                //park
                 drive.turn(Math.toRadians(90));
                 robot.delayWithAllPID(100);
                 drive.followTrajectory(traj[0][5]);
