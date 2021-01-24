@@ -65,6 +65,7 @@ public class Flywheels {
         if (flywheelBack == null)
             throw new BadInitializationException("Null flywheelBack detected");
         runState = State.DORMANT;
+        velocityState = State.MAX_VELOCITY;
         if (robot != null && robot.isAuto()) {
             maxVelocity = autoMaxVelocity;
             powershotVelocity = autoPowershotVelocity;
