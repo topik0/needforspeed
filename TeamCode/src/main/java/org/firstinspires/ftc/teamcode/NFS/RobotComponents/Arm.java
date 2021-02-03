@@ -20,7 +20,7 @@ public class Arm {
     /**
      * The various servo positions
      */
-    public static double startPosition = .69, upPosition = .69, downPosition = .07;
+    public static double startPosition = .73, upPosition = .73, downPosition = .115;
     private State state;
 
     private enum State {
