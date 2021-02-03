@@ -17,7 +17,7 @@ public class Flicker {
     /**
      * The various positions of the flicker
      */
-    public static double startPosition = .55, outPosition = .65, inPosition = .55;
+    public static double startPosition = .56, outPosition = .65, inPosition = .56;
     /**
      * The delay between movements
      */
