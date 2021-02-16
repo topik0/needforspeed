@@ -16,7 +16,7 @@ public class Flap {
     /**
      * The various positions of the flap
      */
-    public static double startPosition = 0, highGoalPosition = .29, autoHighGoalPosition = .32, powerShotPosition = .3, flushPosition = .1, adjustUpThreshold = .005, adjustDownThreshold = .005;
+    public static double startPosition = 0, highGoalPosition = .28, autoHighGoalPosition = .32, powerShotPosition = .3, flushPosition = .1, adjustUpThreshold = .005, adjustDownThreshold = .005;
     /**
      * The flap Servo object
      */
