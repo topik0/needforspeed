@@ -170,6 +170,27 @@ public class Drivetrain {
     }
 
     /**
+     * Turns the drivetrain to specified angle in degrees
+     *
+     * @param degrees the angle to turn in degrees
+     */
+
+    public void turnTo(double degrees) {
+        double adjustedDegrees = degrees + Voodoo.heading;
+        double error = -1 * adjustedDegrees;
+        double leftPow;
+        double rightPow;
+        while ((Math.abs(error) >= turnErrorThreshold)) {
+            robot.flywheels.run();
+            error = getHeading() - adjustedDegrees;
+            leftPow = error * turnKP;
+            rightPow = -error * turnKP;
+            setSideMotorPowers(leftPow, rightPow);
+        }
+    }
+
+
+    /**
      * Gets the current heading using the IMU
      *
      * @return the current heading
