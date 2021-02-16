@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.NFS.RobotComponents;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 
+import org.apache.commons.math3.analysis.function.Power;
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Exceptions.BadInitializationException;
 
 /**
@@ -20,7 +21,7 @@ public class Flywheels {
     /**
      * The max velocity and the powershot velocity (in terms of TPS)
      */
-    public static double maxVelocity = 2400, autoMaxVelocity = 2000, powershotVelocity = 1600, autoPowershotVelocity = 1500;
+    public static double maxVelocity = 1800, autoMaxVelocity = 1800, powershotVelocity = 1600, autoPowershotVelocity = 1475;
     /**
      * The TPS the flywheels should run at
      */
@@ -32,7 +33,7 @@ public class Flywheels {
     /**
      * The PID coefficients
      */
-    public static double kP = 5/*12*/, kI = 0/*12*/, kD = 1/*0.3*/, kS = 0, kV = 1.7;
+    public static double kP = 7/*12*/, kI = 0/*12*/, kD = 1/*0.3*/, kS = 0, kV = 1.4;
     /**
      * The power of the flywheels
      */
