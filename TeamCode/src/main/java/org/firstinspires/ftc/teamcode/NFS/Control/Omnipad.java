@@ -15,14 +15,14 @@ import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
 public class Omnipad {
 
     /**
-     * The default button cooldown
+     * The default button cooldown  
      */
     public static int cooldown = 350;
 
     /**
      * The ring shoot cooldown
      */
-    public static int shootCooldown = 150;
+    public static int shootCooldown = 170;
 
     /**
      * The claw cooldown
