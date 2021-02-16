@@ -33,6 +33,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.NFS.GTP.GoToPoint;
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Flywheels;
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.HardwareGenesis;
 import org.firstinspires.ftc.teamcode.NFS.util.DashboardUtil;
@@ -76,10 +77,10 @@ public class SampleMecanumDrive extends MecanumDrive {
         TURN,
         FOLLOW_TRAJECTORY
     }
-
+    GoToPoint point;
     public HardwareGenesis gen;
     public Flywheels flywheels;
-
+    public double throttle = 0;
     private FtcDashboard dashboard;
     private NanoClock clock;
 
@@ -104,7 +105,7 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
-
+        point = new GoToPoint(this, hardwareMap);
         dashboard = FtcDashboard.getInstance();
         dashboard.setTelemetryTransmissionInterval(25);
 
@@ -124,7 +125,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         ));
         accelConstraint = new ProfileAccelerationConstraint(MAX_ACCEL);
         follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
-                new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
+                new Pose2d(0.5, 0.5, Math.toRadians(1)), 0.5);
 
         poseHistory = new LinkedList<>();
 
@@ -235,6 +236,8 @@ public class SampleMecanumDrive extends MecanumDrive {
         TelemetryPacket packet = new TelemetryPacket();
         Canvas fieldOverlay = packet.fieldOverlay();
 
+        packet.put("sp", point.headingPIDF.getSetPoint());
+        packet.put("output", point.headingPIDF.calculate());
         packet.put("mode", mode);
 
         packet.put("x", currentPose.getX());
