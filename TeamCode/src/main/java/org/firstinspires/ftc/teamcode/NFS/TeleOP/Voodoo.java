@@ -3,19 +3,20 @@ package org.firstinspires.ftc.teamcode.NFS.TeleOP;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.apache.commons.lang3.time.StopWatch;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.NFS.Control.Omnipad;
-import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Drivetrain;
+import org.firstinspires.ftc.teamcode.NFS.GTP.GoToPoint;
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
+import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
 
 /**
  * @author Topik
@@ -41,20 +42,27 @@ public class Voodoo extends LinearOpMode {
     /**
      * The drivetrain throttle values to be set in certain cases depending on robot component states
      */
-    public static double flywheelsDrivetrainThrottle = .75, armDrivetrainThrottle = 1, normalDrivetrainThrottle = 1;
+    public static double flywheelsDrivetrainThrottle = .9, armDrivetrainThrottle = 1, normalDrivetrainThrottle = 1;
     /**
      * Controls whether or not active breaking is enabled
      */
+    public static double headingP = 1.5, headingD = .1;
     public static boolean activeBreakingEnabled = true;
     public static boolean highGoalAngle = true;
     private static double offSetAngle = 0;
     public ElapsedTime flywheelTimer = new ElapsedTime();
     public ElapsedTime armTimer = new ElapsedTime();
+    public static double heading;
+    GoToPoint point;
+    SampleMecanumDrive drive;
+    PIDFController headingPIDF;
 
     @Override
     public void runOpMode() {
         Robot robot = new Robot(hardwareMap, telemetry);
         Omnipad pad = new Omnipad(gamepad1, gamepad2, robot);
+        drive = new SampleMecanumDrive(hardwareMap);
+        point = new GoToPoint(drive, hardwareMap);
      /*
         StopWatch flywheelStopwatch = new StopWatch();
         StopWatch armStopwatch = new StopWatch();
@@ -68,6 +76,7 @@ public class Voodoo extends LinearOpMode {
         parameters.loggingEnabled = false;
         BNO055IMU imu = robot.genesis.imu;
         imu.initialize(parameters);
+        headingPIDF = new PIDFController(headingP, 0, headingD, 0);
         waitForStart();
         while (opModeIsActive()) {
             robot.flywheels.run();
@@ -75,8 +84,25 @@ public class Voodoo extends LinearOpMode {
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = pad.getLeftY();
             double lx = pad.getLeftX();
-            double rx = pad.getRightX();
-            double heading = angles.firstAngle - offSetAngle + Math.toRadians(270);
+
+
+
+
+           //untested auto aline (heading only)
+            double rx;
+
+            if(Math.abs(pad.getRightX())<.1 && robot.flywheels.running() && robot.flap.isInHighGoalPosition() && Math.toDegrees(heading)>1 && Math.toDegrees(heading)<180){
+               rx = headingPIDF.calculate(Math.toDegrees(heading), 0);
+            }
+            else if(Math.abs(pad.getRightX())<.1 && robot.flywheels.running() && robot.flap.isInHighGoalPosition() && (Math.toDegrees(heading)<359 && Math.toDegrees(heading)>=180)){
+               rx = headingPIDF.calculate(Math.toDegrees(heading), 360);
+            }
+            else {
+                rx = pad.getRightX();
+            }
+            //untested auto aline (heading only) ^^
+
+            heading = angles.firstAngle - offSetAngle + Math.toRadians(270);
             double speed = Math.hypot(ly, lx);
             double y = pad.getY(speed, heading, ly, lx);
             double x = pad.getX(speed, heading, ly, lx);
@@ -97,10 +123,52 @@ public class Voodoo extends LinearOpMode {
             if (pad.raiseFlap()) {
                 robot.flap.goToHighGoalPosition();
                 highGoalAngle = true;
-            } else if (pad.lowerFlap()) {
+            }
+
+            if (pad.lowerFlap()) {
                 robot.flap.goToPowershotPosition();
                 highGoalAngle = false;
             }
+
+
+            //automated powershot
+            if (gamepad1.dpad_right) {
+                //drive.setPoseEstimate(new Pose2d());
+                point.reset();
+                robot.flywheels.setPowershotVelocity();
+                robot.flywheels.doPowershotVelocity();
+                robot.flap.goToPowershotPosition();
+                point.notDone();
+
+                //first launch
+               // point.goToPointTele(0, -20, 0);
+                point.goToPointTele(0, -32, 0);
+                robot.delayWithAllPID(200);
+                robot.flicker.launch();
+
+
+                //second launch
+                robot.delayWithAllPID(30);
+                point.goToPointTele(0, -26, 0);
+                robot.delayWithAllPID(100);
+                robot.flicker.launch();
+                robot.delayWithAllPID(30);
+                point.notDone();
+
+                //third launch
+                //point.goToPointTele(0, -32, 0);
+                point.goToPointTele(0, -20, 0);
+                robot.delayWithAllPID(100);
+                robot.flicker.launch();
+                robot.delayWithAllPID(30);
+                robot.flywheels.halt();
+                drive.update();
+                robot.flywheels.setHighGoalVelocity();
+                robot.flap.goToHighGoalPosition();
+                drive.update();
+
+            }
+
             if (pad.intakeToggle()) robot.intake.toggle();
             if (pad.intakeReverse()) robot.intake.reverse();
             else if (robot.intake.isRunning()) robot.intake.start();
@@ -129,8 +197,8 @@ public class Voodoo extends LinearOpMode {
             }
 
             //powershot imu turns
-            if (pad.turnRight()) robot.drivetrain.turn(turnRightAngle);
-            else if (pad.turnLeft()) robot.drivetrain.turn(turnLeftAngle);
+//            if (pad.turnRight()) robot.drivetrain.turn(turnRightAngle);
+//            else if (pad.turnLeft()) robot.drivetrain.turn(turnLeftAngle);
 
             //turn and drivetrain throttles
             if (robot.flywheels.running() && flywheelTimer.milliseconds() >= flywheelTimerThreshold && robot.arm.isUp()) {
@@ -159,9 +227,10 @@ public class Voodoo extends LinearOpMode {
             telemetry.update();
 
             //dashboard telemetry
-            TelemetryPacket packet = new TelemetryPacket();
+           TelemetryPacket packet = new TelemetryPacket();
             packet.put("Flywheel Velocity", robot.flywheels.flywheelFront.getCorrectedVelocity());
             packet.put("Flywheel Target Velocity", robot.flywheels.getTargetVelocity());
+            packet.put("Motor Power", robot.flywheels.flywheelFront.motor.getPower());
             dashboard.sendTelemetryPacket(packet);
         }
     }
