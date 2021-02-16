@@ -17,11 +17,11 @@ public class Flicker {
     /**
      * The various positions of the flicker
      */
-    public static double startPosition = .56, outPosition = .65, inPosition = .56;
+    public static double startPosition = .56, outPosition = .67, inPosition = .56; //out pose used to be .65
     /**
      * The delay between movements
      */
-    public static double cooldown = 90;
+    public static double cooldown = 60;
     /**
      * Controls if the flicker should shoot if the flywheels aren't running
      */
