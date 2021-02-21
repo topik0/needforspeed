@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.controller.PIDFController;
+import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.util.Range;
@@ -247,14 +248,14 @@ public class GoToPoint {
         goToPoint(drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), targetDegrees);
     }
 
-    public void goToPointTele(double targetX, double targetY, double targetDegrees) {
+    public void goToPointNonBlocking(double targetX, double targetY, double targetDegrees) {
 
         double targetXError = 1;
         double targetYError = .75;
         double targetHeadingError = .5;
         isDone = false;
 
-        while (!isDone) {
+        if (!isDone) {
             drive.update();
 
             headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
@@ -285,6 +286,65 @@ public class GoToPoint {
             }
             else if(Math.abs(yError)>targetYError){
                  //  yKS=.1;
+            }
+
+
+            double headingPID =  headingPIDF.calculate(0, headingError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double xPID = translateXPIDF.calculate(0, xError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double yPID =   translateYPIDF.calculate(0, yError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+
+            headingPID = Range.clip(headingPID, -1, 1);
+            xPID = Range.clip(xPID, -1, 1);
+            yPID = Range.clip(yPID, -1, 1);
+
+            Vector2d fieldCentric = new Vector2d(xPID, yPID).rotated(-drive.getPoseEstimate().getHeading());
+            drive.setWeightedDrivePower(new Pose2d(fieldCentric.getX() + Math.copySign(xKS, xPID), fieldCentric.getY() + Math.copySign(yKS, yPID), headingPID + Math.copySign(headingKS, headingPID)));
+
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError)) {
+                isDone = true;
+            }
+
+        }
+    }
+
+    public void goToPointTele(double targetX, double targetY, double targetDegrees) {
+
+        double targetXError = 1;
+        double targetYError = .75;
+        double targetHeadingError = .5;
+        isDone = false;
+
+        while (!isDone) {
+            drive.update();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+
+            if(Math.abs(headingError)<= targetHeadingError){
+                headingKS = 0;
+            }
+            else if(Math.abs(headingError) > targetHeadingError){
+                headingKS=0;
+            }
+
+            if(Math.abs(xError)<=targetXError){
+                xKS = 0;
+            }
+            else if(Math.abs(xError)>targetXError){
+                // xKS=.1;
+            }
+
+            if(Math.abs(yError)<=targetYError){
+                yKS = 0;
+            }
+            else if(Math.abs(yError)>targetYError){
+                //  yKS=.1;
             }
 
 
