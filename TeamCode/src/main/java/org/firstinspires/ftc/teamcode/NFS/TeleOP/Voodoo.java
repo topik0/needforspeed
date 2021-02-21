@@ -46,7 +46,8 @@ public class Voodoo extends LinearOpMode {
     /**
      * Controls whether or not active breaking is enabled
      */
-    public static double headingP = 1.5, headingD = .1;
+    //public static double headingP = 1.5, headingD = .1;
+    public static double turnAngle = -5;
     public static boolean activeBreakingEnabled = true;
     public static boolean highGoalAngle = true;
     private static double offSetAngle = 0;
@@ -76,7 +77,7 @@ public class Voodoo extends LinearOpMode {
         parameters.loggingEnabled = false;
         BNO055IMU imu = robot.genesis.imu;
         imu.initialize(parameters);
-        headingPIDF = new PIDFController(headingP, 0, headingD, 0);
+        //headingPIDF = new PIDFController(headingP, 0, headingD, 0);
         waitForStart();
         while (opModeIsActive()) {
             robot.flywheels.run();
@@ -84,22 +85,22 @@ public class Voodoo extends LinearOpMode {
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = pad.getLeftY();
             double lx = pad.getLeftX();
-
+            double rx = pad.getRightX();
 
 
 
            //untested auto aline (heading only)
-            double rx;
-
-            if(Math.abs(pad.getRightX())<.1 && robot.flywheels.running() && robot.flap.isInHighGoalPosition() && Math.toDegrees(heading)>1 && Math.toDegrees(heading)<180){
-               rx = headingPIDF.calculate(Math.toDegrees(heading), 0);
-            }
-            else if(Math.abs(pad.getRightX())<.1 && robot.flywheels.running() && robot.flap.isInHighGoalPosition() && (Math.toDegrees(heading)<359 && Math.toDegrees(heading)>=180)){
-               rx = headingPIDF.calculate(Math.toDegrees(heading), 360);
-            }
-            else {
-                rx = pad.getRightX();
-            }
+//            double rx;
+//
+//            if(Math.abs(pad.getRightX())<.1 && robot.flywheels.running() && robot.flap.isInHighGoalPosition() && Math.toDegrees(heading)>1 && Math.toDegrees(heading)<180){
+//               rx = headingPIDF.calculate(Math.toDegrees(heading), 0);
+//            }
+//            else if(Math.abs(pad.getRightX())<.1 && robot.flywheels.running() && robot.flap.isInHighGoalPosition() && (Math.toDegrees(heading)<359 && Math.toDegrees(heading)>=180)){
+//               rx = headingPIDF.calculate(Math.toDegrees(heading), 360);
+//            }
+//            else {
+//                rx = pad.getRightX();
+//            }
             //untested auto aline (heading only) ^^
 
             heading = angles.firstAngle - offSetAngle + Math.toRadians(270);
@@ -138,11 +139,10 @@ public class Voodoo extends LinearOpMode {
                 robot.flywheels.setPowershotVelocity();
                 robot.flywheels.doPowershotVelocity();
                 robot.flap.goToPowershotPosition();
-                point.notDone();
 
                 //first launch
-               // point.goToPointTele(0, -20, 0);
-                point.goToPointTele(0, -32, 0);
+                point.goToPointTele(0, -20, 0);
+                //point.goToPointTele(0, -32, 0);
                 robot.delayWithAllPID(200);
                 robot.flicker.launch();
 
@@ -153,11 +153,10 @@ public class Voodoo extends LinearOpMode {
                 robot.delayWithAllPID(100);
                 robot.flicker.launch();
                 robot.delayWithAllPID(30);
-                point.notDone();
 
                 //third launch
-                //point.goToPointTele(0, -32, 0);
-                point.goToPointTele(0, -20, 0);
+                point.goToPointTele(0, -32, 0);
+                //point.goToPointTele(0, -20, 0);
                 robot.delayWithAllPID(100);
                 robot.flicker.launch();
                 robot.delayWithAllPID(30);
@@ -167,6 +166,14 @@ public class Voodoo extends LinearOpMode {
                 robot.flap.goToHighGoalPosition();
                 drive.update();
 
+            }
+
+            if(gamepad1.dpad_left){
+                point.setPos(0,0, heading-Math.toRadians(270));
+                while (!point.isDone && gamepad1.right_trigger<.1){
+                    point.goToPointNonBlocking(0,0, turnAngle);
+                }
+                point.notDone();
             }
 
             if (pad.intakeToggle()) robot.intake.toggle();
