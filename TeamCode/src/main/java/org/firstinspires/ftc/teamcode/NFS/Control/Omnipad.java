@@ -264,21 +264,24 @@ public class Omnipad {
      * @return the value of the left stick y
      */
     public double getLeftY() {
-        return -one.left_stick_y * robot.drivetrain.getThrottle();
+        if(Math.abs(one.left_stick_y)> .05) return -one.left_stick_y * robot.drivetrain.getThrottle();
+        else return 0;
     }
 
     /**
      * @return the value of the left stick x
      */
     public double getLeftX() {
-        return one.left_stick_x * robot.drivetrain.getThrottle();
+        if (Math.abs(one.left_stick_x) > .05) return one.left_stick_x * robot.drivetrain.getThrottle();
+        else return 0;
     }
 
     /**
      * @return the value of the right stick x
      */
     public double getRightX() {
-        return Math.sqrt(Math.abs(one.right_stick_x)) * one.right_stick_x * robot.drivetrain.getTurnThrottle();
+        if(Math.abs(one.right_stick_x)> .05) return Math.sqrt(Math.abs(one.right_stick_x)) * one.right_stick_x * robot.drivetrain.getTurnThrottle();
+        else return 0;
     }
 
     /**
