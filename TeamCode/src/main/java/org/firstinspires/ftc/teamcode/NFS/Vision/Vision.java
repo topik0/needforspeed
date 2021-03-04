@@ -11,6 +11,7 @@ import org.openftc.easyopencv.OpenCvCamera;
 import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.openftc.easyopencv.OpenCvWebcam;
 
 /**
  * @author Topik
@@ -30,34 +31,20 @@ public class Vision {
     public static String webcam_name = "Webcam 1";
     private double camera_init_time;
 
-    private final OpenCvCamera camera;
+    private final OpenCvWebcam webcam;
     private final UGContourRingPipeline pipeline;
     private final StopWatch stopwatch;
 
     public Vision(HardwareMap hwMap, Telemetry telemetry) {
         stopwatch = new StopWatch();
-        int cameraMonitorViewId = hwMap
-                .appContext
-                .getResources().getIdentifier(
-                        "cameraMonitorViewId",
-                        "id",
-                        hwMap.appContext.getPackageName()
-                );
-        if (using_webcam) {
-            camera = OpenCvCameraFactory
-                    .getInstance()
-                    .createWebcam(hwMap.get(WebcamName.class, webcam_name), cameraMonitorViewId);
-        } else {
-            camera = OpenCvCameraFactory
-                    .getInstance()
-                    .createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        }
-        camera.setPipeline(pipeline = new UGContourRingPipeline(telemetry, debug));
+        int cameraMonitorViewId = hwMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hwMap.appContext.getPackageName());
+        webcam = OpenCvCameraFactory.getInstance().createWebcam(hwMap.get(WebcamName.class, "Webcam 1"));
+        webcam.setPipeline(pipeline = new UGContourRingPipeline(telemetry, debug));
         UGContourRingPipeline.Config.setCAMERA_WIDTH(camera_width);
         UGContourRingPipeline.Config.setHORIZON(horizon);
         UGContourRingPipeline.Config.setLowerOrange(new Scalar(0.0, 50.0, 0.0));
         UGContourRingPipeline.Config.setUpperOrange(new Scalar(255.0, 230.0, 110.0));
-        camera.openCameraDeviceAsync(() -> camera.startStreaming(camera_width, camera_height, OpenCvCameraRotation.UPSIDE_DOWN));
+        webcam.openCameraDeviceAsync(() -> webcam.startStreaming(camera_width, camera_height, OpenCvCameraRotation.UPSIDE_DOWN));
 
         stopwatch.start();
     }
@@ -68,7 +55,7 @@ public class Vision {
      * @return true if the camera has a FPS higher than zero
      */
     private boolean hasFPS() {
-        return camera.getFps() > 0;
+        return webcam.getFps() > 0;
     }
 
     /**
@@ -115,6 +102,12 @@ public class Vision {
      */
     public double cameraInitTime() {
         return camera_init_time;
+    }
+
+
+
+    public void stopStreaming(){
+        webcam.closeCameraDevice();
     }
 
 }
