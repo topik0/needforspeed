@@ -38,6 +38,7 @@ public class NFSAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        boolean runIntake;
         ElapsedTime timer = new ElapsedTime();
         Robot robot = new Robot(hardwareMap, telemetry, true);
         Vision vision = new Vision(hardwareMap, telemetry);
@@ -170,7 +171,7 @@ public class NFSAuto extends LinearOpMode {
                 .build();
 
         Trajectory wobbleGrab4 = drive.trajectoryBuilder(intakeThreeRings4.end().plus(new Pose2d(0, 0, Math.toRadians(70))))
-                .splineTo(new Vector2d(-37, -39), Math.toRadians(165))
+                .splineTo(new Vector2d(-36, -39), Math.toRadians(165))
                 .addDisplacementMarker(() -> {
                     robot.claw.close();
                     robot.intake.stop();
@@ -367,13 +368,14 @@ public class NFSAuto extends LinearOpMode {
                 robot.flicker.launch();
 
                 //second ps
+                point.notDone();
                 while (!point.isDone4) point.goToPointPS(-6, -11.5, 0, .5, .5);
                 robot.delayWithAllPID(20);
                 robot.flicker.launch();
-                point.notDone();
                 timer.reset();
 
                 //third ps
+                point.notDone();
                 while (!point.isDone4 && timer.milliseconds()<500) point.goToPointPS(-6, -11.5, -5, .5, .5);
                 robot.delayWithAllPID(20);
                 robot.flicker.launch();
@@ -408,11 +410,13 @@ public class NFSAuto extends LinearOpMode {
                 timer.reset();
                 point.notDone();
                 while (!point.isDone4){
-                    point.goToPointAuto(44, -46, 0);
+                    point.goToPointExtra(44, -47, 0, 2, 1.5, 1, 5, 5, .5, .5, 1);
                     if(timer.milliseconds() > 50 && robot.flywheels.running()) drive.flywheels.halt();
+                    if(Math.abs(point.xError) < 3 && Math.abs(point.yError) < 3 && Math.abs(point.headingError) < Math.toRadians(5) && robot.arm.isUp()) robot.arm.down();
                 }
-                robot.arm.down();
-                robot.delayWithAllPID(150);
+                //robot.arm.down();
+                //robot.delayWithAllPID(600);
+                robot.delayWithAllPID(400);
                 robot.claw.open();
                 robot.delayWithAllPID(40);
                 robot.arm.up();
@@ -421,27 +425,31 @@ public class NFSAuto extends LinearOpMode {
                 //intake stack
                 point.notDone();
                 timer.reset();
+                robot.intake.start();
                                                                                                         //might split into 2 different gtp to not strafe as much as possible
+                point.notDone();
                 while (!point.isDone4){
                     point.goToPointAuto(-40, -60, 3);
-                    if(timer.milliseconds()>500 && !robot.intake.isRunning()) robot.intake.start();
+                  //  if(timer.milliseconds()>500 && !robot.intake.isRunning()) robot.intake.start();
                 }
 
                 //drive to shoot
-                robot.intake.reverse();
                 point.notDone();
                 timer.reset();
                 robot.flap.goToHighGoalPosition();
                 robot.flywheels.doMaxVelocity();
-                robot.intake.reverse();
+                runIntake = false;
                 while (!point.isDone4){
                     point.goToPointAuto(-4.5, -40, 0);
-                    if(timer.milliseconds()>100 && robot.intake.isRunning()) robot.intake.stop();
+                    if(timer.milliseconds()>300 && robot.intake.isRunning() && !runIntake){
+                        robot.intake.stop();
+                        robot.intake.reverse();
+                        runIntake = true;
+                    }
                 }
-                if(robot.intake.isRunning()) robot.intake.stop();
+                robot.intake.stop();
 
                 //shoot
-                drive.followTrajectory(shootThreeHigh4);
                 robot.delayWithAllPID(20);
                 robot.flicker.launch();
                 robot.delayWithAllPID(200);
@@ -454,7 +462,8 @@ public class NFSAuto extends LinearOpMode {
                 //park
                 point.notDone();
                 timer.reset();
-                while (!point.isDone4 && timer.milliseconds()<1000) point.goToPointAuto(12, -36, 0);
+                while (!point.isDone4 && timer.milliseconds()<1000) point.goToPointExtra(10, -36, 0, 2, 2, .5, 2, 5, .4, .4, .75);
+                    //point.goToPointAuto(12, -36, 0);
 
                 break;
         }

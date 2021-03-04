@@ -59,7 +59,99 @@ public class GoToPoint {
         isDone4 = false;
    }
 
+    public void goToPointExtra(double targetX, double targetY, double targetDegrees, double targetXError, double targetYError, double targetHeadingError, double translationalErrorClip, double headingErrorClip,  double translationalClip, double hClip, double maxPower) {
 
+
+
+        if (!isDone4) {
+            drive.update();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+
+            //kS
+
+            if(Math.abs(headingError)<= Math.toRadians(targetHeadingError)){
+                headingKS = 0;
+            }
+            if(Math.abs(headingError) > Math.toRadians(targetHeadingError)){
+                headingKS= 0;
+            }
+
+            if(Math.abs(xError)<=targetXError){
+                xKS = 0;
+            }
+            if(Math.abs(xError)>targetXError){
+                xKS = 0;
+            }
+
+            if(Math.abs(yError)<=targetYError){
+                yKS = 0;
+            }
+            if(Math.abs(yError)>targetYError){
+                yKS= 0;
+            }
+
+
+            //power clips
+
+            if(Math.abs(headingError)<= Math.toRadians(headingErrorClip)){
+                headingClip = hClip; //.5
+            }
+            if(Math.abs(headingError) > Math.toRadians(headingErrorClip)){
+                headingClip = maxPower;
+            }
+
+            if(Math.abs(translationalErrorClip)<= 2){
+                xClip = translationalClip; //.7
+            }
+            if(Math.abs(translationalErrorClip)> 2){
+                xClip = maxPower;
+            }
+
+            if(Math.abs(translationalErrorClip)<= 2){
+                yClip = translationalClip;
+            }
+            if(Math.abs(translationalErrorClip)> 2){
+                yClip = maxPower;
+            }
+
+
+            double headingPID =  headingPIDF.calculate(0, headingError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double xPID = translateXPIDF.calculate(0, xError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double yPID =   translateYPIDF.calculate(0, yError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+
+            headingPID = Range.clip(headingPID, -headingClip, headingClip);
+            xPID = Range.clip(xPID, -xClip, xClip);
+            yPID = Range.clip(yPID, -yClip, yClip);
+
+            Vector2d fieldCentric = new Vector2d(xPID, yPID).rotated(-drive.getPoseEstimate().getHeading());
+            drive.setWeightedDrivePower(new Pose2d(fieldCentric.getX() + Math.copySign(xKS, xPID), fieldCentric.getY() + Math.copySign(yKS, yPID), headingPID + Math.copySign(headingKS, headingPID)));
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone4 && isDone3) {
+                isDone4 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone2 && !isDone3) {
+                isDone3 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone1 && !isDone2) {
+                isDone2 = true;
+            }
+
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone1) {
+                isDone1 = true;
+            }
+
+            if (Math.abs(xError) > targetXError || Math.abs(yError) > targetYError || Math.abs(headingError) > Math.toRadians(targetHeadingError)) {
+                notDone();
+            }
+        }
+    }
 
 
     public void goToPointPS(double targetX, double targetY, double targetDegrees, double translationalClip, double hClip) {
