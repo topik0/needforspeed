@@ -3,6 +3,8 @@ package org.firstinspires.ftc.teamcode.NFS.TeleOP;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -16,7 +18,10 @@ import org.firstinspires.ftc.robotcore.external.navigation.Orientation;
 import org.firstinspires.ftc.teamcode.NFS.Control.Omnipad;
 import org.firstinspires.ftc.teamcode.NFS.GTP.GoToPoint;
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
+import org.firstinspires.ftc.teamcode.NFS.Vision.AimingVision;
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
+
+import static java.lang.Double.NaN;
 
 /**
  * @author Topik
@@ -50,10 +55,12 @@ public class Voodoo extends LinearOpMode {
     public static double turnAngle = -5;
     public static boolean activeBreakingEnabled = true;
     public static boolean highGoalAngle = true;
+    boolean firstLoop = true;
     private static double offSetAngle = 0;
     public ElapsedTime flywheelTimer = new ElapsedTime();
     public ElapsedTime armTimer = new ElapsedTime();
     public static double heading;
+    boolean run = false;
     GoToPoint point;
     SampleMecanumDrive drive;
     PIDFController headingPIDF;
@@ -64,6 +71,7 @@ public class Voodoo extends LinearOpMode {
         Omnipad pad = new Omnipad(gamepad1, gamepad2, robot);
         drive = new SampleMecanumDrive(hardwareMap);
         point = new GoToPoint(drive, hardwareMap);
+        AimingVision aim = new AimingVision(hardwareMap, robot.drivetrain);
      /*
         StopWatch flywheelStopwatch = new StopWatch();
         StopWatch armStopwatch = new StopWatch();
@@ -80,28 +88,17 @@ public class Voodoo extends LinearOpMode {
         //headingPIDF = new PIDFController(headingP, 0, headingD, 0);
         waitForStart();
         while (opModeIsActive()) {
+            if (firstLoop){
+                robot.flap.goToHighGoalPosition();
+                highGoalAngle = true;
+                firstLoop = false;
+            }
             robot.flywheels.run();
             robot.flicker.checkState();
             Orientation angles = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.RADIANS);
             double ly = pad.getLeftY();
             double lx = pad.getLeftX();
             double rx = pad.getRightX();
-
-
-
-           //untested auto aline (heading only)
-//            double rx;
-//
-//            if(Math.abs(pad.getRightX())<.1 && robot.flywheels.running() && robot.flap.isInHighGoalPosition() && Math.toDegrees(heading)>1 && Math.toDegrees(heading)<180){
-//               rx = headingPIDF.calculate(Math.toDegrees(heading), 0);
-//            }
-//            else if(Math.abs(pad.getRightX())<.1 && robot.flywheels.running() && robot.flap.isInHighGoalPosition() && (Math.toDegrees(heading)<359 && Math.toDegrees(heading)>=180)){
-//               rx = headingPIDF.calculate(Math.toDegrees(heading), 360);
-//            }
-//            else {
-//                rx = pad.getRightX();
-//            }
-            //untested auto aline (heading only) ^^
 
             heading = angles.firstAngle - offSetAngle + Math.toRadians(270);
             double speed = Math.hypot(ly, lx);
@@ -113,12 +110,6 @@ public class Voodoo extends LinearOpMode {
             if (pad.flywheelsToggle()) {
                 robot.flywheels.togglePID();
                 flywheelTimer.reset();
-                /*try {
-                    if (robot.flywheels.running()) {
-                        flywheelStopwatch.start();
-                    } else flywheelStopwatch.reset();
-                } catch (Exception ignored) {
-                } */
             }
             if (pad.setOffset()) offSetAngle = angles.firstAngle;
             if (pad.raiseFlap()) {
@@ -127,118 +118,352 @@ public class Voodoo extends LinearOpMode {
             }
 
             if (pad.lowerFlap()) {
-                robot.flap.goToPowershotPosition();
+                robot.flap.goToSlowPowershotPosition();
                 highGoalAngle = false;
             }
 
 
             //automated powershot
+
             if (gamepad1.dpad_right) {
-                //drive.setPoseEstimate(new Pose2d());
-                point.reset();
-                robot.flywheels.setPowershotVelocity();
-                robot.flywheels.doPowershotVelocity();
-                robot.flap.goToPowershotPosition();
+                run = true;
+                while (run) {
+                    point.reset();
+                    robot.flap.goToSlowPowershotPosition();
+                    robot.flywheels.doVelocity();
+                    //first launch
+                    point.notDone();
+                    while (!point.isDone4 && run) {
+                        point.goToPointPS(0, -25.5, 5, .5, .5);
+                        //point.goToPointTele(0, -32, 0);
+                        if (gamepad1.left_trigger > .1 || gamepad1.right_trigger > .1) run = false;
+                    }
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flap.goToHighGoalPosition();
+                        highGoalAngle = true;
+                        break;
+                    }
+                    robot.delayWithAllPID(200);
+                    if (gamepad1.left_trigger > .1 || gamepad1.right_trigger > .1) run = false;
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flywheels.setHighGoalVelocity();
+                        robot.flap.goToHighGoalPosition();
+                        highGoalAngle = true;
+                        drive.update();
+                        break;
+                    }
+                    robot.flicker.launch();
 
-                //first launch
-                point.goToPointTele(0, -20, 0);
-                //point.goToPointTele(0, -32, 0);
-                robot.delayWithAllPID(200);
-                robot.flicker.launch();
 
-
-                //second launch
-                robot.delayWithAllPID(30);
-                point.goToPointTele(0, -26, 0);
-                robot.delayWithAllPID(100);
-                robot.flicker.launch();
-                robot.delayWithAllPID(30);
-
-                //third launch
-                point.goToPointTele(0, -32, 0);
-                //point.goToPointTele(0, -20, 0);
-                robot.delayWithAllPID(100);
-                robot.flicker.launch();
-                robot.delayWithAllPID(30);
-                robot.flywheels.halt();
-                drive.update();
-                robot.flywheels.setHighGoalVelocity();
-                robot.flap.goToHighGoalPosition();
-                drive.update();
-
-            }
-
-            if(gamepad1.dpad_left){
-                point.setPos(0,0, heading-Math.toRadians(270));
-                while (!point.isDone && gamepad1.right_trigger<.1){
-                    point.goToPointNonBlocking(0,0, turnAngle);
+                    //second launch
+                    robot.delayWithAllPID(30);
+                    point.notDone();
+                    while (!point.isDone4 && run) {
+                        point.goToPointPS(0, -25.5, 0, .5, .5);
+                        drive.update();
+                        if (gamepad1.left_trigger > .1 || gamepad1.right_trigger > .1) run = false;
+                    }
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flap.goToHighGoalPosition();
+                        highGoalAngle = true;
+                        break;
+                    }
+                    robot.delayWithAllPID(100);
+                    robot.flicker.launch();
+                    robot.delayWithAllPID(30);
+                    //third launch
+                    point.notDone();
+                    while (!point.isDone4 && run) {
+                      //  point.goToPointNonBlocking(0, -28, -6);
+                        point.goToPointPS(0, -25.5, -7, .5, .5);
+                        if (gamepad1.left_trigger > .1 || gamepad1.right_trigger > .1) run = false;
+                    }
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flap.goToHighGoalPosition();
+                        highGoalAngle = true;
+                        break;
+                    }
+                    robot.delayWithAllPID(100);
+                    robot.flicker.launch();
+                    robot.delayWithAllPID(30);
+                    robot.flywheels.halt();
+                    drive.update();
+                    robot.flap.goToHighGoalPosition();
+                    highGoalAngle = true;
+                    run = false;
+                    break;
                 }
-                point.notDone();
             }
 
-            if (pad.intakeToggle()) robot.intake.toggle();
-            if (pad.intakeReverse()) robot.intake.reverse();
-            else if (robot.intake.isRunning()) robot.intake.start();
-            if (pad.clawToggle()) robot.claw.toggle();
-            if (pad.armToggle()) {
-                robot.arm.toggle();
-                armTimer.reset();
-/*
-                try {
-                    if (!robot.arm.isUp()) {
+            if (gamepad1.dpad_left) {
+                run = true;
+                while (run) {
+                    point.reset();
+                    robot.flap.goToSlowPowershotPosition();
+                    robot.flywheels.doVelocity();
+                    //first launch
+                    point.notDone();
+                    while (!point.isDone4 && run) {
+                        point.goToPointPS(0, -20, 0, .5, .5);
+                        //point.goToPointTele(0, -32, 0);
+                        if (gamepad1.left_trigger > .1 || gamepad1.right_trigger > .1) run = false;
+                    }
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flap.goToHighGoalPosition();
+                        highGoalAngle = true;
+                        break;
+                    }
+                    robot.delayWithAllPID(200);
+                    if (gamepad1.left_trigger > .1 || gamepad1.right_trigger > .1) run = false;
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flywheels.setHighGoalVelocity();
+                        robot.flap.goToHighGoalPosition();
+                        highGoalAngle = true;
+                        drive.update();
+                        break;
+                    }
+                    robot.flicker.launch();
+
+
+                    //second launch
+                    robot.delayWithAllPID(30);
+                    point.notDone();
+                    while (!point.isDone4 && run) {
+                        point.goToPointPS(0, -25.5, 0, .5, .5);
+                        drive.update();
+                        if (gamepad1.left_trigger > .1 || gamepad1.right_trigger > .1) run = false;
+                    }
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flap.goToHighGoalPosition();
+                        highGoalAngle = true;
+                        break;
+                    }
+                    robot.delayWithAllPID(100);
+                    robot.flicker.launch();
+                    robot.delayWithAllPID(30);
+                    //third launch
+                    point.notDone();
+                    while (!point.isDone4 && run) {
+                        //  point.goToPointNonBlocking(0, -28, -6);
+                        point.goToPointPS(0, -32, 0, .5, .5);
+                        if (gamepad1.left_trigger > .1 || gamepad1.right_trigger > .1) run = false;
+                    }
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flap.goToHighGoalPosition();
+                        highGoalAngle = true;
+                        break;
+                    }
+                    robot.delayWithAllPID(100);
+                    robot.flicker.launch();
+                    robot.delayWithAllPID(30);
+                    robot.flywheels.halt();
+                    drive.update();
+                    robot.flap.goToHighGoalPosition();
+                    highGoalAngle = true;
+                    run = false;
+                    break;
+                }
+            }
+
+
+            /*
+
+            //automated powershot GTP
+            if (gamepad1.dpad_right) {
+                run = true;
+                while (run) {
+                    point.reset();
+                    robot.flywheels.setPowershotVelocity();
+                    robot.flywheels.doPowershotVelocity();
+                    robot.flap.goToPowershotPosition();
+
+                    //first launch
+                    point.notDone();
+                    while (!point.isDone4 && run) {
+                        point.goToPointNonBlocking(0, -20, 0);
+                        //point.goToPointTele(0, -32, 0);
+                        if (gamepad1.left_trigger > .1) run = false;
+                        if (gamepad1.right_trigger > .1) run = false;
+                    }
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flywheels.setHighGoalVelocity();
+                        robot.flap.goToHighGoalPosition();
+                        drive.update();
+                        break;
+                    }
+                    robot.delayWithAllPID(200);
+                    if (gamepad1.left_trigger > .1) run = false;
+                    if (gamepad1.right_trigger > .1) run = false;
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flywheels.setHighGoalVelocity();
+                        robot.flap.goToHighGoalPosition();
+                        drive.update();
+                        break;
+                    }
+                    robot.flicker.launch();
+
+
+                    //second launch
+                    robot.delayWithAllPID(30);
+                    point.notDone();
+                    while (!point.isDone4 && run) {
+                        point.goToPointNonBlocking(0, -26, 0);
+                        if (gamepad1.left_trigger > .1) run = false;
+                        if (gamepad1.right_trigger > .1) run = false;
+                    }
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flywheels.setHighGoalVelocity();
+                        robot.flap.goToHighGoalPosition();
+                        drive.update();
+                        break;
+                    }
+                    robot.delayWithAllPID(100);
+                    robot.flicker.launch();
+                    robot.delayWithAllPID(30);
+                    robot.flap.goToSlowPowershotPosition();
+                    robot.delayWithAllPID(20);
+                    //third launch
+                    point.notDone();
+                    while (!point.isDone4 && run) {
+                        point.goToPointNonBlocking(0, -32, 0);
+                        if (gamepad1.left_trigger > .1) run = false;
+                        if (gamepad1.right_trigger > .1) run = false;
+                    }
+
+                    if (!run) {
+                        robot.flywheels.halt();
+                        drive.update();
+                        robot.flywheels.setHighGoalVelocity();
+                        robot.flap.goToHighGoalPosition();
+                        drive.update();
+                        break;
+                    }
+                    robot.delayWithAllPID(100);
+                    robot.flicker.launch();
+                    robot.delayWithAllPID(30);
+                    robot.flywheels.halt();
+                    drive.update();
+                    robot.flap.goToHighGoalPosition();
+                    run = false;
+                    break;
+                }
+            }
+
+
+             */
+
+                if (gamepad1.right_stick_button) {
+                    run = true;
+                    while (run) {
+                    robot.flap.goToHighGoalPosition();
+                    highGoalAngle = true;
+                    if (!robot.flywheels.running()) robot.flywheels.togglePID();
+                    if (robot.intake.isRunning()) robot.intake.toggle();
+                        if(!aim.aiming.seesGoal()) {
+                            run = false;
+                            break;
+                        }
+                        point.reset();
+                        point.notDone();
+                        double goalX = aim.aiming.getGoalCenterX();
+                        double turn = Math.atan((160 - (goalX + 10)) / (346.41));
+                        while (!point.isDone4 && gamepad1.right_trigger < .1 && gamepad1.left_trigger < .1 && !gamepad1.right_bumper) {
+                            point.goToPointNonBlockingTurn(0, 0, Math.toDegrees(turn));
+                        }
+                        run = false;
+                    }
+                }
+
+                if (pad.intakeToggle()) robot.intake.toggle();
+                if (pad.intakeReverse()) robot.intake.reverse();
+                else if (robot.intake.isRunning()) robot.intake.start();
+                if (pad.clawToggle()) robot.claw.toggle();
+                if (pad.armToggle()) {
+                    robot.arm.toggle();
+                    if(robot.arm.isUp() && !highGoalAngle){
+                    robot.flap.goToPowershotPosition();
+                    }
+                    else if(robot.arm.isUp() && highGoalAngle){
+                        robot.flap.goToHighGoalPosition();
+                    }
+                    else{
                         robot.flap.goFlush();
-                        armStopwatch.start();
-                    } else armStopwatch.reset();
-                } catch (Exception ignored) {
+                    }
+                    armTimer.reset();
                 }
-*/
+
+                //lowering flap when wobble is out and putting it back up after
+            /*
+
+              if (!robot.arm.isUp()) {
+                    robot.flap.goFlush();
+                } else if (robot.arm.isUp() && highGoalAngle && armTimer.milliseconds() >= 500) {
+                    robot.flap.goToHighGoalPosition();
+                } else if (robot.arm.isUp() && !highGoalAngle && armTimer.milliseconds() >= 500) {
+                    robot.flap.goToPowershotPosition();
+                }
+
+                */
+
+
+
+                //turn and drivetrain throttles
+                if (robot.flywheels.running() && flywheelTimer.milliseconds() >= flywheelTimerThreshold && robot.arm.isUp()) {
+                    robot.drivetrain.setTurnThrottle(flywheelsTurnThrottle);
+                    robot.drivetrain.setDrivetrainThrottle(flywheelsDrivetrainThrottle);
+                    //flywheelStopwatch.reset();
+                } else if (!robot.arm.isUp() && armTimer.milliseconds() >= armTimerThreshold) {
+                    robot.drivetrain.setTurnThrottle(armTurnThrottle);
+                    robot.drivetrain.setDrivetrainThrottle(armDrivetrainThrottle);
+                    //armStopwatch.reset();
+                } else {
+                    robot.drivetrain.setTurnThrottle(normalTurnThrottle);
+                    robot.drivetrain.setDrivetrainThrottle(normalDrivetrainThrottle);
+                }
+
+                //phone telemetry
+                telemetry.addData("x", aim.aiming.getGoalCenterX());
+                telemetry.addData("seesGoal", aim.aiming.seesGoal());
+//            telemetry.addData("Flicker State", robot.flicker.getState());
+//            telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
+//            telemetry.addData("Flywheel Runstate", robot.flywheels.getRunState());
+//            telemetry.addData("Flywheel Velostate", robot.flywheels.getVelocityState());
+//            telemetry.addData("Arm State", robot.arm.getState());
+//            telemetry.addData("Claw State", robot.claw.getState());
+//            telemetry.addData("rx", rx);
+//            telemetry.addData("turn throttle", robot.drivetrain.getTurnThrottle());
+//            telemetry.addData("dt throttle", robot.drivetrain.getThrottle());
+               telemetry.update();
+            //    telemetry.update();
+
+                //dashboard telemetry
+                TelemetryPacket packet = new TelemetryPacket();
+                packet.put("Flywheel Velocity", robot.flywheels.flywheelFront.getCorrectedVelocity());
+                packet.put("Flywheel Target Velocity", robot.flywheels.getTargetVelocity());
+                packet.put("Motor Power", robot.flywheels.flywheelFront.motor.getPower());
+                dashboard.sendTelemetryPacket(packet);
             }
-
-            //lowering flap when wobble is out and putting it back up after
-            if (!robot.arm.isUp()) {
-                robot.flap.goFlush();
-            } else if (robot.arm.isUp() && highGoalAngle && armTimer.milliseconds() >= 500) {
-                robot.flap.goToHighGoalPosition();
-            } else if (robot.arm.isUp() && !highGoalAngle && armTimer.milliseconds() >= 500) {
-                robot.flap.goToPowershotPosition();
-            }
-
-            //powershot imu turns
-//            if (pad.turnRight()) robot.drivetrain.turn(turnRightAngle);
-//            else if (pad.turnLeft()) robot.drivetrain.turn(turnLeftAngle);
-
-            //turn and drivetrain throttles
-            if (robot.flywheels.running() && flywheelTimer.milliseconds() >= flywheelTimerThreshold && robot.arm.isUp()) {
-                robot.drivetrain.setTurnThrottle(flywheelsTurnThrottle);
-                robot.drivetrain.setDrivetrainThrottle(flywheelsDrivetrainThrottle);
-                //flywheelStopwatch.reset();
-            } else if (!robot.arm.isUp() && armTimer.milliseconds() >= armTimerThreshold) {
-                robot.drivetrain.setTurnThrottle(armTurnThrottle);
-                robot.drivetrain.setDrivetrainThrottle(armDrivetrainThrottle);
-                //armStopwatch.reset();
-            } else {
-                robot.drivetrain.setTurnThrottle(normalTurnThrottle);
-                robot.drivetrain.setDrivetrainThrottle(normalDrivetrainThrottle);
-            }
-
-            //phone telemetry
-            telemetry.addData("Flicker State", robot.flicker.getState());
-            telemetry.addData("Flywheel Velocity", Math.abs(robot.flywheels.flywheelFront.getCorrectedVelocity()));
-            telemetry.addData("Flywheel Runstate", robot.flywheels.getRunState());
-            telemetry.addData("Flywheel Velostate", robot.flywheels.getVelocityState());
-            telemetry.addData("Arm State", robot.arm.getState());
-            telemetry.addData("Claw State", robot.claw.getState());
-            telemetry.addData("rx", rx);
-            telemetry.addData("turn throttle", robot.drivetrain.getTurnThrottle());
-            telemetry.addData("dt throttle", robot.drivetrain.getThrottle());
-            telemetry.update();
-
-            //dashboard telemetry
-           TelemetryPacket packet = new TelemetryPacket();
-            packet.put("Flywheel Velocity", robot.flywheels.flywheelFront.getCorrectedVelocity());
-            packet.put("Flywheel Target Velocity", robot.flywheels.getTargetVelocity());
-            packet.put("Motor Power", robot.flywheels.flywheelFront.motor.getPower());
-            dashboard.sendTelemetryPacket(packet);
         }
     }
-}
