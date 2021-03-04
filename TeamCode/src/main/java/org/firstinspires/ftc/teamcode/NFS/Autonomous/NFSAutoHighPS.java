@@ -12,6 +12,7 @@ import com.arcrobotics.ftclib.vision.UGContourRingPipeline;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.NFS.GTP.GoToPoint;
 import org.firstinspires.ftc.teamcode.NFS.RobotComponents.Robot;
@@ -37,6 +38,7 @@ public class NFSAutoHighPS extends LinearOpMode {
 
     @Override
     public void runOpMode() {
+        ElapsedTime timer = new ElapsedTime();
         Robot robot = new Robot(hardwareMap, telemetry, true);
         Vision vision = new Vision(hardwareMap, telemetry);
         robot.startPositions();
@@ -47,7 +49,7 @@ public class NFSAutoHighPS extends LinearOpMode {
         Trajectory[][] traj = new Trajectory[3][12];
         traj[0][0] = drive.trajectoryBuilder(startPose, false)
                 .splineTo(new Vector2d(-2, -57), Math.toRadians(0))
-                .addTemporalMarker(0.1, () -> robot.flap.setPosition(.29))
+                .addTemporalMarker(0.1, () -> robot.flap.goToAutoHighGoalPosition())
                 .addTemporalMarker(.75, () -> robot.intake.down())
                 .addTemporalMarker(.75, () -> robot.arm.down())
                 .addTemporalMarker(1.85, () -> robot.claw.open())
@@ -55,7 +57,7 @@ public class NFSAutoHighPS extends LinearOpMode {
                 .build();
 
         traj[0][1] = drive.trajectoryBuilder(traj[0][0].end().plus(new Pose2d(0, 0, Math.toRadians(90))), false)
-                .splineTo(new Vector2d(-6, -18), Math.toRadians(-12))
+                .splineTo(new Vector2d(-6, -18), Math.toRadians(-10))
                 .addTemporalMarker(.1, () -> drive.flywheels.doMaxVelocity())
                 //  .addDisplacementMarker(() -> robot.flicker.launch())
                 .build();
@@ -73,7 +75,7 @@ public class NFSAutoHighPS extends LinearOpMode {
                 .splineTo(new Vector2d(-12, -36), Math.toRadians(-45))
                 .build();
         traj[0][5] = drive.trajectoryBuilder(traj[0][3].end().plus(new Pose2d(0, 0, Math.toRadians(90))), false)
-                .splineTo(new Vector2d(12, -24), Math.toRadians(0))
+                .splineTo(new Vector2d(12, -20), Math.toRadians(0))
                 .build();
         traj[1][0] = drive.trajectoryBuilder(startPose, false)
                 .splineTo(new Vector2d(-12, -55), Math.toRadians(0))
@@ -126,64 +128,69 @@ public class NFSAutoHighPS extends LinearOpMode {
                 .build();
 
 
-        traj[2][0] = drive.trajectoryBuilder(startPose, false)
+       Trajectory firstWobbleDrop4 = drive.trajectoryBuilder(startPose, false)
                 .splineTo(new Vector2d(-12, -55), Math.toRadians(0))
                 .splineTo(new Vector2d(40, -55), Math.toRadians(0))
                 .addTemporalMarker(0.1, () -> robot.flap.setPosition(.285))
                 .addTemporalMarker(.75, () -> robot.intake.down())
                 .addTemporalMarker(2, () -> robot.arm.down())
                 .build();
-        traj[2][1] = drive.trajectoryBuilder(traj[2][0].end(), true)
+        traj[2][1] = drive.trajectoryBuilder(firstWobbleDrop4.end(), true)
                 .splineTo(new Vector2d(-6, -18), Math.toRadians(160))
                 .addTemporalMarker(.1, () -> drive.flywheels.doMaxVelocity())
                 .build();
-        traj[2][2] = drive.trajectoryBuilder(traj[2][1].end(), true)
-                .splineTo(new Vector2d(-24, -18), Math.toRadians(270))
-                .addDisplacementMarker(() -> robot.intake.start())
-                .build();
-        traj[2][3] = drive.trajectoryBuilder(traj[2][2].end(), true)
-                .splineTo(new Vector2d(-24, -32), Math.toRadians(270),
+        Trajectory goToStack = drive.trajectoryBuilder(new Pose2d(-6, -1.5, Math.toRadians(-6)), true)
+                .addTemporalMarker(.1, () -> robot.intake.start())
+                .splineTo(new Vector2d(-24, -18), Math.toRadians(270) /*,
                         new MinVelocityConstraint(Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
                                 new MecanumVelocityConstraint(30, DriveConstants.TRACK_WIDTH)
                         )
-                        ), new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                        ), new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL) */)
+                .build();
+       Trajectory intakeThreeRings4 = drive.trajectoryBuilder(goToStack.end(), true)
+//                .splineTo(new Vector2d(-24, -32), Math.toRadians(270),
+//                        new MinVelocityConstraint(Arrays.asList(
+//                                new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
+//                                new MecanumVelocityConstraint(30, DriveConstants.TRACK_WIDTH)
+//                        )
+//                        ), new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .splineTo(new Vector2d(-24, -44), Math.toRadians(270),
                         new MinVelocityConstraint(Arrays.asList(
                                 new AngularVelocityConstraint(DriveConstants.MAX_ANG_VEL),
-                                new MecanumVelocityConstraint(10, DriveConstants.TRACK_WIDTH)
+                                new MecanumVelocityConstraint(20, DriveConstants.TRACK_WIDTH)
                         )
                         ), new ProfileAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        traj[2][4] = drive.trajectoryBuilder(traj[2][3].end().plus(new Pose2d(0, 0, Math.toRadians(70))))
-                .splineTo(new Vector2d(-37, -40), Math.toRadians(165))
+        Trajectory wobbleGrab4 = drive.trajectoryBuilder(intakeThreeRings4.end().plus(new Pose2d(0, 0, Math.toRadians(70))))
+                .splineTo(new Vector2d(-37, -39), Math.toRadians(165))
                 .addDisplacementMarker(() -> {
                     robot.claw.close();
                     robot.intake.stop();
                 })
                 .build();
-        traj[2][5] = drive.trajectoryBuilder(traj[2][4].end().plus(new Pose2d(0, 0, Math.toRadians(-165))), false)
-                .splineTo(new Vector2d(-4.5, -40), Math.toRadians(-1.5))
+       Trajectory shootThreeHigh4 = drive.trajectoryBuilder(wobbleGrab4.end().plus(new Pose2d(0, 0, Math.toRadians(-165))), false)
+                .splineTo(new Vector2d(-4.5, -40), Math.toRadians(0))
                 .addTemporalMarker(.1, () -> {
                     drive.flywheels.doMaxVelocity();
-                    robot.flap.setPosition(.28);
+                    robot.flap.goToHighGoalPosition();
                 })
                 .build();
-        traj[2][6] = drive.trajectoryBuilder(traj[2][5].end(), true)
-                .splineTo(new Vector2d(-24, -55), Math.toRadians(-139))
+      Trajectory intakeOneRing4 = drive.trajectoryBuilder(shootThreeHigh4.end(), true)
+                .splineTo(new Vector2d(-30, -55), Math.toRadians(-139))
                 .addTemporalMarker(.1, () -> robot.intake.start())
                 .build();
-        traj[2][7] = drive.trajectoryBuilder(traj[2][6].end(), false)
-                .splineTo(new Vector2d(-4.5, -40), Math.toRadians(-0.5))
+       Trajectory shootOneHigh4 = drive.trajectoryBuilder(intakeOneRing4.end(), false)
+                .splineTo(new Vector2d(-4.5, -40), Math.toRadians(0))
                 .addDisplacementMarker(() -> robot.intake.stop())
                 .addTemporalMarker(.1, () -> drive.flywheels.doMaxVelocity())
                 .build();
-        traj[2][8] = drive.trajectoryBuilder(traj[2][7].end(), false)
+        Trajectory secondWobbleDrop4 = drive.trajectoryBuilder(shootOneHigh4.end(), false)
                 .splineTo(new Vector2d(44, -46), Math.toRadians(-20))
                 .addTemporalMarker(.75, () -> robot.arm.down())
                 .addDisplacementMarker(() -> robot.claw.open())
                 .build();
-        traj[2][9] = drive.trajectoryBuilder(traj[2][8].end(), true)
+       Trajectory park = drive.trajectoryBuilder(secondWobbleDrop4.end(), true)
                 .splineTo(new Vector2d(12, -36), Math.toRadians(180))
                 .addTemporalMarker(.1, () -> {
                     robot.arm.up();
@@ -214,6 +221,7 @@ public class NFSAutoHighPS extends LinearOpMode {
         switch (height) {
             case ZERO:
                 telemetry.addData("There are no rings", "");
+                vision.stopStreaming();
 
                 //wobble drop
                 drive.followTrajectory(traj[0][0]);
@@ -255,6 +263,7 @@ public class NFSAutoHighPS extends LinearOpMode {
                 break;
             case ONE:
                 telemetry.addData("There is one ring", "");
+                vision.stopStreaming();
 
                 //1st wobble drop
                 drive.followTrajectory(traj[1][0]);
@@ -303,7 +312,9 @@ public class NFSAutoHighPS extends LinearOpMode {
                 // drive.followTrajectory(traj[1][5]);
 
                 //point.goToPoint(-10, -36, 19);
-                point.goToPoint(-10, -37, 19);
+                point.notDone();
+                while (!point.isDone4) point.goToPointAuto(-10, -37, 19);
+                //point.goToPoint(-10, -37, 19);
                 robot.delayWithAllPID(500);
 //                robot.intake.reverse();
 //                robot.delayWithAllPID(150);
@@ -329,50 +340,64 @@ public class NFSAutoHighPS extends LinearOpMode {
 
 
                 //drive.followTrajectory(traj[1][6]);
-                point.goToPointSlow(2, -34, 0, 1,1, 1);
+                //point.goToPointSlow(2, -34, 0, 1,1, 1);
+                point.notDone();
+                while (!point.isDone4) point.goToPointAuto(2, -34, 0);
 
                 break;
 
 
             case FOUR:
                 telemetry.addData("There are four rings", "");
+                vision.stopStreaming();
 
                 //first wobble drop
-                drive.followTrajectory(traj[2][0]);
+                drive.followTrajectory(firstWobbleDrop4);
                 robot.claw.open();
                 robot.delayWithAllPID(200);
                 robot.arm.up();
                 robot.delayWithAllPID(100);
 
                 //shoot highgoal (3 rings)
-                drive.followTrajectory(traj[2][1]);
-                robot.delayWithAllPID(400);
+
+
+                //drive.followTrajectory(traj[2][1]);
+                point.notDone();
+                robot.flap.goToSlowPowershotPosition();
+                robot.flywheels.doPowershotSlowVelocity();
+                while (!point.isDone4) point.goToPointPS(-6, -11.5, 6, .5, .5);
+                robot.delayWithAllPID(20);
                 robot.flicker.launch();
-                robot.delayWithAllPID(300);
+                point.notDone();
+                while (!point.isDone4) point.goToPointPS(-6, -11.5, 0, .5, .5);
+                robot.delayWithAllPID(20);
                 robot.flicker.launch();
-                robot.delayWithAllPID(300);
+                point.notDone();
+                timer.reset();
+                while (!point.isDone4 && timer.milliseconds()<500) point.goToPointPS(-6, -11.5, -5, .5, .5);
+                robot.flicker.launch();
+                robot.delayWithAllPID(200);
                 robot.flicker.launch();
                 robot.delayWithAllPID(100);
                 drive.flywheels.halt();
 
                 //intake stack (3 rings)
-                drive.followTrajectory(traj[2][2]);
-                drive.followTrajectory(traj[2][3]);
+                drive.followTrajectory(goToStack);
+                drive.followTrajectory(intakeThreeRings4);
 
                 //wobble grab
                 robot.arm.down();
-               // point.turn(70);
                 drive.turn(Math.toRadians(70));
-                drive.followTrajectory(traj[2][4]);
+                drive.followTrajectory(wobbleGrab4);
                 robot.delayWithAllPID(300);
                 robot.arm.up();
                 robot.delayWithAllPID(300);
                 //point.turn(-165);
-               // point.goToPoint(-37, -40, 0);
+                // point.goToPoint(-37, -40, 0);
                 drive.turn(Math.toRadians(-165));
 
                 //shoot high (3 rings)
-                drive.followTrajectory(traj[2][5]);
+                drive.followTrajectory(shootThreeHigh4);
                 robot.delayWithAllPID(400);
                 robot.flicker.launch();
                 robot.delayWithAllPID(400);
@@ -385,10 +410,10 @@ public class NFSAutoHighPS extends LinearOpMode {
                 drive.flywheels.halt();
 
                 //intake stack (1 ring)
-                drive.followTrajectory(traj[2][6]);
+                drive.followTrajectory(intakeOneRing4);
 
                 //shoot high (1 ring)
-                drive.followTrajectory(traj[2][7]);
+                drive.followTrajectory(shootOneHigh4);
                 robot.intake.reverse();
                 robot.delayWithAllPID(100);
                 robot.intake.start();
@@ -402,11 +427,11 @@ public class NFSAutoHighPS extends LinearOpMode {
                 drive.flywheels.halt();
 
                 //second wobble drop
-                drive.followTrajectory(traj[2][8]);
+                drive.followTrajectory(secondWobbleDrop4);
                 robot.delayWithAllPID(200);
 
                 //park
-                drive.followTrajectory(traj[2][9]);
+                drive.followTrajectory(park);
                 break;
         }
         telemetry.update();
