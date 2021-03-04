@@ -21,7 +21,7 @@ public class Flywheels {
     /**
      * The max velocity and the powershot velocity (in terms of TPS)
      */
-    public static double maxVelocity = 1800, autoMaxVelocity = 1800, powershotVelocity = 1600, autoPowershotVelocity = 1475;
+    public static double maxVelocity = 1400, autoMaxVelocity = 1400, powershotVelocity = 1600, autoPowershotVelocity = 1475, slowPowerShotVelocity = 1200;
     /**
      * The TPS the flywheels should run at
      */
@@ -145,6 +145,9 @@ public class Flywheels {
         plannedVelocity = powershotVelocity;
     }
 
+    public void setSlowPowerShotVelocity() {
+        plannedVelocity = slowPowerShotVelocity;
+    }
     /**
      * Sets the planned velocity to the high goal speed
      */
@@ -271,6 +274,14 @@ public class Flywheels {
      */
     public void doVelocity() {
         setTargetVelocity(plannedVelocity);
+        runState = State.RUNNING;
+    }
+
+
+    public void doPowershotSlowVelocity() {
+        setTargetVelocity(slowPowerShotVelocity);
+        runState = State.RUNNING;
+        velocityState = State.LOWER_VELOCITY;
     }
 
     /**

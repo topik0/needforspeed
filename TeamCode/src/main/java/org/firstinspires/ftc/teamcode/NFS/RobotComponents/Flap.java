@@ -16,7 +16,9 @@ public class Flap {
     /**
      * The various positions of the flap
      */
-    public static double startPosition = 0, highGoalPosition = .28, autoHighGoalPosition = .32, powerShotPosition = .3, flushPosition = .1, adjustUpThreshold = .005, adjustDownThreshold = .005;
+
+    //highgoalpos = .28
+    public static double startPosition = 0, highGoalPosition = .276, autoHighGoalPosition = .275, powerShotPosition = .3, slowPowerShotPosition = .275, flushPosition = .1, adjustUpThreshold = .005, adjustDownThreshold = .005;
     /**
      * The flap Servo object
      */
@@ -87,6 +89,12 @@ public class Flap {
         flap.setPosition(powerShotPosition);
         state = State.POWERSHOT;
         robot.flywheels.setPowershotVelocity();
+    }
+
+    public void goToSlowPowershotPosition(){
+        flap.setPosition(slowPowerShotPosition);
+        state = State.POWERSHOT;
+        robot.flywheels.setSlowPowerShotVelocity();
     }
 
     public void goFlush() {

@@ -22,7 +22,7 @@ public class Omnipad {
     /**
      * The ring shoot cooldown
      */
-    public static int shootCooldown = 170;
+    public static int shootCooldown = 250;
 
     /**
      * The claw cooldown
