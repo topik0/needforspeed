@@ -5,9 +5,9 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.arcrobotics.ftclib.controller.PIDFController;
-import com.qualcomm.robotcore.hardware.Gamepad;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.teamcode.NFS.drive.SampleMecanumDrive;
@@ -21,8 +21,9 @@ public class GoToPoint {
     public static  double yP = .1;
     public static double xD = 0;
     public static  double yD = .0;
-    public double yKS = 0, xKS = 0, headingKS = 0;
-    public boolean isDone;
+    public double yKS = 0, xKS = 0, headingKS;
+    public double yClip = 1, xClip = 1, headingClip = 1;
+    public boolean isDone1, isDone2, isDone3, isDone4;
     public double xError, yError, headingError;
     public SampleMecanumDrive drive;
     private HardwareMap hardwareMap;
@@ -30,10 +31,13 @@ public class GoToPoint {
     FtcDashboard dashboard;
     VoltageSensor voltageSensor;
     public PIDFController headingPIDF, translateXPIDF, translateYPIDF;
+    ElapsedTime timer;
 
     public GoToPoint(SampleMecanumDrive drive, HardwareMap hwMap) {
         this.drive = drive;
-        isDone = false;
+        isDone1 = false;
+        isDone2 = false;
+        isDone3 = false;
         dashboard = FtcDashboard.getInstance();
         hardwareMap = hwMap;
         voltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -49,12 +53,110 @@ public class GoToPoint {
         drive.setPoseEstimate(new Pose2d(x, y, heading));
     }
     public void notDone() {
-        isDone = false;
+        isDone1 = false;
+        isDone2 = false;
+        isDone3 = false;
+        isDone4 = false;
    }
 
 
 
 
+    public void goToPointPS(double targetX, double targetY, double targetDegrees, double translationalClip, double hClip) {
+
+        double targetXError = 1;
+        double targetYError = .5;
+        double targetHeadingError = .75;
+
+        if (!isDone4) {
+            drive.update();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+
+            //kS
+
+            if(Math.abs(headingError)<= Math.toRadians(targetHeadingError)){
+                headingKS = 0;
+            }
+            if(Math.abs(headingError) > Math.toRadians(targetHeadingError)){
+                headingKS= 0;
+            }
+
+            if(Math.abs(xError)<=targetXError){
+                xKS = 0;
+            }
+            if(Math.abs(xError)>targetXError){
+                xKS = 0;
+            }
+
+            if(Math.abs(yError)<=targetYError){
+                yKS = 0;
+            }
+            if(Math.abs(yError)>targetYError){
+                yKS= 0;
+            }
+
+
+            //power clips
+
+            if(Math.abs(headingError)<= Math.toRadians(5)){
+                headingClip = hClip; //.5
+            }
+            if(Math.abs(headingError) > Math.toRadians(5)){
+                headingClip = 1;
+            }
+
+            if(Math.abs(xError)<= 2){
+                xClip = translationalClip; //.7
+            }
+            if(Math.abs(xError)> 2){
+                xClip = 1;
+            }
+
+            if(Math.abs(yError)<= 2){
+                yClip = translationalClip;
+            }
+            if(Math.abs(yError)> 2){
+                yClip = 1;
+            }
+
+
+            double headingPID =  headingPIDF.calculate(0, headingError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double xPID = translateXPIDF.calculate(0, xError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double yPID =   translateYPIDF.calculate(0, yError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+
+            headingPID = Range.clip(headingPID, -headingClip, headingClip);
+            xPID = Range.clip(xPID, -xClip, xClip);
+            yPID = Range.clip(yPID, -yClip, yClip);
+
+            Vector2d fieldCentric = new Vector2d(xPID, yPID).rotated(-drive.getPoseEstimate().getHeading());
+            drive.setWeightedDrivePower(new Pose2d(fieldCentric.getX() + Math.copySign(xKS, xPID), fieldCentric.getY() + Math.copySign(yKS, yPID), headingPID + Math.copySign(headingKS, headingPID)));
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone4 && isDone3) {
+                isDone4 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone2 && !isDone3) {
+                isDone3 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone1 && !isDone2) {
+                isDone2 = true;
+            }
+
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone1) {
+                isDone1 = true;
+            }
+
+            if (Math.abs(xError) > targetXError || Math.abs(yError) > targetYError || Math.abs(headingError) > Math.toRadians(targetHeadingError)) {
+                notDone();
+            }
+        }
+    }
 
 
     public void goToPoint(double targetX, double targetY, double targetDegrees) {
@@ -62,9 +164,9 @@ public class GoToPoint {
         double targetXError = .75;
         double targetYError = .75;
         double targetHeadingError = .5;
-        isDone = false;
+        isDone1 = false;
 
-        while (!isDone) {
+        while (!isDone1) {
             drive.update();
 
             headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
@@ -111,7 +213,7 @@ public class GoToPoint {
 
             if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError)) {
                 drive.setWeightedDrivePower(new Pose2d(0, 0, 0));
-                isDone = true;
+                isDone1 = true;
 
             }
 
@@ -122,9 +224,9 @@ public class GoToPoint {
     public void goToPoint(double targetX, double targetY, double targetDegrees, double targetXError, double targetYError, double targetHeadingError) {
 
 
-        isDone = false;
+        isDone1 = false;
 
-        while (!isDone) {
+        while (!isDone1) {
             drive.update();
 
             headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
@@ -170,21 +272,206 @@ public class GoToPoint {
             drive.setWeightedDrivePower(new Pose2d(fieldCentric.getX() + Math.copySign(xKS, xPID), fieldCentric.getY() + Math.copySign(yKS, yPID), headingPID + Math.copySign(headingKS, headingPID)));
 
             if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError)) {
-                isDone = true;
+                isDone1 = true;
             }
 
         }
 
     }
+    public void goToPointAuto(double targetX, double targetY, double targetDegrees) {
 
+        double targetXError = 1;
+        double targetYError = .75;
+        double targetHeadingError = .75;
+
+        if (!isDone4) {
+            drive.update();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+
+            //kS
+
+            if(Math.abs(headingError)<= Math.toRadians(targetHeadingError)){
+                headingKS = 0;
+            }
+            if(Math.abs(headingError) > Math.toRadians(targetHeadingError)){
+                headingKS= 0;
+            }
+
+            if(Math.abs(xError)<=targetXError){
+                xKS = 0;
+            }
+            if(Math.abs(xError)>targetXError){
+                xKS = 0;
+            }
+
+            if(Math.abs(yError)<=targetYError){
+                yKS = 0;
+            }
+            if(Math.abs(yError)>targetYError){
+                yKS= 0;
+            }
+
+
+            //power clips
+
+            if(Math.abs(headingError)<= Math.toRadians(5)){
+                headingClip = .5;
+            }
+            if(Math.abs(headingError) > Math.toRadians(5)){
+                headingClip = 1;
+            }
+
+            if(Math.abs(xError)<= 2){
+                xClip = .7;
+            }
+            if(Math.abs(xError)> 2){
+                xClip = 1;
+            }
+
+            if(Math.abs(yError)<= 2){
+                yClip = .7;
+            }
+            if(Math.abs(yError)> 2){
+                yClip = 1;
+            }
+
+
+            double headingPID =  headingPIDF.calculate(0, headingError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double xPID = translateXPIDF.calculate(0, xError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double yPID =   translateYPIDF.calculate(0, yError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+
+            headingPID = Range.clip(headingPID, -headingClip, headingClip);
+            xPID = Range.clip(xPID, -xClip, xClip);
+            yPID = Range.clip(yPID, -yClip, yClip);
+
+            Vector2d fieldCentric = new Vector2d(xPID, yPID).rotated(-drive.getPoseEstimate().getHeading());
+            drive.setWeightedDrivePower(new Pose2d(fieldCentric.getX() + Math.copySign(xKS, xPID), fieldCentric.getY() + Math.copySign(yKS, yPID), headingPID + Math.copySign(headingKS, headingPID)));
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone4 && isDone3) {
+                isDone4 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone2 && !isDone3) {
+                isDone3 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone1 && !isDone2) {
+                isDone2 = true;
+            }
+
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone1) {
+                isDone1 = true;
+            }
+
+            if (Math.abs(xError) > targetXError || Math.abs(yError) > targetYError || Math.abs(headingError) > Math.toRadians(targetHeadingError)) {
+                notDone();
+            }
+        }
+    }
+    public void goToPointAuto(double targetX, double targetY, double targetDegrees, double targetXError, double targetYError, double targetHeadingError) {
+
+        if (!isDone4) {
+            drive.update();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+
+            //kS
+
+            if(Math.abs(headingError)<= Math.toRadians(targetHeadingError)){
+                headingKS = 0;
+            }
+            if(Math.abs(headingError) > Math.toRadians(targetHeadingError)){
+                headingKS= 0;
+            }
+
+            if(Math.abs(xError)<=targetXError){
+                xKS = 0;
+            }
+            if(Math.abs(xError)>targetXError){
+                xKS = 0;
+            }
+
+            if(Math.abs(yError)<=targetYError){
+                yKS = 0;
+            }
+            if(Math.abs(yError)>targetYError){
+                yKS= 0;
+            }
+
+
+            //power clips
+
+            if(Math.abs(headingError)<= Math.toRadians(5)){
+                headingClip = .5;
+            }
+            if(Math.abs(headingError) > Math.toRadians(5)){
+                headingClip = 1;
+            }
+
+            if(Math.abs(xError)<= 2){
+                xClip = .7;
+            }
+            if(Math.abs(xError)> 2){
+                xClip = 1;
+            }
+
+            if(Math.abs(yError)<= 2){
+                yClip = .7;
+            }
+            if(Math.abs(yError)> 2){
+                yClip = 1;
+            }
+
+
+            double headingPID =  headingPIDF.calculate(0, headingError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double xPID = translateXPIDF.calculate(0, xError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double yPID =   translateYPIDF.calculate(0, yError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+
+            headingPID = Range.clip(headingPID, -headingClip, headingClip);
+            xPID = Range.clip(xPID, -xClip, xClip);
+            yPID = Range.clip(yPID, -yClip, yClip);
+
+            Vector2d fieldCentric = new Vector2d(xPID, yPID).rotated(-drive.getPoseEstimate().getHeading());
+            drive.setWeightedDrivePower(new Pose2d(fieldCentric.getX() + Math.copySign(xKS, xPID), fieldCentric.getY() + Math.copySign(yKS, yPID), headingPID + Math.copySign(headingKS, headingPID)));
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone4 && isDone3) {
+                isDone4 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone2 && !isDone3) {
+                isDone3 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone1 && !isDone2) {
+                isDone2 = true;
+            }
+
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone1) {
+                isDone1 = true;
+            }
+
+            if (Math.abs(xError) > targetXError || Math.abs(yError) > targetYError || Math.abs(headingError) > Math.toRadians(targetHeadingError)) {
+                notDone();
+            }
+        }
+    }
 
 
     public void goToPointSlow(double targetX, double targetY, double targetDegrees, double targetXError, double targetYError, double targetHeadingError) {
 
 
-        isDone = false;
+        isDone1 = false;
 
-        while (!isDone) {
+        while (!isDone1) {
             drive.update();
 
             headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
@@ -230,7 +517,7 @@ public class GoToPoint {
             drive.setWeightedDrivePower(new Pose2d(fieldCentric.getX() + Math.copySign(xKS, xPID), fieldCentric.getY() + Math.copySign(yKS, yPID), headingPID + Math.copySign(headingKS, headingPID)));
 
             if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError)) {
-                isDone = true;
+                isDone1 = true;
             }
 
         }
@@ -252,10 +539,9 @@ public class GoToPoint {
 
         double targetXError = 1;
         double targetYError = .75;
-        double targetHeadingError = .5;
-        isDone = false;
+        double targetHeadingError = .75;
 
-        if (!isDone) {
+        if (!isDone4) {
             drive.update();
 
             headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
@@ -267,25 +553,51 @@ public class GoToPoint {
             yError = targetY - drive.getPoseEstimate().getY();
 
 
-            if(Math.abs(headingError)<= targetHeadingError){
+            //kS
+
+            if(Math.abs(headingError)<= Math.toRadians(targetHeadingError)){
                 headingKS = 0;
             }
-            else if(Math.abs(headingError) > targetHeadingError){
-                   headingKS=0;
+            if(Math.abs(headingError) > Math.toRadians(targetHeadingError)){
+                   headingKS= 0;
             }
 
             if(Math.abs(xError)<=targetXError){
                 xKS = 0;
             }
-            else if(Math.abs(xError)>targetXError){
-                 // xKS=.1;
+            if(Math.abs(xError)>targetXError){
+                xKS = 0;
             }
 
             if(Math.abs(yError)<=targetYError){
                 yKS = 0;
             }
-            else if(Math.abs(yError)>targetYError){
-                 //  yKS=.1;
+            if(Math.abs(yError)>targetYError){
+                yKS= 0;
+            }
+
+
+            //power clips
+
+            if(Math.abs(headingError)<= Math.toRadians(5)){
+                headingClip = .5;
+            }
+            if(Math.abs(headingError) > Math.toRadians(5)){
+                headingClip = 1;
+            }
+
+            if(Math.abs(xError)<= 2){
+                xClip = .7;
+            }
+            if(Math.abs(xError)> 2){
+                xClip = 1;
+            }
+
+            if(Math.abs(yError)<= 2){
+                yClip = .7;
+            }
+            if(Math.abs(yError)> 2){
+                yClip = 1;
             }
 
 
@@ -293,17 +605,125 @@ public class GoToPoint {
             double xPID = translateXPIDF.calculate(0, xError) + voltageCompensation * 12 / voltageSensor.getVoltage();
             double yPID =   translateYPIDF.calculate(0, yError) + voltageCompensation * 12 / voltageSensor.getVoltage();
 
-            headingPID = Range.clip(headingPID, -1, 1);
-            xPID = Range.clip(xPID, -1, 1);
-            yPID = Range.clip(yPID, -1, 1);
+            headingPID = Range.clip(headingPID, -headingClip, headingClip);
+            xPID = Range.clip(xPID, -xClip, xClip);
+            yPID = Range.clip(yPID, -yClip, yClip);
 
             Vector2d fieldCentric = new Vector2d(xPID, yPID).rotated(-drive.getPoseEstimate().getHeading());
             drive.setWeightedDrivePower(new Pose2d(fieldCentric.getX() + Math.copySign(xKS, xPID), fieldCentric.getY() + Math.copySign(yKS, yPID), headingPID + Math.copySign(headingKS, headingPID)));
-
-            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError)) {
-                isDone = true;
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone4 && isDone3) {
+                isDone4 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone2 && !isDone3) {
+                isDone3 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone1 && !isDone2) {
+                isDone2 = true;
             }
 
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone1) {
+                isDone1 = true;
+            }
+
+            if (Math.abs(xError) > targetXError || Math.abs(yError) > targetYError || Math.abs(headingError) > Math.toRadians(targetHeadingError)) {
+              notDone();
+            }
+        }
+    }
+
+    public void goToPointNonBlockingTurn(double targetX, double targetY, double targetDegrees) {
+
+        double targetXError = 1;
+        double targetYError = 1;
+        double targetHeadingError = .75;
+
+        if (!isDone4) {
+            drive.update();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+            headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
+            xError = targetX - drive.getPoseEstimate().getX();
+            yError = targetY - drive.getPoseEstimate().getY();
+
+
+            //kS
+
+            if(Math.abs(headingError)<= Math.toRadians(targetHeadingError)){
+                headingKS = 0;
+            }
+            if(Math.abs(headingError) > Math.toRadians(targetHeadingError)){
+                headingKS= 0;
+            }
+
+            if(Math.abs(xError)<=targetXError){
+                xKS = 0;
+            }
+            if(Math.abs(xError)>targetXError){
+                xKS = 0;
+            }
+
+            if(Math.abs(yError)<=targetYError){
+                yKS = 0;
+            }
+            if(Math.abs(yError)>targetYError){
+                yKS= 0;
+            }
+
+
+            //power clips
+
+            if(Math.abs(headingError)<= Math.toRadians(5)){
+                headingClip = .3;
+            }
+            if(Math.abs(headingError) > Math.toRadians(5)){
+                headingClip = .75;
+            }
+
+            if(Math.abs(xError)<= 2){
+                xClip = .7;
+            }
+            if(Math.abs(xError)> 2){
+                xClip = 1;
+            }
+
+            if(Math.abs(yError)<= 2){
+                yClip = .7;
+            }
+            if(Math.abs(yError)> 2){
+                yClip = 1;
+            }
+
+
+            double headingPID =  headingPIDF.calculate(0, headingError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double xPID = translateXPIDF.calculate(0, xError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+            double yPID =   translateYPIDF.calculate(0, yError) + voltageCompensation * 12 / voltageSensor.getVoltage();
+
+            headingPID = Range.clip(headingPID, -headingClip, headingClip);
+            xPID = Range.clip(xPID, -xClip, xClip);
+            yPID = Range.clip(yPID, -yClip, yClip);
+
+            Vector2d fieldCentric = new Vector2d(xPID, yPID).rotated(-drive.getPoseEstimate().getHeading());
+            drive.setWeightedDrivePower(new Pose2d(fieldCentric.getX() + Math.copySign(xKS, xPID), fieldCentric.getY() + Math.copySign(yKS, yPID), headingPID + Math.copySign(headingKS, headingPID)));
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone4 && isDone3) {
+                isDone4 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone2 && !isDone3) {
+                isDone3 = true;
+            }
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && isDone1 && !isDone2) {
+                isDone2 = true;
+            }
+
+            if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError) && !isDone1) {
+                isDone1 = true;
+            }
+
+            if (Math.abs(xError) > targetXError || Math.abs(yError) > targetYError || Math.abs(headingError) > Math.toRadians(targetHeadingError)) {
+                notDone();
+            }
         }
     }
 
@@ -312,9 +732,9 @@ public class GoToPoint {
         double targetXError = 1;
         double targetYError = .75;
         double targetHeadingError = .5;
-        isDone = false;
+        isDone1 = false;
 
-        while (!isDone) {
+        while (!isDone1) {
             drive.update();
 
             headingError = normalizeAngleRR(Math.toRadians(targetDegrees) - (drive.getPoseEstimate().getHeading()));
@@ -360,7 +780,7 @@ public class GoToPoint {
             drive.setWeightedDrivePower(new Pose2d(fieldCentric.getX() + Math.copySign(xKS, xPID), fieldCentric.getY() + Math.copySign(yKS, yPID), headingPID + Math.copySign(headingKS, headingPID)));
 
             if (Math.abs(xError) < targetXError && Math.abs(yError) < targetYError && Math.abs(headingError) < Math.toRadians(targetHeadingError)) {
-                isDone = true;
+                isDone1 = true;
             }
 
         }
