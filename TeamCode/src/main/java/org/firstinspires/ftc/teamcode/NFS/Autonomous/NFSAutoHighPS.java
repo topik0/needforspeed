@@ -389,25 +389,23 @@ public class NFSAutoHighPS extends LinearOpMode {
                 robot.arm.down();
                 drive.turn(Math.toRadians(70));
                 drive.followTrajectory(wobbleGrab4);
-                robot.delayWithAllPID(300);
+                robot.delayWithAllPID(200);
                 robot.arm.up();
-                robot.delayWithAllPID(300);
-                //point.turn(-165);
-                // point.goToPoint(-37, -40, 0);
+                robot.delayWithAllPID(50);
+
                 drive.turn(Math.toRadians(-165));
 
                 //shoot high (3 rings)
                 drive.followTrajectory(shootThreeHigh4);
-                robot.delayWithAllPID(400);
+                robot.delayWithAllPID(30);
                 robot.flicker.launch();
-                robot.delayWithAllPID(400);
+                robot.delayWithAllPID(200);
                 robot.flicker.launch();
-                robot.delayWithAllPID(400);
+                robot.delayWithAllPID(250);
                 robot.flicker.launch();
-                robot.delayWithAllPID(300);
-                robot.flicker.launch();
-                robot.delayWithAllPID(100);
-                drive.flywheels.halt();
+
+
+
 
                 //intake stack (1 ring)
                 drive.followTrajectory(intakeOneRing4);
