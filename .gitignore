@@ -87,3 +87,5 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/NFS/Vision/AimingPipeline.java
+/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/NFS/RobotTest/gyroTest.java
