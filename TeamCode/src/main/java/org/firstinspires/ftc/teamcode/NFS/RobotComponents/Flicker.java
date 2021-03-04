@@ -21,7 +21,7 @@ public class Flicker {
     /**
      * The delay between movements
      */
-    public static double cooldown = 60;
+    public static double cooldown = 70;
     /**
      * Controls if the flicker should shoot if the flywheels aren't running
      */
