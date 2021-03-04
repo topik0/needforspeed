@@ -29,7 +29,7 @@ public class Intake {
     /**
      * The positions for the intake stopper
      */
-    public static double downPosition = .85, stopperStartPosition = 1.0;
+    public static double downPosition = .85, stopperStartPosition = 1;
     private State state;
     private State verticalState;
     private State directionState;
@@ -108,6 +108,7 @@ public class Intake {
      */
     public void start() {
         setPower(runPower);
+        state = State.RUNNING;
     }
 
     /**
@@ -115,6 +116,7 @@ public class Intake {
      */
     public void stop() {
         setPower(stopPower);
+        state = State.DORMANT;
     }
 
     /**
@@ -129,7 +131,9 @@ public class Intake {
      * Reverses the intake direction
      */
     public void reverse() {
+
         setPower(reverseRunPower);
+        state = State.RUNNING;
     }
 
     /**
