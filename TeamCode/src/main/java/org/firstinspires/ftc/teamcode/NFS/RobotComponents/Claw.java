@@ -20,7 +20,7 @@ public class Claw {
     /**
      * The open and close positions for the claw
      */
-    public static double closedPosition = .39, openPosition = .7;
+    public static double closedPosition = .23, openPosition = .6;
     private State state;
 
     private enum State {
